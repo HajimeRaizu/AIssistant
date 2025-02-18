@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1734159568397,
+    "name": "Jane Sanchez",
+    "email": "jane@example.com",
+    "password": "123456789"
+  },
+  {
+    "id": 1734159568398,
+    "name": "Alice Guo",
+    "email": "alice@example.com",
+    "password": "123456789"
+  },
+  {
+    "id": 1734486703507,
+    "name": "user",
+    "email": "user",
+    "password": "user123"
+  },
+  {
+    "id": 1734502246124,
+    "name": "Joshua Bontor",
+    "email": "bontor@gmail.com",
+    "password": "bontor123"
+  },
+  {
+    "id": 1734502246125,
+    "name": "Krisia Helena May Octal",
+    "email": "octal@gmail.com",
+    "password": "octal123"
+  },
+  {
+    "id": 1734502246126,
+    "name": "Mark Anthony Bandoy",
+    "email": "bandoy@gmail.com",
+    "password": "bandoy123"
+  },
+  {
+    "id": 1734502246127,
+    "name": "Khent LJ Salimpuran",
+    "email": "salimpuran@gmail.com",
+    "password": "salimpuran123"
+  },
+  {
+    "id": 1734502246128,
+    "name": "Clint Merez",
+    "email": "merez@gmail.com",
+    "password": "merez123"
+  },
+  {
+    "id": 1734502246129,
+    "name": "user",
+    "email": "user",
+    "password": "user123"
+  }
+]
