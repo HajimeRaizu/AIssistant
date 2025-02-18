@@ -26,7 +26,7 @@ const InstructorPage = () => {
     console.log(localStorage.getItem("instructorEmail"));
     const fetchTotalQueries = async () => {
       try {
-        const response = await axios.get("https://aissistant-omega.vercel.app/api/getChats");
+        const response = await axios.get("https://aissistant-three.vercel.app/api/getChats");
         const allMessages = response.data.flatMap(chat => 
           chat.messages.filter(message => message.sender === "user")
         );
@@ -45,7 +45,7 @@ const InstructorPage = () => {
     const fetchLearningMaterials = async () => {
       try {
         const instructorEmail = localStorage.getItem("instructorEmail"); // Get the instructor's email from localStorage
-        const response = await axios.get("https://aissistant-omega.vercel.app/api/getLearningMaterials", {
+        const response = await axios.get("https://aissistant-three.vercel.app/api/getLearningMaterials", {
           params: { instructorEmail }, // Pass the instructorEmail as a query parameter
         });
         setLearningMaterials(response.data);
@@ -61,7 +61,7 @@ const InstructorPage = () => {
   const handleGenerateFAQ = async () => {
     try {
       const prompts = queryData.map(query => query.text);
-      const response = await axios.post("https://aissistant-omega.vercel.app/api/generateFAQ", { prompts });
+      const response = await axios.post("https://aissistant-three.vercel.app/api/generateFAQ", { prompts });
       setFaq(response.data.generated_text);
     } catch (error) {
       console.error("Failed to generate FAQ:", error);
@@ -167,7 +167,7 @@ const InstructorPage = () => {
     try {
       const encodedSubject = encodeURIComponent(subject);
       const instructorEmail = localStorage.getItem("instructorEmail"); // Get the instructor's email
-      await axios.delete(`https://aissistant-omega.vercel.app/api/deleteSubject/${encodedSubject}`, {
+      await axios.delete(`https://aissistant-three.vercel.app/api/deleteSubject/${encodedSubject}`, {
         params: { instructorEmail }, // Pass the instructorEmail when deleting
       });
       const updatedLearningMaterials = { ...learningMaterials };
@@ -196,13 +196,13 @@ const InstructorPage = () => {
       formData.append("instructorEmail", instructorEmail);
   
       try {
-        await axios.post("https://aissistant-omega.vercel.app/api/uploadLearningMaterials", formData, {
+        await axios.post("https://aissistant-three.vercel.app/api/uploadLearningMaterials", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
         alert("Learning materials uploaded successfully!");
-        const response = await axios.get("https://aissistant-omega.vercel.app/api/getLearningMaterials", {
+        const response = await axios.get("https://aissistant-three.vercel.app/api/getLearningMaterials", {
           params: { instructorEmail }, // Pass the instructorEmail when fetching learning materials
         });
         setLearningMaterials(response.data);
@@ -242,7 +242,7 @@ const InstructorPage = () => {
       };
   
       await axios.put(
-        `https://aissistant-omega.vercel.app/api/updateExercise/${editingExercise.docId}`,
+        `https://aissistant-three.vercel.app/api/updateExercise/${editingExercise.docId}`,
         updatedExercise
       );
   
