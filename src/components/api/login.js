@@ -1,4 +1,4 @@
-import { db, handleFirestoreError } from '../../lib/firebase';
+import { db, handleFirestoreError } from '../lib/firebase';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
