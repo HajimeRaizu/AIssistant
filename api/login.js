@@ -23,6 +23,10 @@ const db = admin.firestore();
 
 export default async function handler(req, res) {
   // Allow only POST requests
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
   try {
     const { studentId, password } = req.body;
 
