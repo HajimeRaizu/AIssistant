@@ -5,24 +5,33 @@ const OpenAI = require("openai");
 const multer = require("multer");
 const XLSX = require("xlsx");
 const { HfInference } = require("@huggingface/inference");
-const admin = require("firebase-admin");
-
+const admin= require("firebase-admin");
+const type= process.env.FIREBASE_TYPE;
+const project_id= process.env.FIREBASE_PROJECT_ID;
+const private_key_id= process.env.FIREBASE_PRIVATE_KEY_ID;
+const private_key= process.env.FIREBASE_PRIVATE_KEY;
+const client_email= process.env.FIREBASE_CLIENT_EMAIL;
+const client_id= process.env.FIREBASE_CLIENT_ID;
+const auth_uri= process.env.FIREBASE_AUTH_URI;
+const token_uri= process.env.FIREBASE_TOKEN_URI;
+const auth_provider_x509_cert_url= process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL;
+const client_x509_cert_url= process.env.FIREBASE_CLIENT_X509_CERT_URL;
+const universe_domain= process.env.FIREBASE_UNIVERSE_DOMAIN;
 // Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert(
-    FIREBASE_ADMIN_SDK_CREDENTIALS={
-      type: process.env.FIREBASE_TYPE,
-      project_id: process.env.FIREBASE_PROJECT_ID,
-      private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-      private_key: process.env.FIREBASE_PRIVATE_KEY,
-      client_email: process.env.FIREBASE_CLIENT_EMAIL,
-      client_id: process.env.FIREBASE_CLIENT_ID,
-      auth_uri: process.env.FIREBASE_AUTH_URI,
-      token_uri: process.env.FIREBASE_TOKEN_URI,
-      auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
-      client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
-      universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
-    }
+  credential: admin.credential.cert({
+    "type": type,
+    "project_id": project_id,
+    "private_key_id": private_key_id,
+    "private_key": private_key,
+    "client_email": client_email,
+    "client_id": client_id,
+    "auth_uri": auth_uri,
+    "token_uri": token_uri,
+    "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
+    "client_x509_cert_url": client_x509_cert_url,
+    "universe_domain": universe_domain
+  }
   ),
 });
 
