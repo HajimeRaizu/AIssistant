@@ -1,5 +1,5 @@
 // api/login.js
-import { db, handleFirestoreError } from './firestore';
+import { db, handleFirestoreError } from '../lib/firestore';
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
