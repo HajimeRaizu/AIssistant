@@ -642,7 +642,7 @@
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.exercise-subtopic {
+.exercise-subtopic,.exercise-lesson {
     padding: 15px;
     margin: 10px 0;
     border-radius: 5px;
@@ -651,25 +651,29 @@
 }
 
 .exercise-subject.dark,
-.exercise-subtopic.dark {
+.exercise-subtopic.dark,
+.exercise-lesson.dark{
     background: var(--tab-dark);
     color: var(--text-dark);
 }
 
 .exercise-subject.light,
-.exercise-subtopic.light {
+.exercise-subtopic.light,
+.exercise-lesson.light{
     background: var(--tab-light);
     color: var(--text-light);
 }
 
 .exercise-subject:hover.dark,
-.exercise-subtopic:hover.dark {
+.exercise-subtopic:hover.dark,
+.exercise-lesson:hover.dark{
     background: var(--tab-active-dark);
     transform: scale(1.02);
 }
 
 .exercise-subject:hover.light,
-.exercise-subtopic:hover.light {
+.exercise-subtopic:hover.light,
+.exercise-lesson:hover.light{
     background: var(--tab-active-light);
     transform: scale(1.02);
 }

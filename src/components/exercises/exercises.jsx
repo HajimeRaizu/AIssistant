@@ -6,46 +6,71 @@ import axios from "axios";
 
 const ExercisesPage = () => {
   const [selectedSubject, setSelectedSubject] = useState(null);
-  const [selectedSubTopic, setSelectedSubTopic] = useState(null);
+  const [selectedLesson, setSelectedLesson] = useState(null);
+  const [selectedSubtopic, setSelectedSubtopic] = useState(null);
   const [theme, setTheme] = useState("light");
   const [learningMaterials, setLearningMaterials] = useState({});
   const [userAnswers, setUserAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [subjectId, setSubjectId] = useState(""); // Change from subjectCode to subjectId
+  const [studentId, setStudentId] = useState("");
+  const [hasSubjectCode, setHasSubjectCode] = useState(false); // Add this line
   const navigate = useNavigate();
 
   useEffect(() => {
     const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
     if (!userId) {
       navigate("/");
+    } else {
+      setStudentId(userId);
     }
   }, [navigate]);
 
   useEffect(() => {
-    const fetchLearningMaterials = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/getLearningMaterials");
-        setLearningMaterials(response.data);
-      } catch (error) {
-        console.error("Failed to fetch learning materials:", error);
-      } finally {
-        setIsLoading(false);
+    if (studentId) {
+      fetchLearningMaterials();
+    }
+  }, [studentId]);
+
+  const fetchLearningMaterials = async () => {
+    try {
+      // Fetch the subject IDs associated with the student's ID
+      const accessResponse = await axios.get("https://aissistant-gold.vercel.app/getAccessLearningMaterials", {
+        params: { studentId },
+      });
+      const subjectIds = accessResponse.data.subjectIds; // Change from subjectCodes to subjectIds
+
+      if (subjectIds.length > 0) {
+        setHasSubjectCode(true); // Set hasSubjectCode to true if subject IDs exist
+        // Fetch the learning materials for the subject IDs
+        const materialsResponse = await axios.get("https://aissistant-gold.vercel.app/getLearningMaterials", {
+          params: { subjectIds }, // Change from subjectCodes to subjectIds
+        });
+        setLearningMaterials(materialsResponse.data);
+      } else {
+        setHasSubjectCode(false); // Set hasSubjectCode to false if no subject IDs exist
+        setLearningMaterials({});
       }
-    };
-
-    fetchLearningMaterials();
-  }, []);
-
-  useEffect(() => {
-    setUserAnswers({});
-  }, [selectedSubTopic]);
+    } catch (error) {
+      console.error("Failed to fetch learning materials:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubjectClick = (subject) => {
     setSelectedSubject(subject);
-    setSelectedSubTopic(null);
+    setSelectedLesson(null);
+    setSelectedSubtopic(null);
   };
 
-  const handleSubTopicClick = (subTopic) => {
-    setSelectedSubTopic(subTopic);
+  const handleLessonClick = (lesson) => {
+    setSelectedLesson(lesson);
+    setSelectedSubtopic(null);
+  };
+
+  const handleSubtopicClick = (subtopic) => {
+    setSelectedSubtopic(subtopic);
   };
 
   const toggleTheme = () => {
@@ -60,9 +85,9 @@ const ExercisesPage = () => {
   };
 
   const checkAnswers = () => {
-    if (!selectedSubTopic || !selectedSubject) return;
+    if (!selectedSubtopic || !selectedSubject || !selectedLesson) return;
 
-    const correctAnswers = learningMaterials[selectedSubject][selectedSubTopic].answers;
+    const correctAnswers = learningMaterials[selectedSubject][selectedLesson][selectedSubtopic].answers;
     const correctAnswersArray = correctAnswers.split(/\d+\.\s*/).filter(answer => answer.trim() !== "");
 
     const results = {};
@@ -134,6 +159,30 @@ const ExercisesPage = () => {
     navigate("/");
   };
 
+  const handleSubjectCodeSubmit = async () => {
+    if (!subjectId || !studentId) {
+      alert("Please enter a valid subject ID and ensure you are logged in.");
+      return;
+    }
+  
+    try {
+      const response = await axios.post("https://aissistant-gold.vercel.app/addAccessLearningMaterial", {
+        studentId,
+        subjectId,
+      });
+  
+      if (response.status === 200) {
+        alert("Subject ID added successfully!");
+        setHasSubjectCode(true);
+        fetchLearningMaterials();
+      } else {
+        alert("Failed to add subject ID. Please try again.");
+      }
+    } catch (error) {
+      console.error("Failed to add subject ID:", error);
+      alert(`Failed to add subject ID: ${error.response?.data?.error || error.message}`);
+    }
+  };
   if (isLoading) {
     return <div className={`loading-container ${theme}`}>Loading...</div>;
   }
@@ -142,56 +191,84 @@ const ExercisesPage = () => {
     <div className={`exercises-page ${theme}`}>
       <div className={`sidebar ${theme}`}>
         <h2>Subjects</h2>
-        <ul>
-          {Object.keys(learningMaterials).map((subject) => (
-            <li
-              key={subject}
-              className={`${theme}`}
-              onClick={() => handleSubjectClick(subject)}
-            >
-              {subject}
-            </li>
-          ))}
-        </ul>
+        <input
+          type="text"
+          value={subjectId}
+          onChange={(e) => setSubjectId(e.target.value)}
+          placeholder="Enter subject ID" // Update the placeholder
+          className={`subject-code-input ${theme}`}
+        />
+        <button onClick={handleSubjectCodeSubmit} className={`submit-button ${theme}`}>
+          Submit
+        </button>
+        {hasSubjectCode ? ( // Conditionally render based on hasSubjectCode
+          <ul>
+            {Object.keys(learningMaterials).map((subject) => (
+              <li
+                key={subject}
+                className={`${theme}`}
+                onClick={() => handleSubjectClick(subject)}
+              >
+                {subject}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No subject IDs added yet. Please add a subject ID to view learning materials.</p> // Update the message
+        )}
         <button className={`exercises-logout-button ${theme}`} onClick={handleLogout}>
           Logout
         </button>
       </div>
 
       <div className={`content ${theme}`}>
-        {selectedSubject && <h1 className={theme}>{selectedSubject}</h1>}
+        {hasSubjectCode && selectedSubject && <h1 className={theme}>{selectedSubject}</h1>}
 
-        {selectedSubject && !selectedSubTopic && (
-          <div className="subtopics">
-            <h2 className={theme}>Subtopics for {selectedSubject}</h2>
+        {hasSubjectCode && selectedSubject && !selectedLesson && (
+          <div className="lessons">
+            <h2 className={theme}>Lessons for {selectedSubject}</h2>
             <ul>
-              {sortSubtopics(learningMaterials[selectedSubject]).map((subTopic) => (
+              {Object.keys(learningMaterials[selectedSubject]).map((lesson) => (
                 <li
-                  key={subTopic}
+                  key={lesson}
                   className={`${theme}`}
-                  onClick={() => handleSubTopicClick(subTopic)}
+                  onClick={() => handleLessonClick(lesson)}
                 >
-                  <span className="subtopic-icon">📘</span>
-                  <span className="subtopic-text">
-                    {subTopic} - {learningMaterials[selectedSubject][subTopic].subtopicTitle}
-                  </span>
+                  {`Lesson ${lesson}`}
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        {selectedSubTopic && (
+        {hasSubjectCode && selectedLesson && !selectedSubtopic && (
+          <div className="subtopics">
+            <h2 className={theme}>Subtopics for {selectedLesson}</h2>
+            <ul>
+              {sortSubtopics(learningMaterials[selectedSubject][selectedLesson]).map((subtopic) => (
+                <li
+                  key={subtopic}
+                  className={`${theme}`}
+                  onClick={() => handleSubtopicClick(subtopic)}
+                >
+                  {`${subtopic} - ${learningMaterials[selectedSubject][selectedLesson][subtopic].subtopicTitle}`}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {hasSubjectCode && selectedSubtopic && (
           <div className={`subtopic-content ${theme}`}>
             <h1 className={theme}>
-              {selectedSubTopic} - {learningMaterials[selectedSubject][selectedSubTopic].subtopicTitle}
+              {selectedSubtopic} - {learningMaterials[selectedSubject][selectedLesson][selectedSubtopic].subtopicTitle}
             </h1>
             <p className={`line ${theme}`}></p>
-            <pre>{learningMaterials[selectedSubject][selectedSubTopic].content}</pre>
+            <pre>{learningMaterials[selectedSubject][selectedLesson][selectedSubtopic].content}</pre>
             <h3>Exercises</h3>
-            {renderExercises(learningMaterials[selectedSubject][selectedSubTopic]?.questions)}
+            {renderExercises(learningMaterials[selectedSubject][selectedLesson][selectedSubtopic]?.questions)}
             <div className="button-container">
-              <button className={`back-button ${theme}`} onClick={() => setSelectedSubTopic(null)}>
+              <button className={`back-button ${theme}`} onClick={() => setSelectedSubtopic(null)}>
                 Back to Subtopics
               </button>
               <button className={`check-answers-button ${theme}`} onClick={checkAnswers}>

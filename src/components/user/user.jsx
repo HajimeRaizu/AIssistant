@@ -35,7 +35,7 @@ const UserPage = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/getChats/${userId}`);
+        const response = await axios.get(`https://aissistant-gold.vercel.app/api/chat?userId=${userId}`);
         setChats(response.data);
   
         if (response.data.length === 0) {
@@ -59,7 +59,7 @@ const UserPage = () => {
   useEffect(() => {
     const fetchExercises = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/getExercises");
+        const response = await axios.get("https://aissistant-gold.vercel.app/api/learning-materials");
         setExercises(response.data);
       } catch (error) {
         console.error("Failed to fetch exercises:", error);
@@ -71,7 +71,7 @@ const UserPage = () => {
 
   const fetchChatHistory = async (chatId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/getChatHistory/${chatId}/${userId}`);
+      const response = await axios.get(`https://aissistant-gold.vercel.app/api/chat/history?chatId=${chatId}&userId=${userId}`);
       setMessages(response.data);
     } catch (error) {
       console.error("Failed to fetch chat history:", error);
@@ -92,7 +92,7 @@ const UserPage = () => {
     setIsTyping(true);
   
     try {
-      const response = await axios.post("http://localhost:5000/api/llama", { input });
+      const response = await axios.post("https://aissistant-gold.vercel.app/api/ai", { input });
       const botText = response.data.generated_text || "No response received.";
   
       const updatedMessages = [
@@ -106,7 +106,7 @@ const UserPage = () => {
       const chatNameToStore = currentChat?.chatName || "Unnamed Chat";
   
       // Pass the chatName to the backend when storing the chat
-      await axios.post("http://localhost:5000/api/storeChat", {
+      await axios.post("https://aissistant-gold.vercel.app/api/chat/store", {
         chatId: currentChatId,
         messages: updatedMessages,
         chatName: chatNameToStore, // Pass the chat name here
@@ -135,12 +135,18 @@ const UserPage = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userName");
-    sessionStorage.removeItem("userId");
-    sessionStorage.removeItem("userName");
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await axios.post("https://your-app.vercel.app/api/auth/logout");
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    } finally {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("userName");
+      sessionStorage.removeItem("userId");
+      sessionStorage.removeItem("userName");
+      navigate("/");
+    }
   };
 
   const formatMessageText = (text, sender) => {
@@ -200,7 +206,7 @@ const UserPage = () => {
     setIsSubmitting(true);
   
     try {
-      const response = await axios.post("http://localhost:5000/api/createChat", { chatName: chatNameInput, userId });
+      const response = await axios.post("https://aissistant-gold.vercel.app/api/chat/create", { chatName: chatNameInput, userId });
       setChats([response.data, ...chats]);
       setCurrentChatId(response.data.id);
       setMessages([]);
@@ -215,7 +221,7 @@ const UserPage = () => {
 
   const deleteChat = async (chatId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/deleteChat/${chatId}/${userId}`);
+      await axios.delete(`https://aissistant-gold.vercel.app/api/chat/delete?chatId=${chatId}&userId=${userId}`);
       setChats(chats.filter(chat => chat.id !== chatId));
       if (currentChatId === chatId) {
         setCurrentChatId(chats.length > 1 ? chats[0].id : null);

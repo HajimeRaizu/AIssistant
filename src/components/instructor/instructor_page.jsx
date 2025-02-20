@@ -17,6 +17,7 @@ const InstructorPage = () => {
   const [learningMaterials, setLearningMaterials] = useState({});
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState(null);
+  const [selectedLesson, setSelectedLesson] = useState(null);
   const [editingExercise, setEditingExercise] = useState(null);
   const [showSubjectConfirmModal, setShowSubjectConfirmModal] = useState(false);
   const [subjectToDelete, setSubjectToDelete] = useState(null);
@@ -26,7 +27,7 @@ const InstructorPage = () => {
     console.log(localStorage.getItem("instructorEmail"));
     const fetchTotalQueries = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/getChats");
+        const response = await axios.get("https://aissistant-gold.vercel.app/api/getChats");
         const allMessages = response.data.flatMap(chat => 
           chat.messages.filter(message => message.sender === "user")
         );
@@ -45,7 +46,7 @@ const InstructorPage = () => {
     const fetchLearningMaterials = async () => {
       try {
         const instructorEmail = localStorage.getItem("instructorEmail"); // Get the instructor's email from localStorage
-        const response = await axios.get("http://localhost:5000/api/getLearningMaterials", {
+        const response = await axios.get("https://aissistant-gold.vercel.app/api/getLearningMaterials", {
           params: { instructorEmail }, // Pass the instructorEmail as a query parameter
         });
         setLearningMaterials(response.data);
@@ -61,7 +62,7 @@ const InstructorPage = () => {
   const handleGenerateFAQ = async () => {
     try {
       const prompts = queryData.map(query => query.text);
-      const response = await axios.post("http://localhost:5000/api/generateFAQ", { prompts });
+      const response = await axios.post("https://aissistant-gold.vercel.app/api/generateFAQ", { prompts });
       setFaq(response.data.generated_text);
     } catch (error) {
       console.error("Failed to generate FAQ:", error);
@@ -167,7 +168,7 @@ const InstructorPage = () => {
     try {
       const encodedSubject = encodeURIComponent(subject);
       const instructorEmail = localStorage.getItem("instructorEmail"); // Get the instructor's email
-      await axios.delete(`http://localhost:5000/api/deleteSubject/${encodedSubject}`, {
+      await axios.delete(`https://aissistant-gold.vercel.app/api/deleteSubject/${encodedSubject}`, {
         params: { instructorEmail }, // Pass the instructorEmail when deleting
       });
       const updatedLearningMaterials = { ...learningMaterials };
@@ -196,13 +197,13 @@ const InstructorPage = () => {
       formData.append("instructorEmail", instructorEmail);
   
       try {
-        await axios.post("http://localhost:5000/api/uploadLearningMaterials", formData, {
+        await axios.post("https://aissistant-gold.vercel.app/api/uploadLearningMaterials", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
         alert("Learning materials uploaded successfully!");
-        const response = await axios.get("http://localhost:5000/api/getLearningMaterials", {
+        const response = await axios.get("https://aissistant-gold.vercel.app/api/getLearningMaterials", {
           params: { instructorEmail }, // Pass the instructorEmail when fetching learning materials
         });
         setLearningMaterials(response.data);
@@ -215,10 +216,17 @@ const InstructorPage = () => {
 
   const handleBackToSubjects = () => {
     setSelectedSubject(null);
+    setSelectedLesson(null);
     setSelectedSubtopic(null);
     setEditingExercise(null);
   };
 
+  const handleBackToLessons = () => {
+    setSelectedLesson(null);
+    setSelectedSubtopic(null);
+    setEditingExercise(null);
+  };
+  
   const handleBackToSubtopics = () => {
     setSelectedSubtopic(null);
     setEditingExercise(null);
@@ -242,7 +250,7 @@ const InstructorPage = () => {
       };
   
       await axios.put(
-        `http://localhost:5000/api/updateExercise/${editingExercise.docId}`,
+        `https://aissistant-gold.vercel.app/api/updateExercise/${editingExercise.docId}`,
         updatedExercise
       );
   
@@ -265,140 +273,176 @@ const InstructorPage = () => {
   };
 
   const renderExercises = () => {
-  if (!selectedSubject) {
-    // Render the list of subjects
-    return Object.keys(learningMaterials).map((subject) => (
-      <div
-        key={subject}
-        className={`exercise-subject ${theme}`}
-        onClick={() => setSelectedSubject(subject)}
-      >
-        <div>{subject}</div>
-        <button
-          className={`delete-subject-button ${theme}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleConfirmDeleteSubject(subject);
-          }}
+    if (!selectedSubject) {
+      // Render the list of subjects
+      return Object.keys(learningMaterials).map((subject) => (
+        <div
+          key={subject}
+          className={`exercise-subject ${theme}`}
+          onClick={() => setSelectedSubject(subject)}
         >
-          Delete Subject
-        </button>
-      </div>
-    ));
-  } else if (!selectedSubtopic) {
-    // Render the list of subtopics for the selected subject
-    return (
-      <div>
-        <button
-          className={`back-to-subjects-button ${theme}`}
-          onClick={handleBackToSubjects}
-        >
-          Back to Subjects
-        </button>
-        {Object.keys(learningMaterials[selectedSubject]).map((subtopicCode) => {
-          const subtopic = learningMaterials[selectedSubject][subtopicCode];
-          return (
-            <div
-              key={subtopicCode}
-              className={`exercise-subtopic ${theme}`}
-              onClick={() => setSelectedSubtopic(subtopicCode)}
-            >
-              {`${subtopicCode} - ${subtopic.subtopicTitle}`} {/* Display subtopic code and title */}
-            </div>
-          );
-        })}
-      </div>
-    );
-  } else {
-    // Render the content of the selected subtopic
-    const subtopic = learningMaterials[selectedSubject][selectedSubtopic];
-
-    return (
-      <div className={`exercise-content ${theme}`}>
-        <h2>{subtopic.subtopicTitle}</h2>
-
-        {/* Content Section */}
-        {editingExercise ? (
-          <textarea
-            className={`content-textarea ${theme}`}
-            value={editingExercise.content}
-            onChange={(e) =>
-              setEditingExercise({ ...editingExercise, content: e.target.value })
-            }
-          />
-        ) : (
-          <pre>{subtopic.content}</pre>
-        )}
-
-        {/* Images Section */}
-        {subtopic.images && <img src={subtopic.images} alt="Subtopic" />}
-
-        {/* Exercises Section */}
-        <h3>Exercises</h3>
-        {editingExercise ? (
-          <textarea
-            className={`exercise-textarea ${theme}`}
-            value={editingExercise.questions}
-            onChange={(e) =>
-              setEditingExercise({ ...editingExercise, questions: e.target.value })
-            }
-          />
-        ) : (
-          <pre>{subtopic.questions}</pre>
-        )}
-
-        {/* Answers Section */}
-        <h3>Answers</h3>
-        {editingExercise ? (
-          <textarea
-            className={`exercise-textarea ${theme}`}
-            value={editingExercise.answers}
-            onChange={(e) =>
-              setEditingExercise({ ...editingExercise, answers: e.target.value })
-            }
-          />
-        ) : (
-          <pre>{subtopic.answers}</pre>
-        )}
-
-        {/* Edit/Save/Cancel Buttons */}
-        {editingExercise ? (
-          <div className="e-buttons">
-            <button
-              className="editing-button"
-              onClick={handleSaveExercise}
-            >
-              Save
-            </button>
-            <button
-              className="editing-button"
-              onClick={() => setEditingExercise(null)}
-            >
-              Cancel
-            </button>
-          </div>
-        ) : (
+          <div>{subject}</div>
           <button
-            onClick={() => {
-              handleEditExercise({
-                docId: subtopic.docId, // Pass the document ID
-                content: subtopic.content,
-                questions: subtopic.questions,
-                answers: subtopic.answers,
-              });
+            className={`delete-subject-button ${theme}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleConfirmDeleteSubject(subject);
             }}
           >
-            Edit
+            Delete Subject
           </button>
-        )}
-
-        {/* Back Buttons */}
-        <button onClick={handleBackToSubtopics}>Back to Subtopics</button>
-        <button onClick={handleBackToSubjects}>Back to Subjects</button>
-      </div>
-    );
-  }
-};
+        </div>
+      ));
+    } else if (!selectedLesson) {
+      // Render the list of lessons for the selected subject
+      return (
+        <div>
+          <button
+            className={`back-to-subjects-button ${theme}`}
+            onClick={handleBackToSubjects}
+          >
+            Back to Subjects
+          </button>
+          {Object.keys(learningMaterials[selectedSubject]).map((lesson) => (
+            <div
+              key={lesson}
+              className={`exercise-lesson ${theme}`}
+              onClick={() => setSelectedLesson(lesson)}
+            >
+              {`${lesson}`}
+            </div>
+          ))}
+        </div>
+      );
+    } else if (!selectedSubtopic) {
+      // Render the list of subtopics for the selected lesson
+      const subtopics = Object.keys(learningMaterials[selectedSubject][selectedLesson]);
+  
+      // Sort subtopics numerically
+      const sortedSubtopics = subtopics.sort((a, b) => {
+        const aParts = a.split('.').map(Number);
+        const bParts = b.split('.').map(Number);
+        for (let i = 0; i < Math.min(aParts.length, bParts.length); i++) {
+          if (aParts[i] !== bParts[i]) {
+            return aParts[i] - bParts[i];
+          }
+        }
+        return aParts.length - bParts.length;
+      });
+  
+      return (
+        <div>
+          <button
+            className={`back-to-lessons-button ${theme}`}
+            onClick={handleBackToLessons}
+          >
+            Back to Lessons
+          </button>
+          {sortedSubtopics.map((subtopicCode) => {
+            const subtopic = learningMaterials[selectedSubject][selectedLesson][subtopicCode];
+            return (
+              <div
+                key={subtopicCode}
+                className={`exercise-subtopic ${theme}`}
+                onClick={() => setSelectedSubtopic(subtopicCode)}
+              >
+                {`${subtopicCode} - ${subtopic.subtopicTitle}`}
+              </div>
+            );
+          })}
+        </div>
+      );
+    } else {
+      // Render the content of the selected subtopic
+      const subtopic = learningMaterials[selectedSubject][selectedLesson][selectedSubtopic];
+  
+      return (
+        <div className={`exercise-content ${theme}`}>
+          <h2>{subtopic.subtopicTitle}</h2>
+  
+          {/* Content Section */}
+          {editingExercise ? (
+            <textarea
+              className={`content-textarea ${theme}`}
+              value={editingExercise.content}
+              onChange={(e) =>
+                setEditingExercise({ ...editingExercise, content: e.target.value })
+              }
+            />
+          ) : (
+            <pre>{subtopic.content}</pre>
+          )}
+  
+          {/* Images Section */}
+          {subtopic.images && <img src={subtopic.images} alt="Subtopic" />}
+  
+          {/* Exercises Section */}
+          <h3>Exercises</h3>
+          {editingExercise ? (
+            <textarea
+              className={`exercise-textarea ${theme}`}
+              value={editingExercise.questions}
+              onChange={(e) =>
+                setEditingExercise({ ...editingExercise, questions: e.target.value })
+              }
+            />
+          ) : (
+            <pre>{subtopic.questions}</pre>
+          )}
+  
+          {/* Answers Section */}
+          <h3>Answers</h3>
+          {editingExercise ? (
+            <textarea
+              className={`exercise-textarea ${theme}`}
+              value={editingExercise.answers}
+              onChange={(e) =>
+                setEditingExercise({ ...editingExercise, answers: e.target.value })
+              }
+            />
+          ) : (
+            <pre>{subtopic.answers}</pre>
+          )}
+  
+          {/* Edit/Save/Cancel Buttons */}
+          {editingExercise ? (
+            <div className="e-buttons">
+              <button
+                className="editing-button"
+                onClick={handleSaveExercise}
+              >
+                Save
+              </button>
+              <button
+                className="editing-button"
+                onClick={() => setEditingExercise(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                handleEditExercise({
+                  docId: subtopic.docId, // Pass the document ID
+                  content: subtopic.content,
+                  questions: subtopic.questions,
+                  answers: subtopic.answers,
+                });
+              }}
+            >
+              Edit
+            </button>
+          )}
+  
+          {/* Back Buttons */}
+          <button onClick={handleBackToSubtopics}>Back to Subtopics</button>
+          <button onClick={handleBackToLessons}>Back to Lessons</button>
+          <button onClick={handleBackToSubjects}>Back to Subjects</button>
+        </div>
+      );
+    }
+  };
 
   return (
     <div className={`admin-container ${theme}`}>

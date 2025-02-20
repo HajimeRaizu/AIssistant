@@ -2,6 +2,9 @@
   "name": "aissistant",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@huggingface/inference": "^2.8.1",
     "@react-oauth/google": "^0.12.1",

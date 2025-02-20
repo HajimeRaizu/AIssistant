@@ -490,16 +490,20 @@ app.get("/api/getLearningMaterials", async (req, res) => {
       ...doc.data(),
     }));
 
-    // Organize the learning materials by subjectName and subtopicCode
+    // Organize the learning materials by subjectName, lesson, and subtopicCode
     const organizedLearningMaterials = exercises.reduce((acc, material) => {
-      const { subjectName, subtopicCode } = material;
+      const { subjectName, lesson, subtopicCode } = material;
 
       if (!acc[subjectName]) {
         acc[subjectName] = {};
       }
 
-      if (!acc[subjectName][subtopicCode]) {
-        acc[subjectName][subtopicCode] = material;
+      if (!acc[subjectName][lesson]) {
+        acc[subjectName][lesson] = {};
+      }
+
+      if (!acc[subjectName][lesson][subtopicCode]) {
+        acc[subjectName][lesson][subtopicCode] = material;
       }
 
       return acc;
@@ -706,6 +710,53 @@ app.post("/api/uploadInstructors", upload.single("file"), async (req, res) => {
   } catch (error) {
     console.error("Error uploading instructors:", error);
     res.status(500).json({ error: "Failed to upload instructors" });
+  }
+});
+
+app.post("/api/addAccessLearningMaterial", async (req, res) => {
+  const { studentId, subjectId } = req.body;
+
+  try {
+    const accessRef = db.collection("accessLearningMaterials").doc(studentId);
+    const accessDoc = await accessRef.get();
+
+    if (!accessDoc.exists) {
+      // If the document doesn't exist, create it with subjectIds as an array
+      await accessRef.set({
+        studentId,
+        subjectIds: [subjectId], // Use subjectIds instead of subjectId
+      });
+    } else {
+      // If the document exists, update the subjectIds array
+      const existingIds = accessDoc.data().subjectIds || [];
+      if (!existingIds.includes(subjectId)) {
+        existingIds.push(subjectId);
+        await accessRef.update({ subjectIds: existingIds });
+      }
+    }
+
+    res.status(200).json({ message: "Subject ID added successfully" });
+  } catch (error) {
+    console.error("Error adding subject ID:", error);
+    res.status(500).json({ error: "Failed to add subject ID" });
+  }
+});
+
+app.get("/api/getAccessLearningMaterials", async (req, res) => {
+  const { studentId } = req.query;
+
+  try {
+    const accessRef = db.collection("accessLearningMaterials").doc(studentId);
+    const accessDoc = await accessRef.get();
+
+    if (!accessDoc.exists) {
+      return res.status(200).json({ subjectIds: [] }); // Change from subjectCodes to subjectIds
+    }
+
+    res.status(200).json(accessDoc.data());
+  } catch (error) {
+    console.error("Error fetching access learning materials:", error);
+    res.status(500).json({ error: "Failed to fetch access learning materials" });
   }
 });
 
