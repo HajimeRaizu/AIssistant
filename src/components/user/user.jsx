@@ -135,18 +135,12 @@ const UserPage = () => {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await axios.post("https://your-app.vercel.app/api/auth/logout");
-    } catch (error) {
-      console.error("Failed to logout:", error);
-    } finally {
-      localStorage.removeItem("userId");
-      localStorage.removeItem("userName");
-      sessionStorage.removeItem("userId");
-      sessionStorage.removeItem("userName");
-      navigate("/");
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("userName");
+    navigate("/");
   };
 
   const formatMessageText = (text, sender) => {
