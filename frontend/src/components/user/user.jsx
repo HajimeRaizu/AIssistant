@@ -5,13 +5,11 @@ import axios from "axios";
 import { MdOutlineDelete, MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 const UserPage = () => {
-  const [selectedTab, setSelectedTab] = useState("chat");
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [exercises, setExercises] = useState([]);
   const [chats, setChats] = useState([]);
   const [currentChatId, setCurrentChatId] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
