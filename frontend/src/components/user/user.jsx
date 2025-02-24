@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./user.css";
-import { useNavigate } from "react-router-dom/dist/index.d.mts";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdOutlineDelete, MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
 
