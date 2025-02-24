@@ -1,0 +1,1254 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
+
+/* General Admin Container */
+.admin-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.admin-container.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.admin-container.light {
+    background: var(--bg-light);
+    color: var(--text-light);
+}
+
+/* Sidebar */
+.admin-sidebar {
+    width: 250px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s ease;
+}
+
+.admin-sidebar.dark {
+    background: var(--sidebar-dark);
+}
+
+.admin-sidebar.light {
+    background: var(--sidebar-light);
+}
+
+.tab {
+    font-family: "Host Grotesk", sans-serif;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 1s ease;
+}
+
+.tab.dark {
+    background: var(--tab-dark);
+    color: var(--text-dark);
+}
+
+.tab.light {
+    background: var(--tab-light);
+    color: var(--text-light);
+}
+
+.tab.active{
+  font-family: "Host Grotesk", sans-serif;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    border-top-right-radius: 60px;
+    border-bottom-right-radius: 60px;
+    transition: 0.7s ease-in-out;
+}
+
+.tab.active.dark {
+    background: var(--tab-active-dark);
+}
+
+.tab.active.light {
+    background: var(--tab-active-light);
+}
+
+.admin-logout-button {
+    font-family: "Host Grotesk", sans-serif;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: auto;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.admin-logout-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.admin-logout-button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.admin-logout-button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.admin-logout-button:hover.light {
+    background: var(--button-hover-light);
+}
+
+/* Content Area */
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    transition: background 0.3s ease;
+}
+
+.content.dark {
+    background: var(--bg-dark);
+}
+
+.content.light {
+    background: var(--bg-light);
+}
+
+/* Dashboard Tab */
+.dashboard-tab {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 0px 0px 40px;
+}
+
+.dashboard-tab h1 {
+    font-weight: 200;
+}
+
+.dashboard-tab.dark h1 {
+    color: var(--text-dark);
+}
+
+.dashboard-tab.light h1 {
+    color: var(--text-light);
+}
+
+.statistics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    height: 100%;
+    width: 100%;
+    padding: 30px 330px 10px 10px;
+}
+
+.statistics-box {
+    padding: 20px;
+    border-radius: 10px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.statistics-box.dark {
+    background-color: rgb(49, 49, 49);
+    color: var(--text-dark);
+}
+
+.statistics-box.light {
+    background-color: #ddd;
+    color: var(--text-light);
+}
+
+.statistics-box h3 {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.statistics-box .logo {
+    margin-right: 10px;
+}
+
+/* Graph Filters */
+.graph-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.graph-filters button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.graph-filters button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.graph-filters button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.graph-filters button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.graph-filters button:hover.light {
+    background: var(--button-hover-light);
+}
+
+/* FAQ Section */
+.faq-section {
+    margin-top: 20px;
+}
+
+.generate-faq-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.generate-faq-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.generate-faq-button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.generate-faq-button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.generate-faq-button:hover.light {
+    background: var(--button-hover-light);
+}
+
+/* Manage Users Tab */
+.manage-users-tab {
+    padding: 20px;
+}
+
+.manage-users-tab.dark {
+    background: var(--bg-dark);
+}
+
+.manage-users-tab.light {
+    background: var(--bg-light);
+}
+
+.manage-users-tab h1 {
+    font-weight: 200;
+    margin-bottom: 20px;
+}
+
+.manage-users-tab.dark h1 {
+    color: var(--text-dark);
+}
+
+.manage-users-tab.light h1 {
+    color: var(--text-light);
+}
+
+.manage-learning-materials-tab h1 {
+    font-weight: 200;
+    margin-bottom: 20px;
+}
+
+.manage-learning-materials-tab.dark h1 {
+    color: var(--text-dark);
+}
+
+.manage-learning-materials-tab.light h1 {
+    color: var(--text-light);
+}
+
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    width: 350px;
+    padding: 10px;
+    border: 1px solid var(--tab-dark);
+    border-radius: 5px;
+    font-family: "Host Grotesk", sans-serif;
+}
+
+.search-bar input.dark {
+    background: var(--input-dark);
+    color: var(--text-dark);
+}
+
+.search-bar input.light {
+    background: var(--input-light);
+    color: var(--text-light);
+}
+
+.search-bar input.dark::placeholder {
+    color: var(--input-placeholder-dark);
+}
+
+.search-bar input.light::placeholder {
+    color: var(--input-placeholder-light);
+}
+
+.users-table {
+    width: 100%;
+    height: 400px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow-y: auto;
+    display: block;
+}
+
+.users-table.dark {
+    color: var(--table-light);
+}
+
+.users-table.light {
+    color: var(--table-dark);
+}
+
+.users-table th, .users-table td {
+    padding: 12px 15px;
+    border: 2px solid #000000;
+    text-align: left;
+}
+
+.users-table.dark th {
+    background: var(--table-dark);
+    color: rgb(202, 202, 202);
+}
+
+.users-table.light th {
+    background: var(--table-light);
+    color: rgb(34, 34, 34);
+}
+
+.users-table.dark tr:nth-child(even) {
+    background: var(--table-dark);
+    color: rgb(202, 202, 202);
+}
+
+.users-table.light tr:nth-child(even) {
+    background: var(--table-light);
+    color: rgb(34, 34, 34);
+}
+
+.users-table.dark tr:nth-child(odd) {
+    background: var(--table-dark2);
+    color: rgb(202, 202, 202);
+}
+
+.users-table.light tr:nth-child(odd) {
+    background: var(--table-light2);
+    color: rgb(34, 34, 34);
+}
+
+.users-table.dark tr:hover {
+    background-color: var(--table-hover-dark);
+    color: var(--text-dark);
+}
+
+.users-table.light tr:hover {
+    background-color: var(--table-hover-light);
+    color: var(--text-light);
+}
+
+.users-table button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.users-table .edit-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.users-table .edit-button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.users-table .edit-button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.users-table .edit-button:hover.light {
+    background: var(--button-hover-light);
+}
+
+.users-table .delete-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.users-table .delete-button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.users-table .delete-button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.users-table .delete-button:hover.light {
+    background: var(--button-hover-light);
+}
+
+.users-table .save-button.dark {
+    background: #2196F3;
+    color: var(--text-dark);
+}
+
+.users-table .save-button.light {
+    background: #2196F3;
+    color: var(--text-light);
+}
+
+.users-table .save-button:hover.dark {
+    background: #0b7dda;
+}
+
+.users-table .save-button:hover.light {
+    background: #0b7dda;
+}
+
+.users-table .cancel-button.dark {
+    background: #777;
+    color: var(--text-dark);
+}
+
+.users-table .cancel-button.light {
+    background: #777;
+    color: var(--text-light);
+}
+
+.users-table .cancel-button:hover.dark {
+    background: #555;
+}
+
+.users-table .cancel-button:hover.light {
+    background: #555;
+}
+
+.users-table input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid var(--tab-dark);
+    border-radius: 5px;
+    font-family: "Host Grotesk", sans-serif;
+}
+
+.users-table input.dark {
+    background: var(--input-dark);
+    color: var(--text-dark);
+}
+
+.users-table input.light {
+    background: var(--input-light);
+    color: var(--text-light);
+}
+
+/* Confirmation Modal */
+.admin-confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.admin-confirmation-modal.dark {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.admin-confirmation-modal.light {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.admin-confirmation-modal .modal-content.dark {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.admin-confirmation-modal .modal-content.light {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    background: var(--bg-light);
+    color: var(--text-light);
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.modal-actions.dark button {
+    background: #353535;
+    color: var(--text-dark);
+}
+
+.modal-actions.light button {
+    background: #c2c2c2;
+    color: var(--text-light);
+}
+
+.modal-actions.dark button:first-child:hover {
+    background: #60ad65;
+}
+
+.modal-actions.light button:first-child:hover {
+    background: #4baf51;
+}
+
+.modal-actions.dark button:last-child:hover {
+    background: #b43e3e;
+}
+
+.modal-actions.light button:last-child:hover {
+    background: #df4040;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.theme-toggle.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.theme-toggle:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.theme-toggle:hover.light {
+    background: var(--button-hover-light);
+}
+
+/* Exercises Section */
+.exercises-container {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.exercises-container.dark {
+    background: var(--sidebar-dark);
+    color: var(--text-dark);
+}
+
+.exercises-container.light {
+    background: var(--sidebar-light);
+    color: var(--text-light);
+}
+
+.exercise-subject {
+    display: flex; /* Use Flexbox */
+    justify-content: space-between; /* Space between subject name and button */
+    align-items: center; /* Vertically center the content */
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.exercise-subtopic {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.exercise-subject.dark,
+.exercise-subtopic.dark {
+    background: var(--tab-dark);
+    color: var(--text-dark);
+}
+
+.exercise-subject.light,
+.exercise-subtopic.light {
+    background: var(--tab-light);
+    color: var(--text-light);
+}
+
+.exercise-subject:hover.dark,
+.exercise-subtopic:hover.dark {
+    background: var(--tab-active-dark);
+    transform: scale(1.02);
+}
+
+.exercise-subject:hover.light,
+.exercise-subtopic:hover.light {
+    background: var(--tab-active-light);
+    transform: scale(1.02);
+}
+
+.exercise-content {
+    padding: 20px;
+    border-radius: 10px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.exercise-content.dark {
+    background: var(--sidebar-dark);
+    color: var(--text-dark);
+}
+
+.exercise-content.light {
+    background: rgb(184, 184, 184);
+    color: var(--text-light);
+}
+
+.exercise-content h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.exercise-content p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.exercise-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.exercise-content h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.exercise-content pre.light {
+    background: var(--code-light);
+    color: var(--code-text-light);
+}
+
+.exercise-content button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+    margin-right: 10px;
+}
+
+.exercise-content button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.exercise-content button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.exercise-content button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.exercise-content button:hover.light {
+    background: var(--button-hover-light);
+}
+
+/* Back to Subjects Button */
+.back-to-subjects-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.back-to-subjects-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.back-to-subjects-button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.back-to-subjects-button:hover.dark {
+    background: var(--button-hover-dark);
+    transform: scale(1.05);
+}
+
+.back-to-subjects-button:hover.light {
+    background: var(--button-hover-light);
+    transform: scale(1.05);
+}
+
+/* Text Area Styles for Editing Content */
+.content-textarea,
+.exercise-textarea {
+    width: 100%;
+    height: 200px; /* Adjust height as needed */
+    padding: 10px;
+    border: 1px solid var(--tab-dark);
+    border-radius: 5px;
+    font-family: "Host Grotesk", sans-serif;
+    font-size: 16px; /* Readable font size */
+    resize: none; /* Prevent resizing */
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.content-textarea.dark,
+.exercise-textarea.dark {
+    background: var(--input-dark);
+    color: var(--text-dark);
+}
+
+.content-textarea.light,
+.exercise-textarea.light {
+    background: var(--input-light);
+    color: var(--text-light);
+}
+
+.content-textarea.dark::placeholder,
+.exercise-textarea.dark::placeholder {
+    color: var(--input-placeholder-dark);
+}
+
+.content-textarea.light::placeholder,
+.exercise-textarea.light::placeholder {
+    color: var(--input-placeholder-light);
+}
+
+/* Text Area Styles for Editing Content */
+.content-textarea,
+.exercise-textarea {
+    width: 100%;
+    height: 200px; /* Adjust height as needed */
+    padding: 10px;
+    border: 1px solid var(--tab-dark);
+    border-radius: 5px;
+    font-family: "Host Grotesk", sans-serif;
+    font-size: 16px; /* Readable font size */
+    resize: none; /* Prevent resizing */
+    overflow-y: auto; /* Add vertical scrollbar when content overflows */
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.content-textarea.dark,
+.exercise-textarea.dark {
+    background: var(--input-dark);
+    color: var(--text-dark);
+}
+
+.content-textarea.light,
+.exercise-textarea.light {
+    background: var(--input-light);
+    color: var(--text-light);
+}
+
+.content-textarea.dark::placeholder,
+.exercise-textarea.dark::placeholder {
+    color: var(--input-placeholder-dark);
+}
+
+.content-textarea.light::placeholder,
+.exercise-textarea.light::placeholder {
+    color: var(--input-placeholder-light);
+}
+
+.editing-button{
+    margin: 10px;
+}
+
+.delete-subject-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.delete-subject-button:hover {
+    background-color: #cc0000;
+}
+  
+  .add-user-button, .add-instructor-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-user-button:hover {
+    background-color: #45a049;
+  }
+
+  .university-info-tab {
+    padding: 20px;
+  }
+  
+  .university-info-tab.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+  }
+  
+  .university-info-tab.light {
+    background: var(--bg-light);
+    color: var(--text-light);
+  }
+  
+  .university-info-tab h1 {
+    font-weight: 200;
+    margin-bottom: 20px;
+  }
+  
+  .university-info-tab.dark h1 {
+    color: var(--text-dark);
+  }
+  
+  .university-info-tab.light h1 {
+    color: var(--text-light);
+  }
+  
+  .university-info-tab textarea {
+    width: 100%;
+    height: 200px;
+    padding: 10px;
+    border: 1px solid var(--tab-dark);
+    border-radius: 5px;
+    font-family: "Host Grotesk", sans-serif;
+    font-size: 16px;
+    resize: none;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  
+  .university-info-tab textarea.dark {
+    background: var(--input-dark);
+    color: var(--text-dark);
+  }
+  
+  .university-info-tab textarea.light {
+    background: var(--input-light);
+    color: var(--text-light);
+  }
+  
+  .university-info-tab textarea.dark::placeholder {
+    color: var(--input-placeholder-dark);
+  }
+  
+  .university-info-tab textarea.light::placeholder {
+    color: var(--input-placeholder-light);
+  }
+
+  /* Manage Instructors Tab */
+.manage-instructors-tab {
+    padding: 20px;
+  }
+  
+  .manage-instructors-tab.dark {
+    background: var(--bg-dark);
+  }
+  
+  .manage-instructors-tab.light {
+    background: var(--bg-light);
+  }
+  
+  .manage-instructors-tab h1 {
+    font-weight: 200;
+    margin-bottom: 20px;
+  }
+  
+  .manage-instructors-tab.dark h1 {
+    color: var(--text-dark);
+  }
+  
+  .manage-instructors-tab.light h1 {
+    color: var(--text-light);
+  }
+  
+  .instructors-table {
+    width: 100%;
+    height: 400px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow-y: auto;
+    display: block;
+  }
+  
+  .instructors-table.dark {
+    color: var(--table-light);
+  }
+  
+  .instructors-table.light {
+    color: var(--table-dark);
+  }
+  
+  .instructors-table th, .instructors-table td {
+    padding: 12px 15px;
+    border: 2px solid #000000;
+    text-align: left;
+  }
+  
+  .instructors-table.dark th {
+    background: var(--table-dark);
+    color: rgb(202, 202, 202);
+  }
+  
+  .instructors-table.light th {
+    background: var(--table-light);
+    color: rgb(34, 34, 34);
+  }
+  
+  .instructors-table.dark tr:nth-child(even) {
+    background: var(--table-dark);
+    color: rgb(202, 202, 202);
+  }
+  
+  .instructors-table.light tr:nth-child(even) {
+    background: var(--table-light);
+    color: rgb(34, 34, 34);
+  }
+  
+  .instructors-table.dark tr:nth-child(odd) {
+    background: var(--table-dark2);
+    color: rgb(202, 202, 202);
+  }
+  
+  .instructors-table.light tr:nth-child(odd) {
+    background: var(--table-light2);
+    color: rgb(34, 34, 34);
+  }
+  
+  .instructors-table.dark tr:hover {
+    background-color: var(--table-hover-dark);
+    color: var(--text-dark);
+  }
+  
+  .instructors-table.light tr:hover {
+    background-color: var(--table-hover-light);
+    color: var(--text-light);
+  }
+  
+  .instructors-table button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+  }
+  
+  .instructors-table .edit-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+  }
+  
+  .instructors-table .edit-button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+  }
+  
+  .instructors-table .edit-button:hover.dark {
+    background: var(--button-hover-dark);
+  }
+  
+  .instructors-table .edit-button:hover.light {
+    background: var(--button-hover-light);
+  }
+  
+  .instructors-table .delete-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+  }
+  
+  .instructors-table .delete-button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+  }
+  
+  .instructors-table .delete-button:hover.dark {
+    background: var(--button-hover-dark);
+  }
+  
+  .instructors-table .delete-button:hover.light {
+    background: var(--button-hover-light);
+  }
+  
+  .instructors-table .save-button.dark {
+    background: #2196F3;
+    color: var(--text-dark);
+  }
+  
+  .instructors-table .save-button.light {
+    background: #2196F3;
+    color: var(--text-light);
+  }
+  
+  .instructors-table .save-button:hover.dark {
+    background: #0b7dda;
+  }
+  
+  .instructors-table .save-button:hover.light {
+    background: #0b7dda;
+  }
+  
+  .instructors-table .cancel-button.dark {
+    background: #777;
+    color: var(--text-dark);
+  }
+  
+  .instructors-table .cancel-button.light {
+    background: #777;
+    color: var(--text-light);
+  }
+  
+  .instructors-table .cancel-button:hover.dark {
+    background: #555;
+  }
+  
+  .instructors-table .cancel-button:hover.light {
+    background: #555;
+  }
+  
+  .instructors-table input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid var(--tab-dark);
+    border-radius: 5px;
+    font-family: "Host Grotesk", sans-serif;
+  }
+  
+  .instructors-table input.dark {
+    background: var(--input-dark);
+    color: var(--text-dark);
+  }
+  
+  .instructors-table input.light {
+    background: var(--input-light);
+    color: var(--text-light);
+  }
+
+  /* Add Single User and Instructor Modals */
+.admin-add-user-modal,
+.admin-add-instructor-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.admin-add-user-modal.dark,
+.admin-add-instructor-modal.dark {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.admin-add-user-modal.light,
+.admin-add-instructor-modal.light {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.admin-add-user-modal .modal-content,
+.admin-add-instructor-modal .modal-content {
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 300px;
+}
+
+.admin-add-user-modal .modal-content.dark,
+.admin-add-instructor-modal .modal-content.dark {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+.admin-add-user-modal .modal-content.light,
+.admin-add-instructor-modal .modal-content.light {
+  background: var(--bg-light);
+  color: var(--text-light);
+}
+
+.admin-add-user-modal .modal-content h2,
+.admin-add-instructor-modal .modal-content h2 {
+  margin-bottom: 20px;
+}
+
+.admin-add-user-modal .modal-content input,
+.admin-add-instructor-modal .modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid var(--tab-dark);
+  border-radius: 5px;
+  font-family: "Host Grotesk", sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.admin-add-user-modal .modal-content input.dark,
+.admin-add-instructor-modal .modal-content input.dark {
+  background: var(--input-dark);
+  color: var(--text-dark);
+}
+
+.admin-add-user-modal .modal-content input.light,
+.admin-add-instructor-modal .modal-content input.light {
+  background: var(--input-light);
+  color: var(--text-light);
+}
+
+.admin-add-user-modal .modal-content input.dark::placeholder,
+.admin-add-instructor-modal .modal-content input.dark::placeholder {
+  color: var(--input-placeholder-dark);
+}
+
+.admin-add-user-modal .modal-content input.light::placeholder,
+.admin-add-instructor-modal .modal-content input.light::placeholder {
+  color: var(--input-placeholder-light);
+}
+
+.admin-add-user-modal .modal-actions,
+.admin-add-instructor-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.admin-add-user-modal .modal-actions button,
+.admin-add-instructor-modal .modal-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Host Grotesk", sans-serif;
+  transition: background 0.3s ease;
+}
+
+.admin-add-user-modal .modal-actions .save-button.dark,
+.admin-add-instructor-modal .modal-actions .save-button.dark {
+  background: #2196F3;
+  color: var(--text-dark);
+}
+
+.admin-add-user-modal .modal-actions .save-button.light,
+.admin-add-instructor-modal .modal-actions .save-button.light {
+  background: #2196F3;
+  color: var(--text-light);
+}
+
+.admin-add-user-modal .modal-actions .save-button:hover.dark,
+.admin-add-instructor-modal .modal-actions .save-button:hover.dark {
+  background: #0b7dda;
+}
+
+.admin-add-user-modal .modal-actions .save-button:hover.light,
+.admin-add-instructor-modal .modal-actions .save-button:hover.light {
+  background: #0b7dda;
+}
+
+.admin-add-user-modal .modal-actions .cancel-button.dark,
+.admin-add-instructor-modal .modal-actions .cancel-button.dark {
+  background: #777;
+  color: var(--text-dark);
+}
+
+.admin-add-user-modal .modal-actions .cancel-button.light,
+.admin-add-instructor-modal .modal-actions .cancel-button.light {
+  background: #777;
+  color: var(--text-light);
+}
+
+.admin-add-user-modal .modal-actions .cancel-button:hover.dark,
+.admin-add-instructor-modal .modal-actions .cancel-button:hover.dark {
+  background: #555;
+}
+
+.admin-add-user-modal .modal-actions .cancel-button:hover.light,
+.admin-add-instructor-modal .modal-actions .cancel-button:hover.light {
+  background: #555;
+}

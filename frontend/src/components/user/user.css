@@ -1,0 +1,1018 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
+
+.user-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.user-container.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.user-container.light {
+    background: var(--bg-light);
+    color: var(--text-light);
+}
+
+.tab {
+    font-family: "Host Grotesk", sans-serif;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.tab.dark {
+    background: var(--tab-dark);
+    color: var(--text-dark);
+}
+
+.tab.light {
+    background: var(--tab-light);
+    color: var(--text-light);
+}
+
+.tab.active.dark {
+    background: var(--tab-active-dark);
+}
+
+.tab.active.light {
+    background: var(--tab-active-light);
+}
+
+.user-logout-button {
+    font-family: "Host Grotesk", sans-serif;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: auto;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.user-logout-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.user-logout-button.light {
+    background: var(--tab-light);
+    color: var(--text-light);
+}
+
+.user-logout-button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.user-logout-button:hover.light {
+    background: var(--button-hover-light);
+}
+
+.chat-list {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    padding: 10px 0px 0px 0px;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    height: 480px;
+    border-top: 1px solid var(--tab-dark);
+    border-bottom: 1px solid var(--tab-dark);
+}
+
+.chat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10px 10px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.chat-item.dark {
+    background: var(--tab-dark);
+    color: var(--text-dark);
+}
+
+.chat-item.light {
+    background: var(--tab-light);
+    color: var(--text-light);
+}
+
+.chat-item.active.dark {
+    background: var(--tab-active-dark);
+}
+
+.chat-item.active.light {
+    background: var(--tab-active-light);
+}
+
+.chat-item .delete-chat {
+    background: transparent;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.chat-item .delete-chat.dark {
+    color: var(--text-dark);
+}
+
+.chat-item .delete-chat.light {
+    color: var(--text-light);
+}
+
+.chat-item .delete-chat:hover.dark {
+    background: #c55147;
+}
+
+.chat-item .delete-chat:hover.light {
+    background: #ff6b6b;
+}
+
+.new-chat {
+    background: #4c7faf;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+}
+
+.new-chat:hover {
+    background: #45a049;
+}
+
+.user-sidebar {
+    width: 320px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease; /* Add transition for sliding effect */
+}
+
+.user-sidebar.dark {
+    background: var(--sidebar-dark);
+}
+
+.user-sidebar.light {
+    background: var(--sidebar-light);
+}
+
+.user-sidebar.hidden {
+    transform: translateX(-100%); /* Slide out to the left */
+}
+
+.user-sidebar.visible {
+    transform: translateX(0); /* Slide in from the left */
+}
+
+/* Style for the sidebar toggle button */
+.sidebar-toggle {
+    position: absolute;
+    top: 0px;
+    left: 320px; /* Position it just outside the sidebar */
+    padding: 10px;
+    border: none;
+    border-radius: 0px 5px 5px 0px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: transform 0.3s ease;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.sidebar-toggle.hidden {
+    transform: translateX(-100%); /* Slide out to the left */
+}
+
+.sidebar-toggle.visible {
+    transform: translateX(0); /* Slide in from the left */
+}
+
+.sidebar-toggle.dark {
+    background: var(--sidebar-dark);
+    color: var(--text-dark);
+}
+
+.sidebar-toggle.light {
+    background: var(--sidebar-light);
+    color: var(--text-light);
+}
+
+.sidebar-toggle:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.sidebar-toggle:hover.light {
+    background: var(--button-hover-light);
+}
+
+.student-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    margin-left: 0; /* Reset margin when sidebar is hidden */
+}
+
+.student-content.sidebar-hidden {
+    margin-left: -320px; /* -320px margin when sidebar is hidden */
+}
+
+.student-content.sidebar-visible {
+    margin-left: 0px; /* Add margin when sidebar is visible */
+}
+
+.student-content.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.student-content.light {
+    background: var(--bg-light);
+    color: var(--text-light);
+}
+
+.chat-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--tab-dark);
+}
+
+.chat-header.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.chat-header.light {
+    background: var(--bg-light);
+    color: var(--text-light);
+}
+
+.chat-header .disclaimer {
+    font-size: 12px;
+}
+
+.chat-header .disclaimer.dark {
+    color: #ccc;
+}
+
+.chat-header .disclaimer.light {
+    color: #888;
+}
+
+.chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-body.dark {
+    background: var(--bg-dark);
+}
+
+.chat-body.light {
+    background: var(--bg-light);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track.dark {
+    background: var(--bg-dark);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track.light {
+    background: var(--bg-light);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb.dark {
+    background: var(--scrollbar-dark);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb.light {
+    background: var(--scrollbar-light);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover.dark {
+    background: var(--scrollbar-hover-dark);
+}
+
+::-webkit-scrollbar-thumb:hover.light {
+    background: var(--scrollbar-hover-light);
+}
+
+.message.bot {
+    user-select: none;
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.message.user{
+    max-width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.message-text {
+    white-space: pre-wrap; /* Preserve line breaks and spaces */
+}
+
+.message.user.dark {
+    background-color: var(--message-user-dark);
+    color: var(--text-dark);
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.message.user.light {
+    background-color: var(--message-user-light);
+    color: var(--text-light);
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.message.bot.dark {
+    background-color: var(--message-bot-dark);
+    color: var(--text-dark);
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.message.bot.light {
+    background-color: var(--message-bot-light);
+    color: var(--text-light);
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.message .timestamp.bot{
+    font-size: 10px;
+    align-self: first baseline;
+    padding-left: 20px;
+}
+
+.message .timestamp.user{
+    font-size: 10px;
+    margin-top: 5px;
+    align-self: last baseline;
+}
+
+.message .timestamp.dark {
+    color: #ccc;
+}
+
+.message .timestamp.light {
+    color: #888;
+}
+
+.bot-response {
+    padding: 8px 12px;
+    border-radius: 8px;
+    align-self: flex-start;
+}
+
+.bot-response.dark {
+    background-color: var(--message-bot-dark);
+    color: var(--text-dark);
+}
+
+.bot-response.light {
+    background-color: var(--message-bot-light);
+    color: var(--text-light);
+}
+
+.chat-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid var(--tab-dark);
+}
+
+.chat-input.dark {
+    background: var(--bg-dark);
+}
+
+.chat-input.light {
+    background: var(--bg-light);
+}
+
+.chat-input textarea {
+    padding: 8px;
+    border: 1px solid var(--tab-dark);
+    width: 100%;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-family: "Host Grotesk", sans-serif;
+    font-size: large;
+    background-color: var(--input-dark);
+    color: var(--text-dark);
+    resize: none;
+    font-size: 18px;
+    overflow-y: auto;
+    min-height: 96px;
+    max-height: 196px;
+}
+
+.chat-input textarea.light {
+    background-color: var(--input-light);
+    color: var(--text-light);
+    border: 1px solid var(--tab-light);
+}
+
+.chat-input textarea::placeholder.dark {
+    color: var(--input-placeholder-dark);
+}
+
+.chat-input textarea::placeholder.light {
+    color: var(--input-placeholder-light);
+}
+
+.chat-input textarea::-webkit-scrollbar.dark {
+    background: var(--bg-dark);
+    border-radius: 10px;
+}
+
+.chat-input textarea::-webkit-scrollbar.light {
+    background: var(--bg-light);
+    border-radius: 10px;
+}
+
+.chat-input textarea::-webkit-scrollbar-thumb.dark {
+    background: var(--scrollbar-dark);
+    border-radius: 10px;
+}
+
+.chat-input textarea::-webkit-scrollbar-thumb.light {
+    background: var(--scrollbar-light);
+    border-radius: 10px;
+}
+
+.chat-input textarea::-webkit-scrollbar-thumb:hover.dark {
+    background: var(--scrollbar-hover-dark);
+}
+
+.chat-input textarea::-webkit-scrollbar-thumb:hover.light {
+    background: var(--scrollbar-hover-light);
+}
+
+.chat-input textarea:disabled.dark,
+.chat-input button:disabled.dark {
+    background-color: #7a7a7a;
+    cursor: not-allowed;
+}
+
+.chat-input textarea:disabled.light,
+.chat-input button:disabled.light {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.chat-input button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+}
+
+.chat-input button.dark {
+    background-color: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.chat-input button.light {
+    background-color: var(--button-light);
+    color: var(--text-light);
+}
+
+.chat-input button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.chat-input button:hover.light {
+    background: var(--button-hover-light);
+}
+
+.typing-indicator {
+    display: inline-block;
+    position: relative;
+    width: 60px;
+    height: 20px;
+}
+
+.typing-indicator span {
+    position: absolute;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-dark);
+    animation: typing 1.2s infinite ease-in-out;
+}
+
+.typing-indicator span.light {
+    background: var(--text-light);
+}
+
+.typing-indicator span:nth-child(1) {
+    left: 8px;
+    animation-delay: 0s;
+}
+
+.typing-indicator span:nth-child(2) {
+    left: 24px;
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    left: 40px;
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
+pre {
+    user-select: none;
+    font-size: large;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+pre.dark {
+    background-color: var(--code-dark);
+    color: var(--code-text-dark);
+}
+
+pre.light {
+    background-color: var(--code-light);
+    color: var(--code-text-light);
+}
+
+code {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 14px;
+}
+
+.exercises-section{
+    height: 215px;
+}
+
+.exercises-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: 20px;
+}
+
+.exercises-container.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.exercises-container.light {
+    background: var(--bg-light);
+    color: var(--text-light);
+}
+
+.exercises-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.exercises-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.exercise-item {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.exercise-item.dark {
+    background: var(--tab-dark);
+    color: var(--text-dark);
+}
+
+.exercise-item.light {
+    background: var(--tab-light);
+    color: var(--text-light);
+}
+
+.exercise-item h3 {
+    margin-bottom: 10px;
+}
+
+.exercise-item p {
+    font-size: 14px;
+}
+
+.confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirmation-modal.dark {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.confirmation-modal.light {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.user-modal-content {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.user-modal-content.dark {
+    background: var(--sidebar-light);
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+.user-modal-content.light {
+    background: var(--sidebar-dark);
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.user-modal-content p {
+    margin-bottom: 20px;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.modal-actions button.dark {
+    background: #4CAF50;
+    color: var(--text-dark);
+}
+
+.modal-actions button.light {
+    background: #4CAF50;
+    color: var(--text-light);
+}
+
+.modal-actions button:first-child:hover.dark {
+    background: #45a049;
+}
+
+.modal-actions button:first-child:hover.light {
+    background: #45a049;
+}
+
+.modal-actions button:last-child.dark {
+    background: #f44336;
+    color: var(--text-dark);
+}
+
+.modal-actions button:last-child.light {
+    background: #f44336;
+    color: var(--text-light);
+}
+
+.modal-actions button:last-child:hover.dark {
+    background: #da190b;
+}
+
+.modal-actions button:last-child:hover.light {
+    background: #da190b;
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.theme-toggle.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.theme-toggle:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.theme-toggle:hover.light {
+    background: var(--button-hover-light);
+}
+
+/* Add styles for the submit-query button to be affected by the theme toggle */
+.chat-input button.submit-query.dark {
+    background-color: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.chat-input button.submit-query.light {
+    background-color: var(--button-light);
+    color: var(--text-light);
+}
+
+.chat-input button.submit-query:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.chat-input button.submit-query:hover.light {
+    background: var(--button-hover-light);
+}
+
+/* Delete Icon Styling */
+.delete-icon.dark {
+    color: var(--text-dark);
+}
+
+.delete-icon.light {
+    color: var(--text-light);
+}
+
+/* Add styles for the Exercises button */
+.exercises-button {
+    position: absolute;
+    top: 20px;
+    right: 80px; /* Adjust the position to avoid overlapping with the theme toggle button */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.exercises-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.exercises-button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.exercises-button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.exercises-button:hover.light {
+    background: var(--button-hover-light);
+}
+
+/* Chat Name Input Modal */
+.chat-name-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+}
+
+.chat-name-modal.dark {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.chat-name-modal.light {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.chat-name-modal .chat-name-modal-content {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+    background: var(--sidebar-light);
+    color: var(--text-light);
+}
+
+.chat-name-modal .chat-name-modal-content.dark {
+    background: var(--sidebar-dark);
+    color: var(--text-dark);
+}
+
+.chat-name-modal .chat-name-modal-content.light {
+    background: var(--sidebar-light);
+    color: var(--text-light);
+}
+
+.chat-name-modal .chat-name-modal-content p {
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.chat-name-modal .chat-name-modal-content.dark input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-family: "Host Grotesk", sans-serif;
+    font-size: 16px;
+    background-color: var(--input-dark);
+    color: var(--text-dark);
+    border: 1px solid var(--tab-dark);
+}
+
+.chat-name-modal .chat-name-modal-content.light input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-family: "Host Grotesk", sans-serif;
+    font-size: 16px;
+    background-color: var(--input-light);
+    color: var(--text-light);
+    border: 1px solid var(--tab-light);
+}
+
+.chat-name-modal .chat-name-modal-content.dark input::placeholder {
+    color: var(--code-text-dark);
+}
+
+.chat-name-modal .chat-name-modal-content.light input::placeholder {
+    color: var(--input-placeholder-light);
+}
+
+.chat-name-modal .chat-name-modal-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.chat-name-modal .chat-name-modal-actions.dark button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+    background: #4CAF50;
+    color: var(--text-dark);
+}
+
+.chat-name-modal .chat-name-modal-actions.light button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+    background: #4CAF50;
+    color: var(--text-light);
+}
+
+.chat-name-modal-actions button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.chat-name-modal-actions.dark button {
+    background: #353535;
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.chat-name-modal-actions.light button {
+    background: #c2c2c2;
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+.chat-name-modal-actions.dark button:first-child:hover {
+    background: #60ad65;
+}
+
+.chat-name-modal-actions.light button:first-child:hover {
+    background: #4baf51;
+}
+
+.chat-name-modal-actions.dark button:last-child:hover {
+    background: #b43e3e;
+}
+
+.chat-name-modal-actions.light button:last-child:hover {
+    background: #df4040;
+}
+
+.bold-text {
+    font-weight: bold;
+}
+
+.no-chat-selected {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    font-size: 1.2em;
+    color: inherit;
+}
+
+.no-chat-selected.dark {
+    color: var(--text-dark);
+}
+
+.no-chat-selected.light {
+    color: var(--text-light);
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.5rem;
+  }

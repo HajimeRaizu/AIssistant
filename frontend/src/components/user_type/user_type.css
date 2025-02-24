@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
+/* General Styles */
+body {
+    font-family: "Host Grotesk", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+.header .user-type-logo{
+    height: 120px;
+}
+.user-type-page {
+    text-align: center;
+    height: 100vh;
+    width: 100%;
+    background: 
+        url("../assets/pic8.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Header Styles */
+.header {
+    padding: 10px;
+    color: white;
+    text-align: left;
+}
+
+.header .user-typepage-logo{
+    height: 120px;
+}
+
+/* user-type-Hero Section Styles */
+.user-type-hero {
+    padding: 30px 20px;
+}
+
+.user-type-hero h1 {
+    font-size: 48px;
+    margin-bottom: 5px;
+}
+
+.user-type-hero p {
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Action Boxes Section Styles */
+.user-type-action-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.user-type-box {
+    width: 300px;
+    margin: 0px 25px 0px 25px;
+    padding: 30px;
+    background-color: rgba(236, 236, 236, .3);
+    color: rgb(86, 86, 255);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.user-type-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.user-type-box h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.user-type-box p {
+    font-size: 16px;
+    color: #555;
+}
+
+.user-type-aissistant{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-type-aissistant .user-type-welcome{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: row;
+}
+
+.user-type-aissistant .ai{
+    color: rgb(86, 86, 255);
+    padding: 0px 0px 0px 10px;
+}

@@ -1,0 +1,36 @@
+
+.aissistant{
+    height: 99vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-direction: row;    
+}
+
+.aissistant-logo{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.aissistant-icon{
+    height: 200px;
+    width: 200px;
+}
+
+.aissistant-text{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 10px 50px 10px 10px;
+}
+
+.aissistant-user-type{
+    align-self: center;
+    background-color: lightblue;
+    width: 100px;
+}

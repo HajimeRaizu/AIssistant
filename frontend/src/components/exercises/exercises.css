@@ -1,0 +1,628 @@
+/* exercises.css */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
+
+.exercises-page {
+    display: flex;
+    height: 100vh;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.exercises-page.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.exercises-page.light {
+    background: var(--bg-light);
+    color: var(--text-light);
+}
+
+.sidebar {
+    width: 250px;
+    background-color: var(--sidebar-dark);
+    color: var(--text-dark);
+    padding: 20px;
+    transition: background 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.sidebar.light {
+    background-color: var(--sidebar-light);
+    color: var(--text-light); /* Font color in light mode */
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem; /* Increased font size */
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.sidebar li {
+    margin: 15px 0; /* Increased spacing */
+    cursor: pointer;
+    padding: 12px; /* Increased padding */
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.sidebar li.active {
+    background-color: var(--tab-active-dark);
+}
+
+.sidebar li.active.light {
+    background-color: var(--tab-active-light);
+}
+
+.sidebar li:hover {
+    background-color: var(--button-hover-dark);
+}
+
+.sidebar li:hover.light {
+    background-color: var(--button-hover-light);
+}
+
+.content {
+    flex: 1;
+    padding: 30px; /* Increased padding */
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.content.light {
+    background-color: var(--bg-light);
+    color: var(--text-light); /* Font color in light mode */
+}
+
+.content h1 {
+    margin-bottom: 25px; /* Increased spacing */
+    font-size: 2.2rem; /* Increased font size */
+    color: var(--text-dark);
+}
+
+.content h1.light {
+    color: var(--text-light); /* Font color in light mode */
+}
+
+.lessons {
+    list-style: none;
+    padding: 0;
+}
+
+.lessons li {
+    cursor: pointer;
+    background-color: var(--tab-dark);
+    color: var(--text-dark);
+    margin: 15px 0; /* Increased spacing */
+    padding: 20px; /* Increased padding */
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lessons li.light {
+    background-color: var(--tab-light);
+    color: var(--text-light); /* Font color in light mode */
+}
+
+.lessons li:hover {
+    background-color: var(--button-hover-dark);
+}
+
+.lessons li:hover.light {
+    background-color: var(--button-hover-light);
+}
+
+.subtopics {
+    margin-top: 25px; /* Increased spacing */
+}
+
+.subtopics h2 {
+    margin-bottom: 15px; /* Increased spacing */
+    font-size: 1.8rem; /* Increased font size */
+    color: var(--text-dark);
+}
+
+.subtopics h2.light {
+    color: var(--text-light); /* Font color in light mode */
+}
+
+.subtopics ul {
+    list-style: none;
+    padding: 0;
+}
+
+.subtopics li {
+    cursor: pointer;
+    background-color: var(--tab-dark);
+    color: var(--text-dark);
+    margin: 15px 0; /* Increased spacing */
+    padding: 20px; /* Increased padding */
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.subtopics li.light {
+    background-color: var(--tab-light);
+    color: var(--text-light); /* Font color in light mode */
+}
+
+.subtopics li.light .subtopic-text{
+    color: var(--text-light);
+}
+
+.subtopics li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.subtopics li .subtopic-icon {
+    font-size: 1.5rem; /* Increased font size */
+    color: var(--message-user-dark);
+    margin-right: 15px; /* Increased spacing */
+}
+
+.subtopics li .subtopic-icon.light {
+    color: var(--message-user-light);
+}
+
+.subtopics li .subtopic-text {
+    flex: 1;
+    font-size: 1.2rem; /* Increased font size */
+    color: var(--text-dark);
+}
+
+.subtopics li .subtopic-text.light {
+    color: var(--text-light); /* Font color in light mode */
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 12px; /* Increased padding */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.theme-toggle.light {
+    background: var(--button-light);
+    color: var(--text-light); /* Font color in light mode */
+}
+
+.theme-toggle:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.theme-toggle:hover.light {
+    background: var(--button-hover-light);
+}
+
+code {
+    font-family: "Geist Mono", monospace;
+}
+
+/* Additional styles for subtopic content */
+.subtopic-content {
+    padding: 30px; /* Increased padding */
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    transition: background 0.3s ease;
+}
+
+.subtopic-content.light {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+.subtopic-content h2, .subtopic-content h3, .subtopic-content h4 {
+    margin-bottom: 15px; /* Increased spacing */
+    font-size: 1.6rem; /* Increased font size */
+}
+
+.subtopic-content .introduction p, .subtopic-content .main-content p {
+    margin-bottom: 20px; /* Increased spacing */
+    font-size: 1.1rem; /* Increased font size */
+}
+
+.subtopic-content .lesson-objectives ul, .subtopic-content .main-content ul {
+    margin-left: 25px; /* Increased spacing */
+    margin-bottom: 20px; /* Increased spacing */
+    font-size: 1.2rem; /* Increased font size */
+}
+
+.subtopic-content .exercises {
+    margin-top: 30px; /* Increased spacing */
+}
+
+.subtopic-content .exercises h4 {
+    margin-bottom: 15px; /* Increased spacing */
+    font-size: 1.5rem; /* Increased font size */
+}
+
+.subtopic-content .exercises ul {
+    list-style: none;
+    padding: 0;
+}
+
+.subtopic-content .exercises li {
+    margin: 15px 0; /* Increased spacing */
+    font-size: 1.2rem; /* Increased font size */
+}
+
+.subtopic-content.dark .exercises input[type="text"], .subtopic-content.dark .exercises textarea {
+    width: 100%;
+    padding: 12px; /* Increased padding */
+    border-radius: 5px;
+    border: 1px solid var(--tab-dark);
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-dark);
+    transition: border 0.3s ease;
+    font-size: 1.1rem; /* Increased font size */
+}
+
+.subtopic-content.dark .exercises input[type="text"]::placeholder, .subtopic-content.dark .exercises textarea::placeholder {
+    color: var(--text-dark);
+}
+
+.subtopic-content.light .exercises input[type="text"], .subtopic-content.light .exercises textarea {
+    border: 1px solid var(--tab-light);
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--text-light);
+    width: 100%;
+    padding: 12px; /* Increased padding */
+    border-radius: 5px;
+    transition: border 0.3s ease;
+    font-size: 1.1rem; /* Increased font size */
+}
+
+.subtopic-content.light .exercises input[type="text"]::placeholder, .subtopic-content.light .exercises textarea::placeholder {
+    color: var(--text-light);
+}
+
+.subtopic-content.dark .exercises button {
+    padding: 12px 25px; /* Increased padding */
+    border: none;
+    border-radius: 5px;
+    background-color: var(--button-dark);
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 1.1rem; /* Increased font size */
+}
+
+.subtopic-content.light .exercises button {
+    padding: 12px 25px; /* Increased padding */
+    border: none;
+    border-radius: 5px;
+    background-color: var(--button-light);
+    color: var(--text-light);
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 1.1rem; /* Increased font size */
+}
+
+.subtopic-content.dark .exercises button:hover {
+    background-color: var(--button-hover-dark);
+}
+
+.subtopic-content.light .exercises button:hover {
+    background-color: var(--button-hover-light);
+}
+
+.line.dark {
+    border-bottom: 2px solid white;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.line.light {
+    border-bottom: 2px solid black;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Add styles for the AIssistant Chat button */
+.sidebar .aissistant-chat-button {
+    width: 210px;
+    height: 45px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 20px;
+    transition: background 0.3s ease, color 0.3s ease;
+    position: absolute;
+    bottom: 20px;
+}
+
+.sidebar .aissistant-chat-button.dark {
+    background: rgb(54, 54, 54);
+    color: var(--text-dark);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar .aissistant-chat-button.light {
+    background: rgb(179, 179, 179);
+    color: var(--text-light);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar .aissistant-chat-button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.sidebar .aissistant-chat-button:hover.light {
+    background: var(--button-hover-light);
+}
+
+/* General button styling */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+  }
+  
+  /* AIssistant Chat Button */
+  .aissistant-chat-button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    margin-top: 20px;
+  }
+  
+.aissistant-chat-button:hover {
+    background-color: var(--button-hover-bg-color);
+  }
+  
+/* Back Button Styling */
+.back-button {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 5px;
+}
+
+/* Dark Theme Specific Styles */
+.back-button.dark {
+    color: white;
+    background-color: transparent;
+}
+
+/* Light Theme Specific Styles */
+.back-button.light {
+    color: black;
+    background-color: transparent;
+}
+
+.back-button:hover{
+    text-decoration: underline;
+}
+  
+  /* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    padding: 10px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+.theme-toggle:hover {
+    background-color: var(--button-hover-bg-color);
+}
+  
+  /* Button container for back buttons */
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+  
+  /* Dark and light theme variables */
+.exercises-page.dark {
+    --button-bg-color: #444;
+    --button-hover-bg-color: #555;
+    --button-text-color: #fff;
+}
+  
+.exercises-page.light {
+    --button-bg-color: #007bff;
+    --button-hover-bg-color: #0056b3;
+    --button-text-color: #fff;
+}
+
+.exercise-snippet.light{
+    background-color: rgb(182, 182, 182);
+    color: black;
+}
+
+.exercise-snippet.dark{
+    background-color: rgb(43, 43, 43);
+    color: white;
+}
+
+.exercise-input.light{
+    color: black;
+    background-color: rgb(209, 209, 209);
+    border: none;
+    border-radius: 5px;
+    height: 40px;
+    padding-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    font-size: large;
+}
+
+.exercise-input.light::placeholder{
+    color:  black;
+}
+
+.exercise-input.dark{
+    color: white;
+    background-color: rgb(51, 51, 51);
+    border: none;
+    border-radius: 5px;
+    height: 40px;
+    padding-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    font-size: large;
+}
+
+.exercise-input.dark::placeholder{
+    color:  white;
+}
+
+.check-answers-button {
+    background-color: #4caf50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+  
+.check-answers-button.dark {
+    background-color: #45a049; /* Darker green for dark theme */
+}
+
+.exercise-text {
+    white-space: pre-line; /* Ensures line breaks are respected */
+    margin-bottom: 10px; /* Adds space between the question and the input field */
+}
+  
+.exercise-input {
+    margin-top: 5px; /* Adds space above the input field */
+}
+
+.exercises-user-button {
+    position: absolute;
+    top: 20px;
+    right: 80px; /* Adjust the position to avoid overlapping with the theme toggle button */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: background 0.3s ease;
+}
+
+.exercises-user-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.exercises-user-button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.exercises-user-button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.exercises-user-button:hover.light {
+    background: var(--button-hover-light);
+}
+
+.exercises-logout-button {
+    font-family: "Host Grotesk", sans-serif;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: auto;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+    bottom: 0;
+}
+
+.exercises-logout-button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.exercises-logout-button.light {
+    background: var(--tab-light);
+    color: var(--text-light);
+}
+
+.exercises-logout-button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.exercises-logout-button:hover.light {
+    background: var(--button-hover-light);
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.5rem;
+  }
+
+.subject-code-input input {
+    width: 210px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid var(--tab-dark);
+    border-radius: 5px;
+    font-family: "Host Grotesk", sans-serif;
+}
+
+.subject-code-input input.dark {
+    background: var(--input-dark);
+    color: var(--text-dark);
+}
+
+.subject-code-input input.light {
+    background: var(--input-light);
+    color: var(--text-light);
+}
