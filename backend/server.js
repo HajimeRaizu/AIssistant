@@ -240,6 +240,7 @@ app.post("/api/llama", async (req, res) => {
 
 
 // Generate FAQ
+
 app.post("/api/generateFAQ", async (req, res) => {
   const { prompts } = req.body;
 
@@ -252,7 +253,7 @@ app.post("/api/generateFAQ", async (req, res) => {
       Organize the following questions into an FAQ with up to 10 frequently asked questions:
 
       Guidelines:
-      1. Create a top 10 most frequently asked questions based in the given questions below.
+      1. Create a top 10 most frequently asked questions based on the given questions below.
       2. DO NOT ANSWER THE QUESTIONS.
 
       Questions:
@@ -261,36 +262,39 @@ app.post("/api/generateFAQ", async (req, res) => {
 
     console.log("Input Prompt:", inputPrompt);
 
-    const completion = await client.chatCompletion({
-      model: "Qwen/Qwen2.5-Coder-32B-Instruct",
-      messages: [
-        {
-          role: "user",
-          content: inputPrompt,
-        },
-      ],
-      provider: "sambanova",
-      max_tokens: 15500,
+    // Set up streaming response headers
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    const completion = await deepseek.chat.completions.create({
+      model: "deepseek-chat",
+      messages: [{ role: "user", content: inputPrompt }],
+      stream: true, // Attempt to enable streaming
+      max_tokens: 250,
     });
 
-    let modelResponse = completion.choices[0]?.message?.content || "No response received.";
+    if (!completion) {
+      res.write("Streaming not supported.\n");
+      res.end();
+      return;
+    }
 
-    console.log("Model Response:", modelResponse);
+    res.write("FAQ:\n"); // Start FAQ response
 
-    const groupedFaq = modelResponse
-      .split("\n")
-      .filter((line) => line.trim() !== "")
-      .map((line) => line.trim())
-      .slice(0, 10)
-      .map((line, index) => `${line.replace(/^\d+\.\s*/, "")}`)
-      .join("\n");
+    for await (const chunk of completion) {
+      if (chunk?.choices?.length > 0) {
+        res.write(chunk.choices[0]?.message?.content || ""); // Stream each chunk
+      }
+    }
 
-    res.json({ generated_text: `FAQ:\n${groupedFaq}` });
+    res.end(); // End streaming response
   } catch (error) {
-    console.error("Error:", error.response ? error.response.data : error.message);
+    console.error("Error:", error.message);
     res.status(500).json({ error: "Failed to generate FAQ" });
   }
 });
+
 
 // 4. User management functions
 // Get all users
