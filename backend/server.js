@@ -52,9 +52,9 @@ const deepseek = new OpenAI({
 app.use(express.json());
 app.use(cors({
   origin: "https://aissistant-pi.vercel.app", // Your frontend URL
-  methods: "GET, POST, PUT, DELETE",
+  methods: "GET, POST, PUT, DELETE, OPTIONS",
   credentials: true,
-  allowedHeaders: "Content-Type,Authorization"
+  allowedHeaders: "Content-Type, Authorization"
 }));
 
 const storage = multer.diskStorage({
@@ -241,10 +241,6 @@ app.post("/api/llama", async (req, res) => {
 
 // Generate FAQ
 app.post("/api/generateFAQ", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://aissistant-pi.vercel.app");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
   const { prompts } = req.body;
 
   if (!Array.isArray(prompts)) {
@@ -265,15 +261,16 @@ app.post("/api/generateFAQ", async (req, res) => {
 
     console.log("Input Prompt:", inputPrompt);
 
-    const completion = await deepseek.chat.completions.create({
-      model: "deepseek-chat",
+    const completion = await client.chatCompletion({
+      model: "Qwen/Qwen2.5-Coder-32B-Instruct",
       messages: [
         {
           role: "user",
           content: inputPrompt,
         },
       ],
-      max_tokens: 250,
+      provider: "sambanova",
+      max_tokens: 15500,
     });
 
     let modelResponse = completion.choices[0]?.message?.content || "No response received.";
