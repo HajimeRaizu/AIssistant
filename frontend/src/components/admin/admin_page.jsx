@@ -94,35 +94,13 @@ const AdminPage = () => {
 
   const handleGenerateFAQ = async () => {
     try {
-      setFaq("Generating FAQ...");
-  
-      const response = await fetch("https://aissistant-backend.vercel.app/api/generateFAQ", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompts: queryData.map(query => query.text) }),
-      });
-  
-      if (!response.body) {
-        setFaq("Error: No response received.");
-        return;
-      }
-  
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let accumulatedText = "";
-  
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        accumulatedText += decoder.decode(value, { stream: true });
-        setFaq(accumulatedText); // Update FAQ progressively
-      }
+      const prompts = queryData.map(query => query.text);
+      const response = await axios.post("https://aissistant-backend.vercel.app/api/generateFAQ", { prompts });
+      setFaq(response.data.generated_text);
     } catch (error) {
       console.error("Failed to generate FAQ:", error);
-      setFaq("Error generating FAQ.");
     }
   };
-  
 
   const handleLogout = () => {
     navigate('/');
