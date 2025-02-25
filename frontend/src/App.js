@@ -15,7 +15,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<LandingPage />} />
+        <Route path='/' element={<AIssistant />} />
         <Route path='/user-type' element={<UserType />}/>
         <Route path='/student-landing' element={<LandingPage/>}/>
         <Route path='/login' element={<LoginForm />} />
