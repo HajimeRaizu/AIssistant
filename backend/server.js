@@ -241,6 +241,10 @@ app.post("/api/llama", async (req, res) => {
 
 // Generate FAQ
 app.post("/api/generateFAQ", async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://aissistant-pi.vercel.app");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
   const { prompts } = req.body;
 
   if (!Array.isArray(prompts)) {
