@@ -282,6 +282,7 @@ app.post("/api/generateFAQ", async (req, res) => {
     }
 
     res.write(`FAQ:\n`); // Start FAQ response
+    console.log(completion);
 
     for await (const chunk of completion) {
       if (chunk?.choices?.length > 0) {
