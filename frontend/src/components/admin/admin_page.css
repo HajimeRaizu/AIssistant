@@ -223,6 +223,10 @@
     margin-top: 20px;
 }
 
+.faq-box{
+  height: 300px;
+}
+
 .generate-faq-button {
     padding: 10px 20px;
     border: none;

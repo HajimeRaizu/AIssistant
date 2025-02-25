@@ -419,7 +419,7 @@ const AdminPage = () => {
                   Generate FAQ
                 </button>
               </div>
-              <pre>{faq}</pre>
+              <pre className="faq-box">{faq}</pre>
             </div>
           </div>
         ) : activeTab === 'settings' ? (
