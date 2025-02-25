@@ -95,7 +95,11 @@ const AdminPage = () => {
   const handleGenerateFAQ = async () => {
     try {
       const prompts = queryData.map(query => query.text);
-      const response = await axios.post("https://aissistant-backend.vercel.app/api/generateFAQ", { prompts });
+      const response = await fetch("https://aissistant-backend.vercel.app/api/generateFAQ", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompts: queryData.map(query => query.text) }),
+      });
       setFaq(response.data.generated_text);
     } catch (error) {
       console.error("Failed to generate FAQ:", error);
