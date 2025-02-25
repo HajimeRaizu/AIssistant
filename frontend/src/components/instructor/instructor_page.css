@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
 
-/* General Admin Container */
-.admin-container {
+/* General instructor Container */
+.instructor-container {
     display: flex;
     height: 100vh;
     width: 100%;
@@ -9,18 +9,18 @@
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-.admin-container.dark {
+.instructor-container.dark {
     background: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.admin-container.light {
+.instructor-container.light {
     background: var(--bg-light);
     color: var(--text-light);
 }
 
 /* Sidebar */
-.admin-sidebar {
+.instructor-sidebar {
     width: 250px;
     padding: 20px;
     display: flex;
@@ -28,15 +28,15 @@
     transition: background 0.3s ease;
 }
 
-.admin-sidebar.dark {
+.instructor-sidebar.dark {
     background: var(--sidebar-dark);
 }
 
-.admin-sidebar.light {
+.instructor-sidebar.light {
     background: var(--sidebar-light);
 }
 
-.tab {
+.instructor-tab {
     font-family: "Host Grotesk", sans-serif;
     display: block;
     width: 100%;
@@ -49,25 +49,25 @@
     transition: background 1s ease;
 }
 
-.tab.dark {
+.instructor-tab.dark {
     background: var(--tab-dark);
     color: var(--text-dark);
 }
 
-.tab.light {
+.instructor-tab.light {
     background: var(--tab-light);
     color: var(--text-light);
 }
 
-.tab.active.dark {
+.instructor-tab.active.dark {
     background: var(--tab-active-dark);
 }
 
-.tab.active.light {
+.instructor-tab.active.light {
     background: var(--tab-active-light);
 }
 
-.admin-logout-button {
+.instructor-logout-button {
     font-family: "Host Grotesk", sans-serif;
     display: block;
     width: 100%;
@@ -80,42 +80,41 @@
     transition: background 0.3s ease;
 }
 
-.admin-logout-button.dark {
+.instructor-logout-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.admin-logout-button.light {
+.instructor-logout-button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.admin-logout-button:hover.dark {
+.instructor-logout-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.admin-logout-button:hover.light {
+.instructor-logout-button:hover.light {
     background: var(--button-hover-light);
 }
 
 /* Content Area */
-.content {
+.instructor-content {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    transition: background 0.3s ease;
 }
 
-.content.dark {
+.instructor-content.dark {
     background: var(--bg-dark);
 }
 
-.content.light {
+.instructor-content.light {
     background: var(--bg-light);
 }
 
 /* Dashboard Tab */
-.dashboard-tab {
+.instructor-dashboard-tab {
     height: 100%;
     width: 100%;
     display: flex;
@@ -123,15 +122,15 @@
     padding: 30px 0px 0px 40px;
 }
 
-.dashboard-tab h1 {
+.instructor-dashboard-tab h1 {
     font-weight: 200;
 }
 
-.dashboard-tab.dark h1 {
+.instructor-dashboard-tab.dark h1 {
     color: var(--text-dark);
 }
 
-.dashboard-tab.light h1 {
+.instructor-dashboard-tab.light h1 {
     color: var(--text-light);
 }
 
@@ -144,40 +143,40 @@
     padding: 30px 330px 10px 10px;
 }
 
-.statistics-box {
+.instructor-statistics-box {
     padding: 20px;
     border-radius: 10px;
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-.statistics-box.dark {
+.instructor-statistics-box.dark {
     background-color: rgb(49, 49, 49);
     color: var(--text-dark);
 }
 
-.statistics-box.light {
+.instructor-statistics-box.light {
     background-color: #ddd;
     color: var(--text-light);
 }
 
-.statistics-box h3 {
+.instructor-statistics-box h3 {
     font-weight: 600;
     display: flex;
     align-items: center;
 }
 
-.statistics-box .logo {
+.instructor-statistics-box .logo {
     margin-right: 10px;
 }
 
 /* Graph Filters */
-.graph-filters {
+.instructor-graph-filters {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
 }
 
-.graph-filters button {
+.instructor-graph-filters button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -186,34 +185,34 @@
     transition: background 0.3s ease;
 }
 
-.graph-filters button.dark {
+.instructor-graph-filters button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.graph-filters button.light {
+.instructor-graph-filters button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.graph-filters button:hover.dark {
+.instructor-graph-filters button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.graph-filters button:hover.light {
+.instructor-graph-filters button:hover.light {
     background: var(--button-hover-light);
 }
 
 /* FAQ Section */
-.faq-section {
+.instructor-faq-section {
     margin-top: 20px;
 }
 
-.faq-box{
+.instructor-faq-box{
     height: 300px;
 }
 
-.generate-faq-button {
+.instructor-generate-faq-button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -222,68 +221,68 @@
     transition: background 0.3s ease;
 }
 
-.generate-faq-button.dark {
+.instructor-generate-faq-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.generate-faq-button.light {
+.instructor-generate-faq-button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.generate-faq-button:hover.dark {
+.instructor-generate-faq-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.generate-faq-button:hover.light {
+.instructor-generate-faq-button:hover.light {
     background: var(--button-hover-light);
 }
 
 /* Manage Users Tab */
-.manage-users-tab {
+.instructor-manage-users-tab {
     padding: 20px;
 }
 
-.manage-users-tab.dark {
+.instructor-manage-users-tab.dark {
     background: var(--bg-dark);
 }
 
-.manage-users-tab.light {
+.instructor-manage-users-tab.light {
     background: var(--bg-light);
 }
 
-.manage-users-tab h1 {
+.instructor-manage-users-tab h1 {
     font-weight: 200;
     margin-bottom: 20px;
 }
 
-.manage-users-tab.dark h1 {
+.instructor-manage-users-tab.dark h1 {
     color: var(--text-dark);
 }
 
-.manage-users-tab.light h1 {
+.instructor-manage-users-tab.light h1 {
     color: var(--text-light);
 }
 
-.manage-learning-materials-tab h1 {
+.instructor-manage-learning-materials-tab h1 {
     font-weight: 200;
     margin-bottom: 20px;
 }
 
-.manage-learning-materials-tab.dark h1 {
+.instructor-manage-learning-materials-tab.dark h1 {
     color: var(--text-dark);
 }
 
-.manage-learning-materials-tab.light h1 {
+.instructor-manage-learning-materials-tab.light h1 {
     color: var(--text-light);
 }
 
-.search-bar {
+.instructor-search-bar {
     margin-bottom: 20px;
 }
 
-.search-bar input {
+.instructor-search-bar input {
     width: 350px;
     padding: 10px;
     border: 1px solid var(--tab-dark);
@@ -291,25 +290,25 @@
     font-family: "Host Grotesk", sans-serif;
 }
 
-.search-bar input.dark {
+.instructor-search-bar input.dark {
     background: var(--input-dark);
     color: var(--text-dark);
 }
 
-.search-bar input.light {
+.instructor-search-bar input.light {
     background: var(--input-light);
     color: var(--text-light);
 }
 
-.search-bar input.dark::placeholder {
+.instructor-search-bar input.dark::placeholder {
     color: var(--input-placeholder-dark);
 }
 
-.search-bar input.light::placeholder {
+.instructor-search-bar input.light::placeholder {
     color: var(--input-placeholder-light);
 }
 
-.users-table {
+.instructor-users-table {
     width: 100%;
     height: 400px;
     border-collapse: collapse;
@@ -318,61 +317,61 @@
     display: block;
 }
 
-.users-table.dark {
+.instructor-users-table.dark {
     color: var(--table-light);
 }
 
-.users-table.light {
+.instructor-users-table.light {
     color: var(--table-dark);
 }
 
-.users-table th, .users-table td {
+.instructor-users-table th, .instructor-users-table td {
     padding: 12px 15px;
     border: 2px solid #000000;
     text-align: left;
 }
 
-.users-table.dark th {
+.instructor-users-table.dark th {
     background: var(--table-dark);
     color: rgb(202, 202, 202);
 }
 
-.users-table.light th {
+.instructor-users-table.light th {
     background: var(--table-light);
     color: rgb(34, 34, 34);
 }
 
-.users-table.dark tr:nth-child(even) {
+.instructor-users-table.dark tr:nth-child(even) {
     background: var(--table-dark);
     color: rgb(202, 202, 202);
 }
 
-.users-table.light tr:nth-child(even) {
+.instructor-users-table.light tr:nth-child(even) {
     background: var(--table-light);
     color: rgb(34, 34, 34);
 }
 
-.users-table.dark tr:nth-child(odd) {
+.instructor-users-table.dark tr:nth-child(odd) {
     background: var(--table-dark2);
     color: rgb(202, 202, 202);
 }
 
-.users-table.light tr:nth-child(odd) {
+.instructor-users-table.light tr:nth-child(odd) {
     background: var(--table-light2);
     color: rgb(34, 34, 34);
 }
 
-.users-table.dark tr:hover {
+.instructor-users-table.dark tr:hover {
     background-color: var(--table-hover-dark);
     color: var(--text-dark);
 }
 
-.users-table.light tr:hover {
+.instructor-users-table.light tr:hover {
     background-color: var(--table-hover-light);
     color: var(--text-light);
 }
 
-.users-table button {
+.instructor-users-table button {
     padding: 5px 10px;
     margin-right: 5px;
     border: none;
@@ -382,79 +381,79 @@
     transition: background 0.3s ease;
 }
 
-.users-table .edit-button.dark {
+.instructor-users-table .edit-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.users-table .edit-button.light {
+.instructor-users-table .edit-button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.users-table .edit-button:hover.dark {
+.instructor-users-table .edit-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.users-table .edit-button:hover.light {
+.instructor-users-table .edit-button:hover.light {
     background: var(--button-hover-light);
 }
 
-.users-table .delete-button.dark {
+.instructor-users-table .delete-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.users-table .delete-button.light {
+.instructor-users-table .delete-button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.users-table .delete-button:hover.dark {
+.instructor-users-table .delete-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.users-table .delete-button:hover.light {
+.instructor-users-table .delete-button:hover.light {
     background: var(--button-hover-light);
 }
 
-.users-table .save-button.dark {
+.instructor-users-table .instructor-save-button.dark {
     background: #2196F3;
     color: var(--text-dark);
 }
 
-.users-table .save-button.light {
+.instructor-users-table .instructor-save-button.light {
     background: #2196F3;
     color: var(--text-light);
 }
 
-.users-table .save-button:hover.dark {
+.instructor-users-table .instructor-save-button:hover.dark {
     background: #0b7dda;
 }
 
-.users-table .save-button:hover.light {
+.instructor-users-table .instructor-save-button:hover.light {
     background: #0b7dda;
 }
 
-.users-table .cancel-button.dark {
+.instructor-users-table .cancel-button.dark {
     background: #777;
     color: var(--text-dark);
 }
 
-.users-table .cancel-button.light {
+.instructor-users-table .cancel-button.light {
     background: #777;
     color: var(--text-light);
 }
 
-.users-table .cancel-button:hover.dark {
+.instructor-users-table .cancel-button:hover.dark {
     background: #555;
 }
 
-.users-table .cancel-button:hover.light {
+.instructor-users-table .cancel-button:hover.light {
     background: #555;
 }
 
-.users-table input {
+.instructor-users-table input {
     width: 100%;
     padding: 5px;
     border: 1px solid var(--tab-dark);
@@ -462,18 +461,18 @@
     font-family: "Host Grotesk", sans-serif;
 }
 
-.users-table input.dark {
+.instructor-users-table input.dark {
     background: var(--input-dark);
     color: var(--text-dark);
 }
 
-.users-table input.light {
+.instructor-users-table input.light {
     background: var(--input-light);
     color: var(--text-light);
 }
 
 /* Confirmation Modal */
-.admin-confirmation-modal {
+.instructor-confirmation-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -485,15 +484,15 @@
     z-index: 1000;
 }
 
-.admin-confirmation-modal.dark {
+.instructor-confirmation-modal.dark {
     background: rgba(0, 0, 0, 0.5);
 }
 
-.admin-confirmation-modal.light {
+.instructor-confirmation-modal.light {
     background: rgba(255, 255, 255, 0.5);
 }
 
-.admin-confirmation-modal .modal-content.dark {
+.instructor-confirmation-modal .instructor-modal-content.dark {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -502,7 +501,7 @@
     color: var(--text-dark);
 }
 
-.admin-confirmation-modal .modal-content.light {
+.instructor-confirmation-modal .instructor-modal-content.light {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -511,11 +510,11 @@
     color: var(--text-light);
 }
 
-.modal-content p {
+.instructor-modal-content p {
     margin-bottom: 20px;
 }
 
-.modal-actions button {
+.instructor-modal-actions button {
     padding: 10px 20px;
     margin: 0 10px;
     border: none;
@@ -525,34 +524,34 @@
     transition: background 0.3s ease;
 }
 
-.modal-actions.dark button {
+.instructor-modal-actions.dark button {
     background: #353535;
     color: var(--text-dark);
 }
 
-.modal-actions.light button {
+.instructor-modal-actions.light button {
     background: #c2c2c2;
     color: var(--text-light);
 }
 
-.modal-actions.dark button:first-child:hover {
+.instructor-modal-actions.dark button:first-child:hover {
     background: #60ad65;
 }
 
-.modal-actions.light button:first-child:hover {
+.instructor-modal-actions.light button:first-child:hover {
     background: #4baf51;
 }
 
-.modal-actions.dark button:last-child:hover {
+.instructor-modal-actions.dark button:last-child:hover {
     background: #b43e3e;
 }
 
-.modal-actions.light button:last-child:hover {
+.instructor-modal-actions.light button:last-child:hover {
     background: #df4040;
 }
 
 /* Theme Toggle */
-.theme-toggle {
+.instructor-theme-toggle {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -564,43 +563,43 @@
     transition: background 0.3s ease;
 }
 
-.theme-toggle.dark {
+.instructor-theme-toggle.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.theme-toggle.light {
+.instructor-theme-toggle.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.theme-toggle:hover.dark {
+.instructor-theme-toggle:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.theme-toggle:hover.light {
+.instructor-theme-toggle:hover.light {
     background: var(--button-hover-light);
 }
 
 /* Exercises Section */
-.exercises-container {
+.instructor-exercises-container {
     margin-top: 20px;
     padding: 20px;
     border-radius: 10px;
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-.exercises-container.dark {
+.instructor-exercises-container.dark {
     background: var(--sidebar-dark);
     color: var(--text-dark);
 }
 
-.exercises-container.light {
+.instructor-exercises-container.light {
     background: var(--sidebar-light);
     color: var(--text-light);
 }
 
-.exercise-subject {
+.instructor-exercise-subject {
     display: flex; /* Use Flexbox */
     justify-content: space-between; /* Space between subject name and button */
     align-items: center; /* Vertically center the content */
@@ -611,7 +610,7 @@
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.exercise-subtopic,.exercise-lesson {
+.instructor-exercise-subtopic,.instructor-exercise-lesson {
     padding: 15px;
     margin: 10px 0;
     border-radius: 5px;
@@ -619,79 +618,79 @@
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.exercise-subject.dark,
-.exercise-subtopic.dark,
-.exercise-lesson.dark{
+.instructor-exercise-subject.dark,
+.instructor-exercise-subtopic.dark,
+.instructor-exercise-lesson.dark{
     background: var(--tab-dark);
     color: var(--text-dark);
 }
 
-.exercise-subject.light,
-.exercise-subtopic.light,
-.exercise-lesson.light{
+.instructor-exercise-subject.light,
+.instructor-exercise-subtopic.light,
+.instructor-exercise-lesson.light{
     background: var(--tab-light);
     color: var(--text-light);
 }
 
-.exercise-subject:hover.dark,
-.exercise-subtopic:hover.dark,
-.exercise-lesson:hover.dark{
+.instructor-exercise-subject:hover.dark,
+.instructor-exercise-subtopic:hover.dark,
+.instructor-exercise-lesson:hover.dark{
     background: var(--tab-active-dark);
     transform: scale(1.02);
 }
 
-.exercise-subject:hover.light,
-.exercise-subtopic:hover.light,
-.exercise-lesson:hover.light{
+.instructor-exercise-subject:hover.light,
+.instructor-exercise-subtopic:hover.light,
+.instructor-exercise-lesson:hover.light{
     background: var(--tab-active-light);
     transform: scale(1.02);
 }
 
-.exercise-content {
+.instructor-exercise-content {
     padding: 20px;
     border-radius: 10px;
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-.exercise-content.dark {
+.instructor-exercise-content.dark {
     background: var(--sidebar-dark);
     color: var(--text-dark);
 }
 
-.exercise-content.light {
+.instructor-exercise-content.light {
     background: rgb(184, 184, 184);
     color: var(--text-light);
 }
 
-.exercise-content h2 {
+.instructor-exercise-content h2 {
     font-size: 24px;
     margin-bottom: 15px;
 }
 
-.exercise-content p {
+.instructor-exercise-content p {
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 15px;
 }
 
-.exercise-content img {
+.instructor-exercise-content img {
     max-width: 100%;
     height: auto;
     border-radius: 5px;
     margin-bottom: 15px;
 }
 
-.exercise-content h3 {
+.instructor-exercise-content h3 {
     font-size: 20px;
     margin-bottom: 10px;
 }
 
-.exercise-content pre.light {
+.instructor-exercise-content pre.light {
     background: var(--code-light);
     color: var(--code-text-light);
 }
 
-.exercise-content button {
+.instructor-exercise-content button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -701,26 +700,26 @@
     margin-right: 10px;
 }
 
-.exercise-content button.dark {
+.instructor-exercise-content button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.exercise-content button.light {
+.instructor-exercise-content button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.exercise-content button:hover.dark {
+.instructor-exercise-content button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.exercise-content button:hover.light {
+.instructor-exercise-content button:hover.light {
     background: var(--button-hover-light);
 }
 
 /* Back to Subjects Button */
-.back-to-subjects-button {
+.instructor-back-to-subjects-button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -732,29 +731,29 @@
     margin-bottom: 20px;
 }
 
-.back-to-subjects-button.dark {
+.instructor-back-to-subjects-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.back-to-subjects-button.light {
+.instructor-back-to-subjects-button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.back-to-subjects-button:hover.dark {
+.instructor-back-to-subjects-button:hover.dark {
     background: var(--button-hover-dark);
     transform: scale(1.05);
 }
 
-.back-to-subjects-button:hover.light {
+.instructor-back-to-subjects-button:hover.light {
     background: var(--button-hover-light);
     transform: scale(1.05);
 }
 
 /* Text Area Styles for Editing Content */
-.content-textarea,
-.exercise-textarea {
+.instructor-content-textarea,
+.instructor-exercise-textarea {
     width: 100%;
     height: 200px; /* Adjust height as needed */
     padding: 10px;
@@ -766,31 +765,31 @@
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-.content-textarea.dark,
-.exercise-textarea.dark {
+.instructor-content-textarea.dark,
+.instructor-exercise-textarea.dark {
     background: var(--input-dark);
     color: var(--text-dark);
 }
 
-.content-textarea.light,
-.exercise-textarea.light {
+.instructor-content-textarea.light,
+.instructor-exercise-textarea.light {
     background: var(--input-light);
     color: var(--text-light);
 }
 
-.content-textarea.dark::placeholder,
-.exercise-textarea.dark::placeholder {
+.instructor-content-textarea.dark::placeholder,
+.instructor-exercise-textarea.dark::placeholder {
     color: var(--input-placeholder-dark);
 }
 
-.content-textarea.light::placeholder,
-.exercise-textarea.light::placeholder {
+.instructor-content-textarea.light::placeholder,
+.instructor-exercise-textarea.light::placeholder {
     color: var(--input-placeholder-light);
 }
 
 /* Text Area Styles for Editing Content */
-.content-textarea,
-.exercise-textarea {
+.instructor-content-textarea,
+.instructor-exercise-textarea {
     width: 100%;
     height: 200px; /* Adjust height as needed */
     padding: 10px;
@@ -803,33 +802,33 @@
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-.content-textarea.dark,
-.exercise-textarea.dark {
+.instructor-content-textarea.dark,
+.instructor-exercise-textarea.dark {
     background: var(--input-dark);
     color: var(--text-dark);
 }
 
-.content-textarea.light,
-.exercise-textarea.light {
+.instructor-content-textarea.light,
+.instructor-exercise-textarea.light {
     background: var(--input-light);
     color: var(--text-light);
 }
 
-.content-textarea.dark::placeholder,
-.exercise-textarea.dark::placeholder {
+.instructor-content-textarea.dark::placeholder,
+.instructor-exercise-textarea.dark::placeholder {
     color: var(--input-placeholder-dark);
 }
 
-.content-textarea.light::placeholder,
-.exercise-textarea.light::placeholder {
+.instructor-content-textarea.light::placeholder,
+.instructor-exercise-textarea.light::placeholder {
     color: var(--input-placeholder-light);
 }
 
-.editing-button{
+.instructor-editing-button{
     margin: 10px;
 }
 
-.delete-subject-button {
+.instructor-delete-subject-button {
     background-color: #ff4d4d;
     color: white;
     border: none;
@@ -839,6 +838,6 @@
     transition: background 0.3s ease;
 }
 
-.delete-subject-button:hover {
+.instructor-delete-subject-button:hover {
     background-color: #cc0000;
 }

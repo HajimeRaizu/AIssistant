@@ -278,12 +278,12 @@ const InstructorPage = () => {
       return Object.keys(learningMaterials).map((subject) => (
         <div
           key={subject}
-          className={`exercise-subject ${theme}`}
+          className={`instructor-exercise-subject ${theme}`}
           onClick={() => setSelectedSubject(subject)}
         >
           <div>{subject}</div>
           <button
-            className={`delete-subject-button ${theme}`}
+            className={`instructor-delete-subject-button ${theme}`}
             onClick={(e) => {
               e.stopPropagation();
               handleConfirmDeleteSubject(subject);
@@ -298,7 +298,7 @@ const InstructorPage = () => {
       return (
         <div>
           <button
-            className={`back-to-subjects-button ${theme}`}
+            className={`instructor-back-to-subjects-button ${theme}`}
             onClick={handleBackToSubjects}
           >
             Back to Subjects
@@ -306,7 +306,7 @@ const InstructorPage = () => {
           {Object.keys(learningMaterials[selectedSubject]).map((lesson) => (
             <div
               key={lesson}
-              className={`exercise-lesson ${theme}`}
+              className={`instructor-exercise-lesson ${theme}`}
               onClick={() => setSelectedLesson(lesson)}
             >
               {`${lesson}`}
@@ -333,7 +333,7 @@ const InstructorPage = () => {
       return (
         <div>
           <button
-            className={`back-to-lessons-button ${theme}`}
+            className={`instructor-back-to-lessons-button ${theme}`}
             onClick={handleBackToLessons}
           >
             Back to Lessons
@@ -343,7 +343,7 @@ const InstructorPage = () => {
             return (
               <div
                 key={subtopicCode}
-                className={`exercise-subtopic ${theme}`}
+                className={`instructor-exercise-subtopic ${theme}`}
                 onClick={() => setSelectedSubtopic(subtopicCode)}
               >
                 {`${subtopicCode} - ${subtopic.subtopicTitle}`}
@@ -357,13 +357,13 @@ const InstructorPage = () => {
       const subtopic = learningMaterials[selectedSubject][selectedLesson][selectedSubtopic];
   
       return (
-        <div className={`exercise-content ${theme}`}>
+        <div className={`instructor-exercise-content ${theme}`}>
           <h2>{subtopic.subtopicTitle}</h2>
   
           {/* Content Section */}
           {editingExercise ? (
             <textarea
-              className={`content-textarea ${theme}`}
+              className={`instructor-content-textarea ${theme}`}
               value={editingExercise.content}
               onChange={(e) =>
                 setEditingExercise({ ...editingExercise, content: e.target.value })
@@ -380,7 +380,7 @@ const InstructorPage = () => {
           <h3>Exercises</h3>
           {editingExercise ? (
             <textarea
-              className={`exercise-textarea ${theme}`}
+              className={`instructor-exercise-textarea ${theme}`}
               value={editingExercise.questions}
               onChange={(e) =>
                 setEditingExercise({ ...editingExercise, questions: e.target.value })
@@ -394,7 +394,7 @@ const InstructorPage = () => {
           <h3>Answers</h3>
           {editingExercise ? (
             <textarea
-              className={`exercise-textarea ${theme}`}
+              className={`instructor-exercise-textarea ${theme}`}
               value={editingExercise.answers}
               onChange={(e) =>
                 setEditingExercise({ ...editingExercise, answers: e.target.value })
@@ -406,15 +406,15 @@ const InstructorPage = () => {
   
           {/* Edit/Save/Cancel Buttons */}
           {editingExercise ? (
-            <div className="e-buttons">
+            <div className="instructor-e-buttons">
               <button
-                className="editing-button"
+                className="instructor-editing-button"
                 onClick={handleSaveExercise}
               >
                 Save
               </button>
               <button
-                className="editing-button"
+                className="instructor-editing-button"
                 onClick={() => setEditingExercise(null)}
               >
                 Cancel
@@ -445,59 +445,59 @@ const InstructorPage = () => {
   };
 
   return (
-    <div className={`admin-container ${theme}`}>
-      <div className={`admin-sidebar ${theme}`}>
+    <div className={`instructor-container ${theme}`}>
+      <div className={`instructor-sidebar ${theme}`}>
         <button 
-          className={`tab ${activeTab === 'dashboard' ? 'active' : ''} ${theme}`}
+          className={`instructor-tab ${activeTab === 'dashboard' ? 'active' : ''} ${theme}`}
           onClick={() => setActiveTab('dashboard')}
         >
           Dashboard
         </button>
         <button 
-          className={`tab ${activeTab === 'learning-materials' ? 'active' : ''} ${theme}`}
+          className={`instructor-tab ${activeTab === 'learning-materials' ? 'active' : ''} ${theme}`}
           onClick={() => setActiveTab('learning-materials')}
         >
           Manage Learning Materials
         </button>
         <button 
-          className={`admin-logout-button ${theme}`}
+          className={`instructor-logout-button ${theme}`}
           onClick={handleLogout}
         >
           Logout
         </button>
       </div>
-      <div className={`content ${theme}`}>
+      <div className={`instructor-content ${theme}`}>
         {activeTab === 'dashboard' ? (
-          <div className={`dashboard-tab ${theme}`}>
+          <div className={`instructor-dashboard-tab ${theme}`}>
             <h1>Dashboard</h1>
             <div className="instructor-statistics">
-              <div className={`statistics-box queries ${theme}`}>
+              <div className={`instructor-statistics-box queries ${theme}`}>
                 <h3>Total Queries</h3>
                 <p>{totalQueries}</p>
               </div>
             </div>
-            <div className={`line-graph-container ${theme}`}>
-              <div className="graph-filters">
-                <button className={`${theme}`} onClick={() => setGraphFilter('weekly')}>Weekly</button>
-                <button className={`${theme}`} onClick={() => setGraphFilter('monthly')}>Monthly</button>
+            <div className={`instructor-line-graph-container ${theme}`}>
+              <div className="instructor-graph-filters">
+                <button className={`instructor-${theme}`} onClick={() => setGraphFilter('weekly')}>Weekly</button>
+                <button className={`instructor-${theme}`} onClick={() => setGraphFilter('monthly')}>Monthly</button>
               </div>
               <Line data={getGraphData()} options={getGraphOptions()} />
             </div>
-            <div className="faq-section">
+            <div className="instructor-faq-section">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>Frequently Asked Questions</h2>
                 <button 
-                  className={`generate-faq-button ${theme}`}
+                  className={`instructor-generate-faq-button ${theme}`}
                   onClick={handleGenerateFAQ}
                 >
                   Generate FAQ
                 </button>
               </div>
-              <pre className="faq-box">{faq}</pre>
+              <pre className="instructor-faq-box">{faq}</pre>
             </div>
           </div>
         ) : (
-          <div className={`manage-learning-materials-tab ${theme}`}>
+          <div className={`instructor-manage-learning-materials-tab ${theme}`}>
             <h1>Manage Learning Materials</h1>
             <input 
               type="file" 
@@ -505,21 +505,21 @@ const InstructorPage = () => {
               onChange={handleUploadLearningMaterials} 
             />
             <p>Upload an Excel file to update learning materials.</p>
-            <div className="exercises-container">
+            <div className="instructor-exercises-container">
               {renderExercises()}
             </div>
           </div>
         )}
       </div>
-      <button className={`theme-toggle ${theme}`} onClick={toggleTheme}>
+      <button className={`instructor-theme-toggle ${theme}`} onClick={toggleTheme}>
         {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
       </button>
 
       {showSubjectConfirmModal && (
-        <div className={`admin-confirmation-modal ${theme}`}>
-          <div className={`modal-content ${theme}`}>
+        <div className={`instructor-confirmation-modal ${theme}`}>
+          <div className={`instructor-modal-content ${theme}`}>
             <p>Are you sure you want to delete this subject?</p>
-            <div className={`modal-actions ${theme}`}>
+            <div className={`instructor-modal-actions ${theme}`}>
               <button onClick={() => {
                 handleDeleteSubject(subjectToDelete);
                 setShowSubjectConfirmModal(false);

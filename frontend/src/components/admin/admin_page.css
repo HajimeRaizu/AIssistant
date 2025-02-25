@@ -117,7 +117,6 @@
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    transition: background 0.3s ease;
 }
 
 .content.dark {
