@@ -50,7 +50,11 @@ const deepseek = new OpenAI({
 });
 
 app.use(express.json());
-app.use(cors( ));
+app.use(cors({
+  origin: "https://aissistant-pi.vercel.app", // Your frontend URL
+  methods: "GET, POST, PUT, DELETE",
+  credentials: true,
+}));
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
