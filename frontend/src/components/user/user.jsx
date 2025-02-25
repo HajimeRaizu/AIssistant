@@ -5,6 +5,8 @@ import axios from "axios";
 import { MdOutlineDelete, MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 const UserPage = () => {
+  const base_url = `https://aissistant-backend.vercel.app`;
+  //const base_url = `http://localhost:5000`;
   const [selectedTab, setSelectedTab] = useState("chat");
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [messages, setMessages] = useState([]);
@@ -35,13 +37,13 @@ const UserPage = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await axios.get(`https://aissistant-backend.vercel.app/api/getChats/${userId}`);
+        const response = await axios.get(`${base_url}/api/getChats/${userId}`);
         setChats(response.data);
   
         if (response.data.length === 0) {
           setCurrentChatId(null);
         } else {
-          setCurrentChatId(response.data[0].id); // Set the latest chat as the current chat
+          setCurrentChatId(null); // Set the latest chat as the current chat
           await fetchChatHistory(response.data[0].id);
         }
       } catch (error) {
@@ -58,7 +60,7 @@ const UserPage = () => {
 
   const fetchChatHistory = async (chatId) => {
     try {
-      const response = await axios.get(`https://aissistant-backend.vercel.app/api/getChatHistory/${chatId}/${userId}`);
+      const response = await axios.get(`${base_url}/api/getChatHistory/${chatId}/${userId}`);
       setMessages(response.data);
     } catch (error) {
       console.error("Failed to fetch chat history:", error);
@@ -79,7 +81,7 @@ const UserPage = () => {
     setIsTyping(true);
   
     try {
-      const response = await axios.post("https://aissistant-backend.vercel.app/api/llama", { input });
+      const response = await axios.post(`${base_url}/api/llama`, { input });
       const botText = response.data.generated_text || "No response received.";
   
       const updatedMessages = [
@@ -93,7 +95,7 @@ const UserPage = () => {
       const chatNameToStore = currentChat?.chatName || "Unnamed Chat";
   
       // Pass the chatName to the backend when storing the chat
-      await axios.post("https://aissistant-backend.vercel.app/api/storeChat", {
+      await axios.post(`${base_url}/api/storeChat`, {
         chatId: currentChatId,
         messages: updatedMessages,
         chatName: chatNameToStore, // Pass the chat name here
@@ -178,6 +180,8 @@ const UserPage = () => {
   };
 
   const createNewChat = async () => {
+    setSelectedTab(null);
+    setCurrentChatId(null);
     setShowChatNameModal(true);
   };
   
@@ -187,7 +191,7 @@ const UserPage = () => {
     setIsSubmitting(true);
   
     try {
-      const response = await axios.post("https://aissistant-backend.vercel.app/api/createChat", { chatName: chatNameInput, userId });
+      const response = await axios.post(`${base_url}/api/createChat`, { chatName: chatNameInput, userId });
       setChats([response.data, ...chats]);
       setCurrentChatId(response.data.id);
       setMessages([]);
@@ -202,7 +206,7 @@ const UserPage = () => {
 
   const deleteChat = async (chatId) => {
     try {
-      await axios.delete(`https://aissistant-backend.vercel.app/api/deleteChat/${chatId}/${userId}`);
+      await axios.delete(`${base_url}/api/deleteChat/${chatId}/${userId}`);
       setChats(chats.filter(chat => chat.id !== chatId));
       if (currentChatId === chatId) {
         setCurrentChatId(chats.length > 1 ? chats[0].id : null);
@@ -317,13 +321,15 @@ const UserPage = () => {
                 className={theme}
                 style={{ height: "auto", minHeight: "96px", maxHeight: "168px", whiteSpace: 'pre-wrap' }}
               />
-              <button 
-                onClick={handleSend} 
-                className={`submit-query ${theme}`} 
-                disabled={isDisabled}
-              >
-                Ask
-              </button>
+              <div className={`chat-input-button ${theme}`}>
+                <button 
+                  onClick={handleSend} 
+                  className={`submit-query ${theme}`} 
+                  disabled={isDisabled}
+                >
+                  Ask
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -331,7 +337,22 @@ const UserPage = () => {
 
       {!currentChatId && (
         <div className={`no-chat-selected ${theme}`}>
-          <p>Please select a chat or create a new one to start chatting.</p>
+          <div className={`no-chat-box ${theme}`}>
+            <div className="newchat-container">
+              <div className="newchat-header">
+                <h1>Hello World! I am AIssistant.</h1>
+                <p>Your personal academia companion.</p>
+              </div>
+              <div className="newchat-message">
+                <input type="text" placeholder="Message DeepSeek" />
+                <button>Send</button>
+              </div>
+              <div className="newchat-search">
+                <input type="text" placeholder="DeepThink (R1) Search" />
+                <button>Search</button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

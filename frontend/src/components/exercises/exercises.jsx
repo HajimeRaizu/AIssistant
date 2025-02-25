@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ExercisesPage = () => {
+  const base_url = `https://aissistant-backend.vercel.app`;
+  //const base_url = `http://localhost:5000`;
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState(null);
@@ -36,7 +38,7 @@ const ExercisesPage = () => {
   const fetchLearningMaterials = async () => {
     try {
       // Fetch the subject IDs associated with the student's ID
-      const accessResponse = await axios.get("https://aissistant-backend.vercel.app/api/getAccessLearningMaterials", {
+      const accessResponse = await axios.get(`${base_url}/api/getAccessLearningMaterials`, {
         params: { studentId },
       });
       const subjectIds = accessResponse.data.subjectIds; // Change from subjectCodes to subjectIds
@@ -44,7 +46,7 @@ const ExercisesPage = () => {
       if (subjectIds.length > 0) {
         setHasSubjectCode(true); // Set hasSubjectCode to true if subject IDs exist
         // Fetch the learning materials for the subject IDs
-        const materialsResponse = await axios.get("https://aissistant-backend.vercel.app/api/getLearningMaterials", {
+        const materialsResponse = await axios.get(`${base_url}/api/getLearningMaterials`, {
           params: { subjectIds }, // Change from subjectCodes to subjectIds
         });
         setLearningMaterials(materialsResponse.data);
@@ -167,7 +169,7 @@ const ExercisesPage = () => {
     }
   
     try {
-      const response = await axios.post("https://aissistant-backend.vercel.app/api/addAccessLearningMaterial", {
+      const response = await axios.post(`${base_url}/api/addAccessLearningMaterial`, {
         studentId,
         subjectId,
       });

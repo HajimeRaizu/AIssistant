@@ -16,16 +16,6 @@ const UserType = () => {
   
     return (
       <div className="user-type-page">
-        {/* Header Section */}
-        <header className="header">
-            <img src={logo} alt="AIssistant logo" className="user-type-logo" onClick={() => {handleBoxClick('/')}}/>
-        </header>
-        
-        {/* Hero Section */}
-        <section className="user-type-hero">
-          <div className='user-type-aissistant'><h1 className='ai'>AI</h1><h1 className='user-type-welcome'>ssistant</h1></div>
-          <p>Your personal academia companion</p>
-        </section>
   
         {/* Action Boxes Section */}
         <section className="user-type-action-boxes">

@@ -8,6 +8,8 @@ import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
 
 const InstructorPage = () => {
+  const base_url = `https://aissistant-backend.vercel.app`;
+  //const base_url = `http://localhost:5000`;
   const [activeTab, setActiveTab] = useState('dashboard');
   const [totalQueries, setTotalQueries] = useState(0);
   const [queryData, setQueryData] = useState([]);
@@ -27,7 +29,7 @@ const InstructorPage = () => {
     console.log(localStorage.getItem("instructorEmail"));
     const fetchTotalQueries = async () => {
       try {
-        const response = await axios.get("https://aissistant-backend.vercel.app/api/getChats");
+        const response = await axios.get(`${base_url}/api/getChats`);
         const allMessages = response.data.flatMap(chat => 
           chat.messages.filter(message => message.sender === "user")
         );
@@ -46,7 +48,7 @@ const InstructorPage = () => {
     const fetchLearningMaterials = async () => {
       try {
         const instructorEmail = localStorage.getItem("instructorEmail"); // Get the instructor's email from localStorage
-        const response = await axios.get("https://aissistant-backend.vercel.app/api/getLearningMaterials", {
+        const response = await axios.get(`${base_url}/api/getLearningMaterials`, {
           params: { instructorEmail }, // Pass the instructorEmail as a query parameter
         });
         setLearningMaterials(response.data);
@@ -62,7 +64,7 @@ const InstructorPage = () => {
   const handleGenerateFAQ = async () => {
     try {
       const prompts = queryData.map(query => query.text);
-      const response = await axios.post("https://aissistant-backend.vercel.app/api/generateFAQ", { prompts });
+      const response = await axios.post(`${base_url}/api/generateFAQ`, { prompts });
       setFaq(response.data.generated_text);
     } catch (error) {
       console.error("Failed to generate FAQ:", error);
@@ -168,7 +170,7 @@ const InstructorPage = () => {
     try {
       const encodedSubject = encodeURIComponent(subject);
       const instructorEmail = localStorage.getItem("instructorEmail"); // Get the instructor's email
-      await axios.delete(`https://aissistant-backend.vercel.app/api/deleteSubject/${encodedSubject}`, {
+      await axios.delete(`${base_url}/api/deleteSubject/${encodedSubject}`, {
         params: { instructorEmail }, // Pass the instructorEmail when deleting
       });
       const updatedLearningMaterials = { ...learningMaterials };
@@ -197,13 +199,13 @@ const InstructorPage = () => {
       formData.append("instructorEmail", instructorEmail);
   
       try {
-        await axios.post("https://aissistant-backend.vercel.app/api/uploadLearningMaterials", formData, {
+        await axios.post(`${base_url}/api/uploadLearningMaterials`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
         alert("Learning materials uploaded successfully!");
-        const response = await axios.get("https://aissistant-backend.vercel.app/api/getLearningMaterials", {
+        const response = await axios.get(`${base_url}/api/getLearningMaterials`, {
           params: { instructorEmail }, // Pass the instructorEmail when fetching learning materials
         });
         setLearningMaterials(response.data);
@@ -250,7 +252,7 @@ const InstructorPage = () => {
       };
   
       await axios.put(
-        `https://aissistant-backend.vercel.app/api/updateExercise/${editingExercise.docId}`,
+        `${base_url}/api/updateExercise/${editingExercise.docId}`,
         updatedExercise
       );
   

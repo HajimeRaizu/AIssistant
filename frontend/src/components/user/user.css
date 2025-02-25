@@ -91,7 +91,7 @@
     flex-direction: column;
     gap: 10px;
     overflow-y: auto;
-    height: 480px;
+    height: 90%;
     border-top: 1px solid var(--tab-dark);
     border-bottom: 1px solid var(--tab-dark);
 }
@@ -428,6 +428,7 @@
 
 .chat-input {
     display: flex;
+    flex-direction: column;
     align-items: center;
     padding: 10px;
     border-top: 1px solid var(--tab-dark);
@@ -442,10 +443,10 @@
 }
 
 .chat-input textarea {
-    padding: 8px;
+    padding: 2% 2% 0% 2%;
     border: 1px solid var(--tab-dark);
     width: 100%;
-    border-radius: 4px;
+    border-radius: 4px 4px 0px 0px;
     margin-right: 10px;
     font-family: "Host Grotesk", sans-serif;
     font-size: large;
@@ -454,8 +455,13 @@
     resize: none;
     font-size: 18px;
     overflow-y: auto;
-    min-height: 96px;
-    max-height: 196px;
+    min-height: 10%;
+    max-height: 100%;
+    border: none;
+}
+
+textarea:focus{
+    outline: none;
 }
 
 .chat-input textarea.light {
@@ -784,22 +790,38 @@ code {
 }
 
 /* Add styles for the submit-query button to be affected by the theme toggle */
-.chat-input button.submit-query.dark {
+button.submit-query.dark {
     background-color: var(--button-dark);
     color: var(--text-dark);
 }
 
-.chat-input button.submit-query.light {
+button.submit-query.light {
     background-color: var(--button-light);
     color: var(--text-light);
 }
 
-.chat-input button.submit-query:hover.dark {
+button.submit-query:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.chat-input button.submit-query:hover.light {
+button.submit-query:hover.light {
     background: var(--button-hover-light);
+}
+
+.chat-input-button{
+    padding: 2px 10px 10px 10px;
+    border: none;
+    width: 100%;
+    border-radius: 0px 0px 4px 4px;
+    margin-right: 10px;
+    font-family: "Host Grotesk", sans-serif;
+    font-size: large;
+    background-color: var(--input-dark);
+    color: var(--text-dark);
+    resize: none;
+    font-size: 18px;
+    overflow-y: auto;
+    direction: rtl;
 }
 
 /* Delete Icon Styling */
@@ -1015,4 +1037,60 @@ code {
     align-items: center;
     height: 100vh;
     font-size: 1.5rem;
+  }
+
+  .no-chat-box {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+  }
+
+  .no-chat-box.light{
+    background-color: red;
+  }
+
+  .no-chat-box.dark{
+    background-color: orange;
+  }
+  
+  .newchat-container {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .newchat-header h1 {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .newchat-header p {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .newchat-message, .newchat-search {
+    margin-top: 20px;
+  }
+  
+  .newchat-message input, .newchat-search input {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+  
+  .newchat-message button, .newchat-search button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .newchat-message button:hover, .newchat-search button:hover {
+    background-color: #0056b3;
   }

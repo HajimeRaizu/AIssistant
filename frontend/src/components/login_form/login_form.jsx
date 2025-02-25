@@ -9,6 +9,8 @@ import axios from "axios";
 import logo from '../assets/AIssistant.png';  // Adjust the relative path to your image
 
 const LoginForm = () => {
+  const base_url = `https://aissistant-backend.vercel.app`;
+  //const base_url = `http://localhost:5000`;
   const [studentId, setStudentId] = useState(''); // Change from email to studentId
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ const LoginForm = () => {
   
     // If not admin, check credentials against the database
     try {
-      const response = await axios.post("https://aissistant-backend.vercel.app/api/login", {
+      const response = await axios.post(`${base_url}/api/login`, {
         studentId, // Change from email to studentId
         password,
       });

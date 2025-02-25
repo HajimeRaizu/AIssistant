@@ -51,7 +51,7 @@ const deepseek = new OpenAI({
 
 app.use(express.json());
 app.use(cors({
-  origin: "https://aissistant-pi.vercel.app", // Your frontend URL
+  origin: "*", // Your frontend URL
   methods: "GET, POST, PUT, DELETE, OPTIONS",
   credentials: true,
   allowedHeaders: "Content-Type, Authorization"

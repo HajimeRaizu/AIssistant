@@ -6,6 +6,8 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios"; // Import axios
 
 const InstructorLogin = () => {
+  const base_url = `https://aissistant-backend.vercel.app`;
+  //const base_url = `http://localhost:5000`;
   const navigate = useNavigate();
 
   const handleGoogleLoginSuccess = async (credentialResponse) => {
@@ -13,7 +15,7 @@ const InstructorLogin = () => {
   
     try {
       // Check if the email exists in the instructors collection
-      const response = await axios.get("https://aissistant-backend.vercel.app/api/checkInstructorEmail", {
+      const response = await axios.get(`${base_url}/api/checkInstructorEmail`, {
         params: { email: decodedToken.email },
       });
   
