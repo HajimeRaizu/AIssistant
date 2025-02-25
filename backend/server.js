@@ -261,6 +261,10 @@ app.post("/api/generateFAQ", async (req, res) => {
 
     console.log("Input Prompt:", inputPrompt);
 
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
     const completion = await deepseek.chat.completions.create({
       model: "deepseek-chat",
       messages: [
