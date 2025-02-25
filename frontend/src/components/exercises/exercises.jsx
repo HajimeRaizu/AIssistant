@@ -36,7 +36,7 @@ const ExercisesPage = () => {
   const fetchLearningMaterials = async () => {
     try {
       // Fetch the subject IDs associated with the student's ID
-      const accessResponse = await axios.get("http://localhost:5000/api/getAccessLearningMaterials", {
+      const accessResponse = await axios.get("https://aissistant-backend.vercel.app/api/getAccessLearningMaterials", {
         params: { studentId },
       });
       const subjectIds = accessResponse.data.subjectIds; // Change from subjectCodes to subjectIds
@@ -44,7 +44,7 @@ const ExercisesPage = () => {
       if (subjectIds.length > 0) {
         setHasSubjectCode(true); // Set hasSubjectCode to true if subject IDs exist
         // Fetch the learning materials for the subject IDs
-        const materialsResponse = await axios.get("http://localhost:5000/api/getLearningMaterials", {
+        const materialsResponse = await axios.get("https://aissistant-backend.vercel.app/api/getLearningMaterials", {
           params: { subjectIds }, // Change from subjectCodes to subjectIds
         });
         setLearningMaterials(materialsResponse.data);
@@ -167,7 +167,7 @@ const ExercisesPage = () => {
     }
   
     try {
-      const response = await axios.post("http://localhost:5000/api/addAccessLearningMaterial", {
+      const response = await axios.post("https://aissistant-backend.vercel.app/api/addAccessLearningMaterial", {
         studentId,
         subjectId,
       });

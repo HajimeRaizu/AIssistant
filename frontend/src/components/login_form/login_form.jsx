@@ -35,7 +35,7 @@ const LoginForm = () => {
   
     // If not admin, check credentials against the database
     try {
-      const response = await axios.post("https://aissistant-gold.vercel.app/api/login", {
+      const response = await axios.post("https://aissistant-backend.vercel.app/api/login", {
         studentId, // Change from email to studentId
         password,
       });

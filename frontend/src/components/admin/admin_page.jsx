@@ -40,7 +40,7 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchTotalQueries = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/getChats");
+        const response = await axios.get("https://aissistant-backend.vercel.app/api/getChats");
         const allMessages = response.data.flatMap(chat => 
           chat.messages.filter(message => message.sender === "user")
         );
@@ -58,7 +58,7 @@ const AdminPage = () => {
 
     const fetchtotalStudents = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/getUsers");
+        const response = await axios.get("https://aissistant-backend.vercel.app/api/getUsers");
         setTotalStudents(response.data.length);
         setUsers(response.data);
       } catch (error) {
@@ -69,7 +69,7 @@ const AdminPage = () => {
 
     const fetchUniversityInfo = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/getUniversityInfo");
+        const response = await axios.get("https://aissistant-backend.vercel.app/api/getUniversityInfo");
         setUniversityInfo(response.data.info);
       } catch (error) {
         console.error("Failed to fetch university info:", error);
@@ -78,7 +78,7 @@ const AdminPage = () => {
 
     const fetchInstructors = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/getInstructors");
+        const response = await axios.get("https://aissistant-backend.vercel.app/api/getInstructors");
         setInstructors(response.data);
         setTotalInstructors(response.data.length); // Set the total number of instructors
       } catch (error) {
@@ -95,7 +95,7 @@ const AdminPage = () => {
   const handleGenerateFAQ = async () => {
     try {
       const prompts = queryData.map(query => query.text);
-      const response = await axios.post("http://localhost:5000/api/generateFAQ", { prompts });
+      const response = await axios.post("https://aissistant-backend.vercel.app/api/generateFAQ", { prompts });
       setFaq(response.data.generated_text);
     } catch (error) {
       console.error("Failed to generate FAQ:", error);
@@ -199,11 +199,11 @@ const AdminPage = () => {
     try {
       if (activeTab === 'settings') {
         // Update user
-        await axios.put(`http://localhost:5000/api/updateUser/${user.id}`, user);
+        await axios.put(`https://aissistant-backend.vercel.app/api/updateUser/${user.id}`, user);
         setUsers(users.map(u => u.id === user.id ? user : u));
       } else if (activeTab === 'instructors') {
         // Update instructor
-        await axios.put(`http://localhost:5000/api/updateInstructor/${user.id}`, user); // Use user.id (Firestore document ID)
+        await axios.put(`https://aissistant-backend.vercel.app/api/updateInstructor/${user.id}`, user); // Use user.id (Firestore document ID)
         setInstructors(instructors.map(i => i.id === user.id ? user : i));
       }
       setEditingUser(null);
@@ -214,7 +214,7 @@ const AdminPage = () => {
 
   const handleDeleteUser = async (userId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/deleteUser/${userId}`);
+      await axios.delete(`https://aissistant-backend.vercel.app/api/deleteUser/${userId}`);
       setUsers(users.filter(user => user.id !== userId));
       setShowConfirmModal(false);
     } catch (error) {
@@ -234,13 +234,13 @@ const AdminPage = () => {
       formData.append("file", file);
 
       try {
-        const response = await axios.post("http://localhost:5000/api/uploadUsers", formData, {
+        const response = await axios.post("https://aissistant-backend.vercel.app/api/uploadUsers", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
         alert("Users uploaded successfully!");
-        const usersResponse = await axios.get("http://localhost:5000/api/getUsers");
+        const usersResponse = await axios.get("https://aissistant-backend.vercel.app/api/getUsers");
         setUsers(usersResponse.data);
       } catch (error) {
         console.error("Error uploading users:", error);
@@ -254,7 +254,7 @@ const AdminPage = () => {
     setIsAddingUser(true); // Disable the "Add" button
 
     try {
-      const response = await axios.post("http://localhost:5000/api/addSingleUser", {
+      const response = await axios.post("https://aissistant-backend.vercel.app/api/addSingleUser", {
         name: newUserName,
         email: newUserEmail,
       });
@@ -273,7 +273,7 @@ const AdminPage = () => {
 
   const handleUpdateUniversityInfo = async () => {
     try {
-      await axios.put("http://localhost:5000/api/updateUniversityInfo", { info: universityInfo });
+      await axios.put("https://aissistant-backend.vercel.app/api/updateUniversityInfo", { info: universityInfo });
       setEditingUniversityInfo(false);
       alert("University info updated successfully!");
     } catch (error) {
@@ -288,13 +288,13 @@ const AdminPage = () => {
       formData.append("file", file);
 
       try {
-        await axios.post("http://localhost:5000/api/uploadInstructors", formData, {
+        await axios.post("https://aissistant-backend.vercel.app/api/uploadInstructors", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
         alert("Instructors uploaded successfully!");
-        const response = await axios.get("http://localhost:5000/api/getInstructors");
+        const response = await axios.get("https://aissistant-backend.vercel.app/api/getInstructors");
         setInstructors(response.data);
       } catch (error) {
         console.error("Error uploading instructors:", error);
@@ -308,7 +308,7 @@ const AdminPage = () => {
     setIsAddingInstructor(true); // Disable the "Add" button
 
     try {
-      await axios.post("http://localhost:5000/api/addSingleInstructor", {
+      await axios.post("https://aissistant-backend.vercel.app/api/addSingleInstructor", {
         email: newInstructorEmail,
         name: newInstructorName,
       });
@@ -327,7 +327,7 @@ const AdminPage = () => {
 
   const handleDeleteInstructor = async (instructorEmail) => {
     try {
-      await axios.delete(`http://localhost:5000/api/deleteInstructor/${encodeURIComponent(instructorEmail)}`);
+      await axios.delete(`https://aissistant-backend.vercel.app/api/deleteInstructor/${encodeURIComponent(instructorEmail)}`);
       setInstructors(instructors.filter(instructor => instructor.email !== instructorEmail));
       setShowConfirmInstructorModal(false);
       alert("Instructor deleted successfully!");

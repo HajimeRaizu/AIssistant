@@ -13,7 +13,7 @@ const InstructorLogin = () => {
   
     try {
       // Check if the email exists in the instructors collection
-      const response = await axios.get("http://localhost:5000/api/checkInstructorEmail", {
+      const response = await axios.get("https://aissistant-backend.vercel.app/api/checkInstructorEmail", {
         params: { email: decodedToken.email },
       });
   

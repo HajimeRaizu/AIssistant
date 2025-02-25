@@ -35,7 +35,7 @@ const UserPage = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/getChats/${userId}`);
+        const response = await axios.get(`https://aissistant-backend.vercel.app//api/getChats/${userId}`);
         setChats(response.data);
   
         if (response.data.length === 0) {
@@ -58,7 +58,7 @@ const UserPage = () => {
 
   const fetchChatHistory = async (chatId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/getChatHistory/${chatId}/${userId}`);
+      const response = await axios.get(`https://aissistant-backend.vercel.app//api/getChatHistory/${chatId}/${userId}`);
       setMessages(response.data);
     } catch (error) {
       console.error("Failed to fetch chat history:", error);
@@ -79,7 +79,7 @@ const UserPage = () => {
     setIsTyping(true);
   
     try {
-      const response = await axios.post("http://localhost:5000/api/llama", { input });
+      const response = await axios.post("https://aissistant-backend.vercel.app//api/llama", { input });
       const botText = response.data.generated_text || "No response received.";
   
       const updatedMessages = [
@@ -93,7 +93,7 @@ const UserPage = () => {
       const chatNameToStore = currentChat?.chatName || "Unnamed Chat";
   
       // Pass the chatName to the backend when storing the chat
-      await axios.post("http://localhost:5000/api/storeChat", {
+      await axios.post("https://aissistant-backend.vercel.app//api/storeChat", {
         chatId: currentChatId,
         messages: updatedMessages,
         chatName: chatNameToStore, // Pass the chat name here
@@ -187,7 +187,7 @@ const UserPage = () => {
     setIsSubmitting(true);
   
     try {
-      const response = await axios.post("http://localhost:5000/api/createChat", { chatName: chatNameInput, userId });
+      const response = await axios.post("https://aissistant-backend.vercel.app//api/createChat", { chatName: chatNameInput, userId });
       setChats([response.data, ...chats]);
       setCurrentChatId(response.data.id);
       setMessages([]);
@@ -202,7 +202,7 @@ const UserPage = () => {
 
   const deleteChat = async (chatId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/deleteChat/${chatId}/${userId}`);
+      await axios.delete(`https://aissistant-backend.vercel.app//api/deleteChat/${chatId}/${userId}`);
       setChats(chats.filter(chat => chat.id !== chatId));
       if (currentChatId === chatId) {
         setCurrentChatId(chats.length > 1 ? chats[0].id : null);
