@@ -16,7 +16,6 @@ const UserType = () => {
   
     return (
       <div className="user-type-page">
-  
         {/* Action Boxes Section */}
         <section className="user-type-action-boxes">
           <div
