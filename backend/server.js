@@ -257,6 +257,7 @@ app.post("/api/generateFAQ", async (req, res) => {
       2. DO NOT ANSWER THE QUESTIONS.
 
       Questions:
+      1. how to print hello world in java
       ${prompts.map((prompt, index) => `${index + 1}. ${prompt}`).join("\n")}
     `;
 
