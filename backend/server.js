@@ -54,6 +54,7 @@ app.use(cors({
   origin: "https://aissistant-pi.vercel.app", // Your frontend URL
   methods: "GET, POST, PUT, DELETE",
   credentials: true,
+  allowedHeaders: "Content-Type,Authorization"
 }));
 
 const storage = multer.diskStorage({
