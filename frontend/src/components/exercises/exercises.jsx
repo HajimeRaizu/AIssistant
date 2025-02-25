@@ -30,6 +30,7 @@ const ExercisesPage = () => {
     if (studentId) {
       fetchLearningMaterials();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentId]);
 
   const fetchLearningMaterials = async () => {
