@@ -79,17 +79,17 @@
 
 .statistics {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     height: 100%;
     width: 100%;
-    padding: 30px 330px 10px 10px;
+    padding: 30px 10px 10px 10px;
 }
 
 .statistics-box {
     padding: 20px;
     border-radius: 10px;
-    width: 250px;
+    width: 100%;
     background-color: rgb(184, 184, 184);
     color: black;
 }
