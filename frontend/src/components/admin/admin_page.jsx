@@ -6,6 +6,7 @@ import { MdOutlineDashboard } from "react-icons/md";
 import { PiStudentBold } from "react-icons/pi";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineQuestionAnswer } from "react-icons/md";
+import { LuBookMarked } from "react-icons/lu";
 import { BiLogOut } from "react-icons/bi";
 import {
   LineChart,
@@ -31,6 +32,7 @@ const AdminPage = () => {
   const [totalQueries, setTotalQueries] = useState(0);
   const [totalStudents, setTotalStudents] = useState(0);
   const [totalInstructors, setTotalInstructors] = useState(0);
+  const [totalLearningMaterials, setTotalLearningMaterials] = useState(0);
   const [queryData, setQueryData] = useState([]);
   const [graphFilter, setGraphFilter] = useState('weekly');
   const [faq, setFaq] = useState("");
@@ -103,10 +105,20 @@ const AdminPage = () => {
       }
     };
 
+    const fetchTotalLearningMaterials = async () => {
+      try {
+        const response = await axios.get(`${base_url}/api/getTotalLearningMaterials`);
+        setTotalLearningMaterials(response.data.totalLearningMaterials);
+      } catch (error) {
+        console.error("Failed to fetch total learning materials:", error);
+      }
+    };
+
     fetchTotalQueries();
     fetchtotalStudents();
     fetchUniversityInfo();
     fetchInstructors();
+    fetchTotalLearningMaterials();
   }, []);
 
   const handleGenerateFAQ = async () => {
@@ -381,16 +393,20 @@ const AdminPage = () => {
             <h1><MdOutlineDashboard />Dashboard</h1>
             <div className="statistics">
               <div className="statistics-box queries">
-                <h3><MdOutlineQuestionAnswer />Total Queries</h3>
+                <h3><MdOutlineQuestionAnswer className='statistics-box-icon' />Total Queries</h3>
                 <p>{totalQueries}</p>
               </div>
               <div className="statistics-box users">
-                <h3><FaRegUser />Students</h3>
+                <h3><FaRegUser className='statistics-box-icon' />Students</h3>
                 <p>{totalStudents}</p>
               </div>
               <div className="statistics-box instructors">
-                <h3><PiStudentBold />Instructors</h3>
+                <h3><PiStudentBold className='statistics-box-icon' />Instructors</h3>
                 <p>{totalInstructors}</p>
+              </div>
+              <div className="statistics-box learning-materials">
+                <h3><LuBookMarked className='statistics-box-icon' />Learning Materials</h3>
+                <p>{totalLearningMaterials}</p>
               </div>
             </div>
             <div className="line-graph-container">

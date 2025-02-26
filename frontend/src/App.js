@@ -27,7 +27,7 @@ function App() {
             <InstructorPage/>
           </ProtectedRoute>
         } />
-        <Route path="/instructor-login" element={<InstructorPage />} />
+        <Route path="/instructor-login" element={<InstructorLogin />} />
       </Routes>
     </Router>
   );

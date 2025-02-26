@@ -503,46 +503,29 @@ app.post("/api/login", async (req, res) => {
 
 // 5. Learning materials and exercises functions
 // Get learning materials for the logged-in instructor
-app.get("/api/getLearningMaterials", async (req, res) => {
-  const instructorEmail = req.query.instructorEmail;
-
+app.get("/api/getTotalLearningMaterials", async (req, res) => {
   try {
-    let query = db.collection("learningMaterials");
-    if (instructorEmail) {
-      query = query.where("instructorEmail", "==", instructorEmail);
-    }
-
-    const exercisesSnapshot = await query.get();
-    const exercises = exercisesSnapshot.docs.map((doc) => ({
-      docId: doc.id, // Include the document ID
-      ...doc.data(),
-    }));
-
-    // Organize the learning materials by subjectName, lesson, and subtopicCode
-    const organizedLearningMaterials = exercises.reduce((acc, material) => {
-      const { subjectName, lesson, subtopicCode } = material;
-
-      if (!acc[subjectName]) {
-        acc[subjectName] = {};
+    const learningMaterialsSnapshot = await db.collection("learningMaterials").get();
+    
+    // Use a Set to store unique subjectIds
+    const uniqueSubjectIds = new Set();
+    
+    learningMaterialsSnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.subjectId) {
+        uniqueSubjectIds.add(data.subjectId);
       }
+    });
 
-      if (!acc[subjectName][lesson]) {
-        acc[subjectName][lesson] = {};
-      }
+    const totalUniqueSubjects = uniqueSubjectIds.size; // Count unique subjectIds
 
-      if (!acc[subjectName][lesson][subtopicCode]) {
-        acc[subjectName][lesson][subtopicCode] = material;
-      }
-
-      return acc;
-    }, {});
-
-    res.status(200).json(organizedLearningMaterials);
+    res.status(200).json({ totalLearningMaterials: totalUniqueSubjects });
   } catch (error) {
-    console.error("Error fetching learning materials:", error);
-    res.status(500).json({ error: "Failed to fetch learning materials" });
+    console.error("Error fetching total learning materials:", error);
+    res.status(500).json({ error: "Failed to fetch total learning materials" });
   }
 });
+
 
 app.post("/api/uploadLearningMaterials", upload.single("file"), async (req, res) => {
   try {
