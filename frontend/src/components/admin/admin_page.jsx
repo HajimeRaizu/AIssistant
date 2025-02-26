@@ -1,11 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, PureComponent } from "react";
 import './admin_page.css';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { MdLightMode, MdDarkMode } from "react-icons/md";
-import { Line } from "react-chartjs-2";
-import { Chart, registerables } from "chart.js";
-Chart.register(...registerables);
+import { MdOutlineDashboard } from "react-icons/md";
+import { PiStudentBold } from "react-icons/pi";
+import { FaRegUser } from "react-icons/fa";
+import { MdOutlineQuestionAnswer } from "react-icons/md";
+import { BiLogOut } from "react-icons/bi";
+import {
+  LineChart,
+  Label,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ReferenceLine,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Sector,
+  Cell,
+} from 'recharts';
 
 const AdminPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -16,7 +33,6 @@ const AdminPage = () => {
   const [totalInstructors, setTotalInstructors] = useState(0);
   const [queryData, setQueryData] = useState([]);
   const [graphFilter, setGraphFilter] = useState('weekly');
-  const [theme, setTheme] = useState("light");
   const [faq, setFaq] = useState("");
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
@@ -35,8 +51,8 @@ const AdminPage = () => {
   const [instructorSearchTerm, setInstructorSearchTerm] = useState("");
   const [showConfirmInstructorModal, setShowConfirmInstructorModal] = useState(false);
   const [instructorEmailToDelete, setInstructorEmailToDelete] = useState(null);
-  const [isAddingUser, setIsAddingUser] = useState(false); // To prevent multiple user additions
-  const [isAddingInstructor, setIsAddingInstructor] = useState(false); // To prevent multiple instructor additions
+  const [isAddingUser, setIsAddingUser] = useState(false);
+  const [isAddingInstructor, setIsAddingInstructor] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,7 +84,6 @@ const AdminPage = () => {
       }
     };
     
-
     const fetchUniversityInfo = async () => {
       try {
         const response = await axios.get(`${base_url}/api/getUniversityInfo`);
@@ -82,7 +97,7 @@ const AdminPage = () => {
       try {
         const response = await axios.get(`${base_url}/api/getInstructors`);
         setInstructors(response.data);
-        setTotalInstructors(response.data.length); // Set the total number of instructors
+        setTotalInstructors(response.data.length);
       } catch (error) {
         console.error("Failed to fetch instructors:", error);
       }
@@ -106,10 +121,6 @@ const AdminPage = () => {
 
   const handleLogout = () => {
     navigate('/');
-  };
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   const getGraphData = () => {
@@ -148,50 +159,14 @@ const AdminPage = () => {
       }
     });
 
-    const totalQueriesDataset = sortedLabels.map(label => groupedData[label]);
+    // Format data for recharts
+    const chartData = sortedLabels.map(label => ({
+      name: label,
+      queries: groupedData[label]
+    }));
 
-    return {
-      labels: sortedLabels,
-      datasets: [
-        {
-          label: 'Total Queries',
-          data: totalQueriesDataset,
-          fill: false,
-          borderColor: theme === "dark" ? 'rgb(75, 192, 192)' : 'rgb(75, 192, 192)',
-          backgroundColor: theme === "dark" ? 'rgba(75, 192, 192, 0.2)' : 'rgba(75, 192, 192, 0.2)',
-          tension: 0.1
-        }
-      ]
-    };
+    return chartData;
   };
-
-  const getGraphOptions = () => ({
-    scales: {
-      x: {
-        ticks: {
-          color: theme === "dark" ? 'white' : 'black'
-        },
-        grid: {
-          color: theme === "dark" ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-        }
-      },
-      y: {
-        ticks: {
-          color: theme === "dark" ? 'white' : 'black'
-        },
-        grid: {
-          color: theme === "dark" ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-        }
-      }
-    },
-    plugins: {
-      legend: {
-        labels: {
-          color: theme === "dark" ? 'white' : 'black'
-        }
-      }
-    }
-  });
 
   const handleEditUser = (user) => {
     setEditingUser(user);
@@ -200,12 +175,10 @@ const AdminPage = () => {
   const handleSaveUser = async (user) => {
     try {
       if (activeTab === 'settings') {
-        // Update user
         await axios.put(`${base_url}/api/updateUser/${user.id}`, user);
         setUsers(users.map(u => u.id === user.id ? user : u));
       } else if (activeTab === 'instructors') {
-        // Update instructor
-        await axios.put(`${base_url}/api/updateInstructor/${user.id}`, user); // Use user.id (Firestore document ID)
+        await axios.put(`${base_url}/api/updateInstructor/${user.id}`, user);
         setInstructors(instructors.map(i => i.id === user.id ? user : i));
       }
       setEditingUser(null);
@@ -247,13 +220,15 @@ const AdminPage = () => {
       } catch (error) {
         console.error("Error uploading users:", error);
         alert("Failed to upload users. Please check the file format and try again.");
+      } finally {
+        event.target.value = null;
       }
     }
   };
 
   const handleAddSingleUser = async () => {
-    if (isAddingUser) return; // Prevent multiple submissions
-    setIsAddingUser(true); // Disable the "Add" button
+    if (isAddingUser) return;
+    setIsAddingUser(true);
 
     try {
       const response = await axios.post(`${base_url}/api/addSingleUser`, {
@@ -269,7 +244,7 @@ const AdminPage = () => {
       console.error("Failed to add user:", error);
       alert("Failed to add user.");
     } finally {
-      setIsAddingUser(false); // Re-enable the "Add" button
+      setIsAddingUser(false);
     }
   };
 
@@ -301,13 +276,15 @@ const AdminPage = () => {
       } catch (error) {
         console.error("Error uploading instructors:", error);
         alert("Failed to upload instructors. Please check the file format and try again.");
+      } finally {
+        event.target.value = null;
       }
     }
   };
 
   const handleAddSingleInstructor = async () => {
-    if (isAddingInstructor) return; // Prevent multiple submissions
-    setIsAddingInstructor(true); // Disable the "Add" button
+    if (isAddingInstructor) return;
+    setIsAddingInstructor(true);
 
     try {
       await axios.post(`${base_url}/api/addSingleInstructor`, {
@@ -323,7 +300,7 @@ const AdminPage = () => {
       console.error("Failed to add instructor:", error);
       alert("Failed to add instructor.");
     } finally {
-      setIsAddingInstructor(false); // Re-enable the "Add" button
+      setIsAddingInstructor(false);
     }
   };
 
@@ -358,64 +335,131 @@ const AdminPage = () => {
     return instructor.email.toLowerCase().includes(searchLower);
   });
 
+  // Data for the PieChart
+  const pieChartData = [
+    { name: 'Students', value: totalStudents },
+    { name: 'Instructors', value: totalInstructors },
+  ];
+
+  const COLORS = ['#005f9e', '#00816a'];
+
   return (
-    <div className={`admin-container ${theme}`}>
-      <div className={`admin-sidebar ${theme}`}>
+    <div className="admin-container">
+      <div className="admin-sidebar">
         <button 
-          className={`tab ${activeTab === 'dashboard' ? 'active' : ''} ${theme}`}
+          className={`admin-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => setActiveTab('dashboard')}
         >
+          <MdOutlineDashboard />
           Dashboard
         </button>
         <button 
-          className={`tab ${activeTab === 'settings' ? 'active' : ''} ${theme}`}
+          className={`admin-tab ${activeTab === 'settings' ? 'active' : ''}`}
           onClick={() => setActiveTab('settings')}
         >
+          <FaRegUser />
           Manage Students
         </button>
         <button 
-          className={`tab ${activeTab === 'instructors' ? 'active' : ''} ${theme}`}
+          className={`admin-tab ${activeTab === 'instructors' ? 'active' : ''}`}
           onClick={() => setActiveTab('instructors')}
         >
+          <PiStudentBold />
           Manage Instructors
         </button>
         <button 
-          className={`admin-logout-button ${theme}`}
+          className="admin-logout-button"
           onClick={handleLogout}
         >
+          <BiLogOut />
           Logout
         </button>
       </div>
-      <div className={`content ${theme}`}>
+      <div className="admin-content">
         {activeTab === 'dashboard' ? (
-          <div className={`dashboard-tab ${theme}`}>
-            <h1>Dashboard</h1>
+          <div className="dashboard-tab">
+            <h1><MdOutlineDashboard />Dashboard</h1>
             <div className="statistics">
-              <div className={`statistics-box queries ${theme}`}>
-                <h3>Total Queries</h3>
+              <div className="statistics-box queries">
+                <h3><MdOutlineQuestionAnswer />Total Queries</h3>
                 <p>{totalQueries}</p>
               </div>
-              <div className={`statistics-box users ${theme}`}>
-                <h3>Students</h3>
+              <div className="statistics-box users">
+                <h3><FaRegUser />Students</h3>
                 <p>{totalStudents}</p>
               </div>
-              <div className={`statistics-box instructors ${theme}`}>
-                <h3>Instructors</h3>
+              <div className="statistics-box instructors">
+                <h3><PiStudentBold />Instructors</h3>
                 <p>{totalInstructors}</p>
               </div>
             </div>
-            <div className={`line-graph-container ${theme}`}>
-              <div className="graph-filters">
-                <button className={`${theme}`} onClick={() => setGraphFilter('weekly')}>Weekly</button>
-                <button className={`${theme}`} onClick={() => setGraphFilter('monthly')}>Monthly</button>
+            <div className="line-graph-container">
+              <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                  <ResponsiveContainer className='line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
+                    <LineChart className='line'
+                      data={getGraphData()}
+                      margin={{
+                        top: 10,
+                        right: 30,
+                        left: 0,
+                        bottom: 0,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" padding={{ left: 30, right: 30 }}>
+                        <Label
+                          value={graphFilter === "weekly" ? "Time (Weeks)" : "Time (Months)"}
+                          offset={0}
+                          position="insideBottom"
+                        />
+                      </XAxis>
+                      <YAxis
+                        tickFormatter={(value) => (value === 0 ? "" : Math.floor(value))}
+                        domain={[0, "dataMax"]}
+                        allowDecimals={false}
+                      >
+                        <Label
+                          value="Number of Queries"
+                          angle={-90}
+                          position="insideLeft"
+                          style={{ textAnchor: "middle" }}
+                        />
+                      </YAxis>
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="queries" stroke="rgb(101, 134, 145)" strokeWidth={3} activeDot={{ r: 8 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                <ResponsiveContainer className='pie-graph' width="25%" height={300} style={{ display: 'flex', alignItems: 'center', paddingBottom: '20px'}}>
+                  <PieChart>
+                    <Pie
+                      dataKey="value"
+                      data={pieChartData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      fill="#8884d8"
+                      label
+                    >
+                      {pieChartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
-              <Line data={getGraphData()} options={getGraphOptions()} />
+              <div className="graph-filters">
+                <button onClick={() => setGraphFilter('weekly')}>Weekly</button>
+                <button onClick={() => setGraphFilter('monthly')}>Monthly</button>
+              </div>
             </div>
             <div className="faq-section">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>Frequently Asked Questions</h2>
                 <button 
-                  className={`generate-faq-button ${theme}`}
+                  className="generate-faq-button"
                   onClick={handleGenerateFAQ}
                 >
                   Generate FAQ
@@ -425,13 +469,12 @@ const AdminPage = () => {
             </div>
           </div>
         ) : activeTab === 'settings' ? (
-          <div className={`manage-users-tab ${theme}`}>
-            <h1>Manage Users</h1>
+          <div className="manage-users-tab">
+            <h1><FaRegUser />Manage Students</h1>
             <div className="search-bar">
               <input 
                 type="text" 
                 placeholder="Search users by ID, name, or email..." 
-                className={theme}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -442,12 +485,12 @@ const AdminPage = () => {
               onChange={handleFileUpload} 
             />
             <button 
-              className={`add-user-button ${theme}`}
+              className="add-user-button"
               onClick={() => setShowAddUserModal(true)}
             >
               Add User
             </button>
-            <table className={`users-table ${theme}`}>
+            <table className="users-table">
               <thead>
                 <tr>
                   <th className="id-column">ID</th>
@@ -485,13 +528,13 @@ const AdminPage = () => {
                     <td>
                       {editingUser && editingUser.id === user.id ? (
                         <>
-                          <button className={`save-button ${theme}`} onClick={() => handleSaveUser(editingUser)}>Save</button>
-                          <button className={`cancel-button ${theme}`} onClick={() => setEditingUser(null)}>Cancel</button>
+                          <button className="save-button" onClick={() => handleSaveUser(editingUser)}>Save</button>
+                          <button className="cancel-button" onClick={() => setEditingUser(null)}>Cancel</button>
                         </>
                       ) : (
                         <>
-                          <button className={`edit-button ${theme}`} onClick={() => handleEditUser(user)}>Edit</button>
-                          <button className={`delete-button ${theme}`} onClick={() => handleConfirmDelete(user.id)}>Delete</button>
+                          <button className="edit-button" onClick={() => handleEditUser(user)}>Edit</button>
+                          <button className="delete-button" onClick={() => handleConfirmDelete(user.id)}>Delete</button>
                         </>
                       )}
                     </td>
@@ -501,13 +544,12 @@ const AdminPage = () => {
             </table>
           </div>
         ) : activeTab === 'instructors' ? (
-          <div className={`manage-instructors-tab ${theme}`}>
-            <h1>Manage Instructors</h1>
+          <div className="manage-instructors-tab">
+            <h1><PiStudentBold />Manage Instructors</h1>
             <div className="search-bar">
               <input 
                 type="text" 
                 placeholder="Search instructors by email..." 
-                className={theme}
                 value={instructorSearchTerm}
                 onChange={(e) => setInstructorSearchTerm(e.target.value)} 
               />
@@ -518,12 +560,12 @@ const AdminPage = () => {
               onChange={handleUploadInstructors} 
             />
             <button 
-              className={`add-instructor-button ${theme}`}
+              className="add-instructor-button"
               onClick={() => setShowAddInstructorModal(true)}
             >
               Add Instructor
             </button>
-            <table className={`instructors-table ${theme}`}>
+            <table className="instructors-table">
               <thead>
                 <tr>
                   <th className="name-column">Name</th>
@@ -559,13 +601,13 @@ const AdminPage = () => {
                   <td>
                     {editingUser && editingUser.email === instructor.email ? (
                       <>
-                        <button className={`save-button ${theme}`} onClick={() => handleSaveUser(editingUser)}>Save</button>
-                        <button className={`cancel-button ${theme}`} onClick={() => setEditingUser(null)}>Cancel</button>
+                        <button className="save-button" onClick={() => handleSaveUser(editingUser)}>Save</button>
+                        <button className="cancel-button" onClick={() => setEditingUser(null)}>Cancel</button>
                       </>
                     ) : (
                       <>
-                        <button className={`edit-button ${theme}`} onClick={() => handleEditUser(instructor)}>Edit</button>
-                        <button className={`delete-button ${theme}`} onClick={() => handleConfirmDeleteInstructor(instructor.email)}>Delete</button>
+                        <button className="edit-button" onClick={() => handleEditUser(instructor)}>Edit</button>
+                        <button className="delete-button" onClick={() => handleConfirmDeleteInstructor(instructor.email)}>Delete</button>
                       </>
                     )}
                   </td>
@@ -575,36 +617,32 @@ const AdminPage = () => {
             </table>
           </div>
         ) : (
-          <div className={`university-info-tab ${theme}`}>
+          <div className="university-info-tab">
             <h1>University Information</h1>
             {editingUniversityInfo ? (
               <div>
                 <textarea
-                  className={`content-textarea ${theme}`}
+                  className="content-textarea"
                   value={universityInfo}
                   onChange={(e) => setUniversityInfo(e.target.value)}
                 />
-                <button className={`save-button ${theme}`} onClick={handleUpdateUniversityInfo}>Save</button>
-                <button className={`cancel-button ${theme}`} onClick={() => setEditingUniversityInfo(false)}>Cancel</button>
+                <button className="save-button" onClick={handleUpdateUniversityInfo}>Save</button>
+                <button className="cancel-button" onClick={() => setEditingUniversityInfo(false)}>Cancel</button>
               </div>
             ) : (
               <div>
                 <p>{universityInfo}</p>
-                <button className={`edit-button ${theme}`} onClick={() => setEditingUniversityInfo(true)}>Edit</button>
+                <button className="edit-button" onClick={() => setEditingUniversityInfo(true)}>Edit</button>
               </div>
             )}
           </div>
         )}
       </div>
-      <button className={`theme-toggle ${theme}`} onClick={toggleTheme}>
-        {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
-      </button>
-
       {showConfirmModal && (
-        <div className={`admin-confirmation-modal ${theme}`}>
-          <div className={`modal-content ${theme}`}>
+        <div className="admin-confirmation-modal">
+          <div className="modal-content">
             <p>Are you sure you want to delete this user?</p>
-            <div className={`modal-actions ${theme}`}>
+            <div className="modal-actions">
               <button onClick={() => handleDeleteUser(userIdToDelete)}>Yes</button>
               <button onClick={() => setShowConfirmModal(false)}>No</button>
             </div>
@@ -613,10 +651,10 @@ const AdminPage = () => {
       )}
 
       {showConfirmInstructorModal && (
-        <div className={`admin-confirmation-modal ${theme}`}>
-          <div className={`modal-content ${theme}`}>
+        <div className="admin-confirmation-modal">
+          <div className="modal-content">
             <p>Are you sure you want to delete this instructor?</p>
-            <div className={`modal-actions ${theme}`}>
+            <div className="modal-actions">
               <button onClick={() => handleDeleteInstructor(instructorEmailToDelete)}>Yes</button>
               <button onClick={() => setShowConfirmInstructorModal(false)}>No</button>
             </div>
@@ -625,8 +663,8 @@ const AdminPage = () => {
       )}
 
       {showAddUserModal && (
-        <div className={`admin-add-user-modal ${theme}`}>
-          <div className={`modal-content ${theme}`}>
+        <div className="admin-add-user-modal">
+          <div className="modal-content">
             <h2>Add New User</h2>
             <input 
               type="text" 
@@ -640,7 +678,7 @@ const AdminPage = () => {
               value={newUserEmail} 
               onChange={(e) => setNewUserEmail(e.target.value)} 
             />
-            <div className={`modal-actions ${theme}`}>
+            <div className="modal-actions">
               <button onClick={handleAddSingleUser} disabled={isAddingUser}>Add</button>
               <button onClick={() => setShowAddUserModal(false)}>Cancel</button>
             </div>
@@ -649,26 +687,24 @@ const AdminPage = () => {
       )}
 
       {showAddInstructorModal && (
-        <div className={`admin-add-instructor-modal ${theme}`}>
-          <div className={`modal-content ${theme}`}>
+        <div className="admin-add-instructor-modal">
+          <div className="modal-content">
             <h2>Add New Instructor</h2>
             <input 
               type="text" 
               placeholder="Name" 
-              className={theme}
               value={newInstructorName} 
               onChange={(e) => setNewInstructorName(e.target.value)} 
             />
             <input 
               type="email" 
               placeholder="Email" 
-              className={theme}
               value={newInstructorEmail} 
               onChange={(e) => setNewInstructorEmail(e.target.value)} 
             />
-            <div className={`modal-actions ${theme}`}>
-              <button className={`save-button ${theme}`} onClick={handleAddSingleInstructor} disabled={isAddingInstructor}>Add</button>
-              <button className={`cancel-button ${theme}`} onClick={() => setShowAddInstructorModal(false)}>Cancel</button>
+            <div className="modal-actions">
+              <button className="save-button" onClick={handleAddSingleInstructor} disabled={isAddingInstructor}>Add</button>
+              <button className="cancel-button" onClick={() => setShowAddInstructorModal(false)}>Cancel</button>
             </div>
           </div>
         </div>

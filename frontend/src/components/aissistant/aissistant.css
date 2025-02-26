@@ -1,11 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
+
+.aissistant-container{
+    font-family: "Host Grotesk", sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 99vh;
+    width: 100%;
+    background-color: rgb(161, 192, 182);
+}
 
 .aissistant{
-    height: 99vh;
+    height: inherit;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    flex-direction: row;    
+    flex-direction: row;
 }
 
 .aissistant-logo{
@@ -17,8 +27,8 @@
 }
 
 .aissistant-icon{
-    height: 200px;
-    width: 200px;
+    height: 60%;
+    width: 60%;
 }
 
 .aissistant-text{
@@ -33,4 +43,14 @@
     align-self: center;
     background-color: lightblue;
     width: 100px;
+}
+
+.aissistant-header{
+    display: flex;
+    direction: rtl;
+    height: 15%;
+    align-items: center;
+    padding-right: 100px;
+    gap: 40px;
+    font-size: larger;
 }

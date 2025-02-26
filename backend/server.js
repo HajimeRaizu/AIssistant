@@ -213,11 +213,10 @@ app.post("/api/llama", async (req, res) => {
     ];
 
     // Make the API call to Hugging Face
-    const response = await client.chatCompletion({
-      model: "Qwen/Qwen2.5-Coder-32B-Instruct",
+    const response = await deepseek.chat.completions.create({
+      model: "deepseek-chat",
       messages,
-      provider: "sambanova",
-      max_tokens: 15500,
+      max_tokens: 250,
     });
 
     console.log("Hugging Face API Response:", response);
