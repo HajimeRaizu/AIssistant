@@ -483,7 +483,7 @@ const AdminPage = () => {
                 <h3><MdOutlineQuestionAnswer className='statistics-box-icon' />Total Queries</h3>
                 <p>{totalQueries}</p>
               </div>
-              <div className="statistics-box-2 users">
+              <div className="statistics-box users">
                 <h3><FaRegUser className='statistics-box-icon' />Students</h3>
                 <p>{totalStudents}</p>
               </div>
@@ -491,7 +491,7 @@ const AdminPage = () => {
                 <h3><PiStudentBold className='statistics-box-icon' />Instructors</h3>
                 <p>{totalInstructors}</p>
               </div>
-              <div className="statistics-box-2 learning-materials">
+              <div className="statistics-box learning-materials">
                 <h3><LuBookMarked className='statistics-box-icon' />Learning Materials</h3>
                 <p>{totalLearningMaterials}</p>
               </div>
