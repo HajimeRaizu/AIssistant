@@ -13,19 +13,14 @@ const AIssistant = () => {
 
   return (
       <div className='aissistant-container'>
-        <div className='aissistant-header'>
-          <div className='header-text-buttons'>Contact</div>
-          <div className='header-text-buttons'>About us</div>
-          <div className='header-text-buttons'>How it works</div>
-        </div>
         <div className="aissistant">
-          <div className='aissistant-logo'>
-            <img src={logo} alt="AIssistant-logo" className='aissistant-icon' />
-          </div>
           <div className='aissistant-text'>
             <h1>lorem</h1>
             <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eum in animi commodi non autem cum numquam error fuga architecto molestias dignissimos, nihil nostrum quod eaque fugiat ad ipsam itaque. Incidunt?</p>
             <button onClick={() => handleBoxClick()} className='aissistant-user-type'>login</button>
+          </div>
+          <div className='aissistant-logo'>
+            <img src={logo} alt="AIssistant-logo" className='aissistant-icon' />
           </div>
         </div>
       </div>

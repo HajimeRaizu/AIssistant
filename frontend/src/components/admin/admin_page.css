@@ -140,6 +140,30 @@
     border-bottom: 2vh solid #2161E1;
 }
 
+/*.statistics-box {
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    box-shadow: 0px 0px 5px 1px gray;
+    color: black;
+}
+
+.statistics-box.queries{
+    background: #91D0F7;
+}
+
+.statistics-box.users{
+    background: #3B97C6;
+}
+
+.statistics-box.instructors{
+    background: #88BACA;
+}
+
+.statistics-box.learning-materials{
+    background: #2161E1;
+}*/
+
 .statistics-box-icon{
   height: 15%;
   width: 15%;

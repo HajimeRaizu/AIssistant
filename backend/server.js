@@ -152,19 +152,24 @@ app.get("/api/getChatHistory/:chatId/:userId", async (req, res) => {
 });
 
 // Create a new chat
+// Modify the /api/createChat endpoint to accept the first message
 app.post("/api/createChat", async (req, res) => {
-  const { chatName, userId } = req.body;
+  const { userId, firstMessage } = req.body; // Add firstMessage to the request body
   const newChatId = Date.now().toString();
-  const createdAt = new Date().toISOString(); // Get the current timestamp
+  const createdAt = new Date().toISOString();
+
+  // Use the first 30 characters of the first message as the chat name
+  const chatName = firstMessage.substring(0, 30);
 
   try {
     await db.collection("chats").doc(newChatId).set({
       id: newChatId,
-      messages: [],
+      messages: [], // Initialize with an empty array
       chatName,
       userId,
-      createdAt, // Add the createdAt field
+      createdAt,
     });
+
     res.status(200).json({ id: newChatId, chatName, createdAt });
   } catch (error) {
     handleFirestoreError(res, error);
@@ -218,25 +223,26 @@ app.post("/api/llama", async (req, res) => {
       { role: "user", content: input },
     ];
 
+    // Set headers for streaming
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Transfer-Encoding", "chunked");
+
     // Make the API call to Hugging Face
     const response = await deepseek.chat.completions.create({
       model: "deepseek-chat",
       messages,
       max_tokens: 250,
+      stream: true, // Enable streaming
     });
 
-    console.log("Hugging Face API Response:", response);
+    // Stream the response back to the client
+    for await (const chunk of response) {
+      const botResponse = chunk.choices[0]?.delta?.content || "";
+      res.write(botResponse);
+    }
 
-    const botResponse = response.choices[0]?.message?.content || "No response received.";
-
-    // Update the context cache
-    contextCache[userId] = [
-      ...context,
-      { role: "user", content: input },
-      { role: "assistant", content: botResponse },
-    ].slice(-10); // Keep only the last 10 messages to avoid large context
-
-    res.json({ generated_text: botResponse });
+    // End the response
+    res.end();
   } catch (error) {
     console.error("Hugging Face API Error:", error.response ? error.response.data : error.message);
     res.status(500).json({ error: "Failed to generate response from Llama model" });

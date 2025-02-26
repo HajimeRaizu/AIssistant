@@ -1,25 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
 
-.user-container {
+.student-user-container {
     display: flex;
     height: 100vh;
     width: 100%;
     overflow: hidden;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease;
+    
 }
 
-.user-container.dark {
+.student-user-container.dark {
     background: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.user-container.light {
+.student-user-container.light {
     background: var(--bg-light);
     color: var(--text-light);
 }
 
-.tab {
+.student-tab {
     font-family: "Host Grotesk", sans-serif;
     display: block;
     width: 100%;
@@ -29,28 +29,28 @@
     text-align: left;
     cursor: pointer;
     border-radius: 5px;
-    transition: background 0.3s ease;
+    
 }
 
-.tab.dark {
+.student-tab.dark {
     background: var(--tab-dark);
     color: var(--text-dark);
 }
 
-.tab.light {
+.student-tab.light {
     background: var(--tab-light);
     color: var(--text-light);
 }
 
-.tab.active.dark {
+.student-tab.active.dark {
     background: var(--tab-active-dark);
 }
 
-.tab.active.light {
+.student-tab.active.light {
     background: var(--tab-active-light);
 }
 
-.user-logout-button {
+.student-user-logout-button {
     font-family: "Host Grotesk", sans-serif;
     display: block;
     width: 100%;
@@ -60,28 +60,28 @@
     text-align: left;
     cursor: pointer;
     border-radius: 5px;
-    transition: background 0.3s ease;
+    
 }
 
-.user-logout-button.dark {
+.student-user-logout-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.user-logout-button.light {
+.student-user-logout-button.light {
     background: var(--tab-light);
     color: var(--text-light);
 }
 
-.user-logout-button:hover.dark {
+.student-user-logout-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.user-logout-button:hover.light {
+.student-user-logout-button:hover.light {
     background: var(--button-hover-light);
 }
 
-.chat-list {
+.student-chat-list {
     margin-top: 10px;
     margin-bottom: 20px;
     margin-right: 20px;
@@ -96,214 +96,227 @@
     border-bottom: 1px solid var(--tab-dark);
 }
 
-.chat-item {
+.student-chat-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 10px 10px 10px;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    
 }
 
-.chat-item.dark {
+.student-chat-item.dark {
     background: var(--tab-dark);
     color: var(--text-dark);
 }
 
-.chat-item.light {
+.student-chat-item.light {
     background: var(--tab-light);
     color: var(--text-light);
 }
 
-.chat-item.active.dark {
+.student-chat-item.active.dark {
     background: var(--tab-active-dark);
 }
 
-.chat-item.active.light {
+.student-chat-item.active.light {
     background: var(--tab-active-light);
 }
 
-.chat-item .delete-chat {
+.student-chat-item .student-delete-chat {
     background: transparent;
     border: none;
     border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    
 }
 
-.chat-item .delete-chat.dark {
+.student-chat-item .student-delete-chat.dark {
     color: var(--text-dark);
 }
 
-.chat-item .delete-chat.light {
+.student-chat-item .student-delete-chat.light {
     color: var(--text-light);
 }
 
-.chat-item .delete-chat:hover.dark {
+.student-chat-item .student-delete-chat:hover.dark {
     background: #c55147;
 }
 
-.chat-item .delete-chat:hover.light {
+.student-chat-item .student-delete-chat:hover.light {
     background: #ff6b6b;
 }
 
-.new-chat {
+.student-new-chat {
     background: #4c7faf;
     color: white;
     border: none;
     border-radius: 5px;
     padding: 10px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    
     width: 100%;
 }
 
-.new-chat:hover {
+.student-new-chat:hover {
     background: #45a049;
 }
 
-.user-sidebar {
+.student-user-sidebar {
     width: 45vh;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s ease; /* Add transition for sliding effect */
+    transition: transform 0.3s ease;
 }
 
-.user-sidebar.dark {
+.student-user-sidebar.dark {
     background: var(--sidebar-dark);
 }
 
-.user-sidebar.light {
+.student-user-sidebar.light {
     background: var(--sidebar-light);
 }
 
-.user-sidebar.hidden {
-    transform: translateX(-100%); /* Slide out to the left */
+.student-user-sidebar.hidden {
+    transform: translateX(-100%);
 }
 
-.user-sidebar.visible {
-    transform: translateX(0); /* Slide in from the left */
+.student-user-sidebar.visible {
+    transform: translateX(0);
 }
 
-/* Style for the sidebar toggle button */
-.sidebar-toggle {
+.student-sidebar-toggle {
     position: absolute;
     top: 0px;
-    left: 45vh; /* Position it just outside the sidebar */
+    left: 45vh;
     padding: 10px;
     border: none;
     border-radius: 0px 5px 5px 0px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
     transition: transform 0.3s ease;
-    z-index: 1000; /* Ensure it's above other elements */
+    z-index: 1000;
 }
 
-.sidebar-toggle.hidden {
-    transform: translateX(-100%); /* Slide out to the left */
+.student-sidebar-toggle.hidden {
+    transform: translateX(-100%);
 }
 
-.sidebar-toggle.visible {
-    transform: translateX(0); /* Slide in from the left */
+.student-sidebar-toggle.visible {
+    transform: translateX(0);
 }
 
-.sidebar-toggle.dark {
+.student-sidebar-toggle.dark {
     background: var(--sidebar-dark);
     color: var(--text-dark);
 }
 
-.sidebar-toggle.light {
+.student-sidebar-toggle.light {
     background: var(--sidebar-light);
     color: var(--text-light);
 }
 
-.sidebar-toggle:hover.dark {
+.student-sidebar-toggle:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.sidebar-toggle:hover.light {
+.student-sidebar-toggle:hover.light {
     background: var(--button-hover-light);
 }
 
-.student-content {
+.student-student-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     padding: 20px;
     overflow-y: auto;
-    margin-left: 0; /* Reset margin when sidebar is hidden */
+    margin-left: 0;
 }
 
-.student-content.sidebar-hidden {
-    margin-left: -45vh; /* -320px margin when sidebar is hidden */
+.student-student-content.sidebar-hidden {
+    margin-left: -45vh;
 }
 
-.student-content.sidebar-visible {
-    margin-left: 0px; /* Add margin when sidebar is visible */
+.student-student-content.sidebar-visible {
+    margin-left: 0px;
 }
 
-.student-content.dark {
+.student-student-content.dark {
     background: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.student-content.light {
+.student-student-content.light {
     background: var(--bg-light);
     color: var(--text-light);
 }
 
-.chat-container {
+.student-chat-container {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.chat-header {
+.student-chat-header {
     padding: 10px;
     text-align: center;
     border-bottom: 1px solid var(--tab-dark);
 }
 
-.chat-header.dark {
+.student-chat-header.dark {
     background: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.chat-header.light {
+.student-chat-header.light {
     background: var(--bg-light);
     color: var(--text-light);
 }
 
-.chat-header .disclaimer {
+.student-chat-header .student-disclaimer {
     font-size: 12px;
 }
 
-.chat-header .disclaimer.dark {
+.student-chat-header .student-disclaimer.dark {
     color: #ccc;
 }
 
-.chat-header .disclaimer.light {
+.student-chat-header .student-disclaimer.light {
     color: #888;
 }
 
-.chat-body {
+.student-chat-body {
     flex: 1;
     padding: 10px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    height: calc(100vh - 200px);
 }
 
-.chat-body.dark {
+.student-chat-body::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .student-chat-body::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+  }
+  
+  .student-chat-body::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+
+.student-chat-body.dark {
     background: var(--bg-dark);
 }
 
-.chat-body.light {
+.student-chat-body.light {
     background: var(--bg-light);
 }
 
@@ -339,7 +352,7 @@
     background: var(--scrollbar-hover-light);
 }
 
-.message.bot {
+.student-message.bot {
     user-select: none;
     max-width: 85%;
     padding: 8px 12px;
@@ -349,7 +362,7 @@
     flex-direction: column;
 }
 
-.message.user{
+.student-message.user {
     max-width: 100%;
     padding: 8px 12px;
     border-radius: 8px;
@@ -358,75 +371,75 @@
     flex-direction: column;
 }
 
-.message-text {
-    white-space: pre-wrap; /* Preserve line breaks and spaces */
+.student-message-text {
+    white-space: pre-wrap;
 }
 
-.message.user.dark {
+.student-message.user.dark {
     background-color: var(--message-user-dark);
     color: var(--text-dark);
     align-self: flex-end;
     align-items: flex-end;
 }
 
-.message.user.light {
+.student-message.user.light {
     background-color: var(--message-user-light);
     color: var(--text-light);
     align-self: flex-end;
     align-items: flex-end;
 }
 
-.message.bot.dark {
+.student-message.bot.dark {
     background-color: var(--message-bot-dark);
     color: var(--text-dark);
     align-self: flex-start;
     align-items: flex-start;
 }
 
-.message.bot.light {
+.student-message.bot.light {
     background-color: var(--message-bot-light);
     color: var(--text-light);
     align-self: flex-start;
     align-items: flex-start;
 }
 
-.message .timestamp.bot{
+.student-message .student-timestamp.bot {
     font-size: 10px;
     align-self: first baseline;
     padding-left: 20px;
 }
 
-.message .timestamp.user{
+.student-message .student-timestamp.user {
     font-size: 10px;
     margin-top: 5px;
     align-self: last baseline;
 }
 
-.message .timestamp.dark {
+.student-message .student-timestamp.dark {
     color: #ccc;
 }
 
-.message .timestamp.light {
+.student-message .student-timestamp.light {
     color: #888;
 }
 
-.bot-response {
+.student-bot-response {
     padding: 8px 12px;
     border-radius: 8px;
     align-self: flex-start;
 }
 
-.bot-response.dark {
+.student-bot-response.dark {
     background-color: var(--message-bot-dark);
     color: var(--text-dark);
 }
 
-.bot-response.light {
+.student-bot-response.light {
     background-color: var(--message-bot-light);
     color: var(--text-light);
 }
 
-.chat-input {
+.student-chat-input {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -434,15 +447,15 @@
     border-top: 1px solid var(--tab-dark);
 }
 
-.chat-input.dark {
+.student-chat-input.dark {
     background: var(--bg-dark);
 }
 
-.chat-input.light {
+.student-chat-input.light {
     background: var(--bg-light);
 }
 
-.chat-input textarea {
+.student-chat-input textarea {
     padding: 2% 2% 0% 2%;
     border: 1px solid var(--tab-dark);
     width: 100%;
@@ -460,65 +473,64 @@
     border: none;
 }
 
-textarea:focus{
+textarea:focus {
     outline: none;
 }
 
-.chat-input textarea.light {
+.student-chat-input textarea.light {
     background-color: var(--input-light);
     color: var(--text-light);
-    border: 1px solid var(--tab-light);
 }
 
-.chat-input textarea::placeholder.dark {
+.student-chat-input textarea::placeholder.dark {
     color: var(--input-placeholder-dark);
 }
 
-.chat-input textarea::placeholder.light {
+.student-chat-input textarea::placeholder.light {
     color: var(--input-placeholder-light);
 }
 
-.chat-input textarea::-webkit-scrollbar.dark {
+.student-chat-input textarea::-webkit-scrollbar.dark {
     background: var(--bg-dark);
     border-radius: 10px;
 }
 
-.chat-input textarea::-webkit-scrollbar.light {
+.student-chat-input textarea::-webkit-scrollbar.light {
     background: var(--bg-light);
     border-radius: 10px;
 }
 
-.chat-input textarea::-webkit-scrollbar-thumb.dark {
+.student-chat-input textarea::-webkit-scrollbar-thumb.dark {
     background: var(--scrollbar-dark);
     border-radius: 10px;
 }
 
-.chat-input textarea::-webkit-scrollbar-thumb.light {
+.student-chat-input textarea::-webkit-scrollbar-thumb.light {
     background: var(--scrollbar-light);
     border-radius: 10px;
 }
 
-.chat-input textarea::-webkit-scrollbar-thumb:hover.dark {
+.student-chat-input textarea::-webkit-scrollbar-thumb:hover.dark {
     background: var(--scrollbar-hover-dark);
 }
 
-.chat-input textarea::-webkit-scrollbar-thumb:hover.light {
+.student-chat-input textarea::-webkit-scrollbar-thumb:hover.light {
     background: var(--scrollbar-hover-light);
 }
 
-.chat-input textarea:disabled.dark,
-.chat-input button:disabled.dark {
+.student-chat-input textarea:disabled.dark,
+.student-chat-input button:disabled.dark {
     background-color: #7a7a7a;
     cursor: not-allowed;
 }
 
-.chat-input textarea:disabled.light,
-.chat-input button:disabled.light {
+.student-chat-input textarea:disabled.light,
+.student-chat-input button:disabled.light {
     background-color: #ccc;
     cursor: not-allowed;
 }
 
-.chat-input button {
+.student-chat-input button {
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
@@ -526,32 +538,32 @@ textarea:focus{
     font-family: "Host Grotesk", sans-serif;
 }
 
-.chat-input button.dark {
+.student-chat-input button.dark {
     background-color: var(--button-dark);
     color: var(--text-dark);
 }
 
-.chat-input button.light {
+.student-chat-input button.light {
     background-color: var(--button-light);
     color: var(--text-light);
 }
 
-.chat-input button:hover.dark {
+.student-chat-input button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.chat-input button:hover.light {
+.student-chat-input button:hover.light {
     background: var(--button-hover-light);
 }
 
-.typing-indicator {
+.student-typing-indicator {
     display: inline-block;
     position: relative;
     width: 60px;
     height: 20px;
 }
 
-.typing-indicator span {
+.student-typing-indicator span {
     position: absolute;
     top: 0;
     width: 8px;
@@ -561,21 +573,21 @@ textarea:focus{
     animation: typing 1.2s infinite ease-in-out;
 }
 
-.typing-indicator span.light {
+.student-typing-indicator span.light {
     background: var(--text-light);
 }
 
-.typing-indicator span:nth-child(1) {
+.student-typing-indicator span:nth-child(1) {
     left: 8px;
     animation-delay: 0s;
 }
 
-.typing-indicator span:nth-child(2) {
+.student-typing-indicator span:nth-child(2) {
     left: 24px;
     animation-delay: 0.2s;
 }
 
-.typing-indicator span:nth-child(3) {
+.student-typing-indicator span:nth-child(3) {
     left: 40px;
     animation-delay: 0.4s;
 }
@@ -589,7 +601,7 @@ textarea:focus{
     }
 }
 
-pre {
+.student-pre {
     user-select: none;
     font-size: large;
     padding: 10px;
@@ -599,78 +611,78 @@ pre {
     word-wrap: break-word;
 }
 
-pre.dark {
+.student-pre.dark {
     background-color: var(--code-dark);
     color: var(--code-text-dark);
 }
 
-pre.light {
+.student-pre.light {
     background-color: var(--code-light);
     color: var(--code-text-light);
 }
 
-code {
+.student-code {
     font-family: "Courier New", Courier, monospace;
     font-size: 14px;
 }
 
-.exercises-section{
+.student-exercises-section {
     height: 215px;
 }
 
-.exercises-container {
+.student-exercises-container {
     width: 100%;
     height: 100%;
     overflow: auto;
     padding: 20px;
 }
 
-.exercises-container.dark {
+.student-exercises-container.dark {
     background: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.exercises-container.light {
+.student-exercises-container.light {
     background: var(--bg-light);
     color: var(--text-light);
 }
 
-.exercises-container h1 {
+.student-exercises-container h1 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-.exercises-list {
+.student-exercises-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
 }
 
-.exercise-item {
+.student-exercise-item {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.exercise-item.dark {
+.student-exercise-item.dark {
     background: var(--tab-dark);
     color: var(--text-dark);
 }
 
-.exercise-item.light {
+.student-exercise-item.light {
     background: var(--tab-light);
     color: var(--text-light);
 }
 
-.exercise-item h3 {
+.student-exercise-item h3 {
     margin-bottom: 10px;
 }
 
-.exercise-item p {
+.student-exercise-item p {
     font-size: 14px;
 }
 
-.confirmation-modal {
+.student-confirmation-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -682,84 +694,84 @@ code {
     z-index: 1000;
 }
 
-.confirmation-modal.dark {
+.student-confirmation-modal.dark {
     background: rgba(0, 0, 0, 0.5);
 }
 
-.confirmation-modal.light {
+.student-confirmation-modal.light {
     background: rgba(255, 255, 255, 0.5);
 }
 
-.user-modal-content {
+.student-user-modal-content {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
 
-.user-modal-content.dark {
+.student-user-modal-content.dark {
     background: var(--sidebar-light);
     background-color: var(--bg-light);
     color: var(--text-light);
 }
 
-.user-modal-content.light {
+.student-user-modal-content.light {
     background: var(--sidebar-dark);
     background-color: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.user-modal-content p {
+.student-user-modal-content p {
     margin-bottom: 20px;
 }
 
-.modal-actions button {
+.student-modal-actions button {
     padding: 10px 20px;
     margin: 0 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease;
+    
 }
 
-.modal-actions button.dark {
+.student-modal-actions button.dark {
     background: #4CAF50;
     color: var(--text-dark);
 }
 
-.modal-actions button.light {
+.student-modal-actions button.light {
     background: #4CAF50;
     color: var(--text-light);
 }
 
-.modal-actions button:first-child:hover.dark {
+.student-modal-actions button:first-child:hover.dark {
     background: #45a049;
 }
 
-.modal-actions button:first-child:hover.light {
+.student-modal-actions button:first-child:hover.light {
     background: #45a049;
 }
 
-.modal-actions button:last-child.dark {
+.student-modal-actions button:last-child.dark {
     background: #f44336;
     color: var(--text-dark);
 }
 
-.modal-actions button:last-child.light {
+.student-modal-actions button:last-child.light {
     background: #f44336;
     color: var(--text-light);
 }
 
-.modal-actions button:last-child:hover.dark {
+.student-modal-actions button:last-child:hover.dark {
     background: #da190b;
 }
 
-.modal-actions button:last-child:hover.light {
+.student-modal-actions button:last-child:hover.light {
     background: #da190b;
 }
 
-.theme-toggle {
+.student-theme-toggle {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -768,47 +780,46 @@ code {
     border-radius: 5px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease;
+    
 }
 
-.theme-toggle.dark {
+.student-theme-toggle.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.theme-toggle.light {
+.student-theme-toggle.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.theme-toggle:hover.dark {
+.student-theme-toggle:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.theme-toggle:hover.light {
+.student-theme-toggle:hover.light {
     background: var(--button-hover-light);
 }
 
-/* Add styles for the submit-query button to be affected by the theme toggle */
-button.submit-query.dark {
+.student-submit-query.dark {
     background-color: var(--button-dark);
     color: var(--text-dark);
 }
 
-button.submit-query.light {
+.student-submit-query.light {
     background-color: var(--button-light);
     color: var(--text-light);
 }
 
-button.submit-query:hover.dark {
+.student-submit-query:hover.dark {
     background: var(--button-hover-dark);
 }
 
-button.submit-query:hover.light {
+.student-submit-query:hover.light {
     background: var(--button-hover-light);
 }
 
-.chat-input-button{
+.student-chat-input-button {
     padding: 2px 10px 10px 10px;
     border: none;
     width: 100%;
@@ -816,7 +827,6 @@ button.submit-query:hover.light {
     margin-right: 10px;
     font-family: "Host Grotesk", sans-serif;
     font-size: large;
-    background-color: var(--input-dark);
     color: var(--text-dark);
     resize: none;
     font-size: 18px;
@@ -824,48 +834,53 @@ button.submit-query:hover.light {
     direction: rtl;
 }
 
-/* Delete Icon Styling */
-.delete-icon.dark {
+.student-chat-input-button.light{
+    background: var(--input-light);
+}
+
+.student-chat-input-button.dark{
+    background: var(--input-dark);
+}
+
+.student-delete-icon.dark {
     color: var(--text-dark);
 }
 
-.delete-icon.light {
+.student-delete-icon.light {
     color: var(--text-light);
 }
 
-/* Add styles for the Exercises button */
-.exercises-button {
+.student-exercises-button {
     position: absolute;
     top: 20px;
-    right: 80px; /* Adjust the position to avoid overlapping with the theme toggle button */
+    right: 80px;
     padding: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease;
+    
 }
 
-.exercises-button.dark {
+.student-exercises-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.exercises-button.light {
+.student-exercises-button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.exercises-button:hover.dark {
+.student-exercises-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.exercises-button:hover.light {
+.student-exercises-button:hover.light {
     background: var(--button-hover-light);
 }
 
-/* Chat Name Input Modal */
-.chat-name-modal {
+.student-chat-name-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -875,18 +890,18 @@ button.submit-query:hover.light {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    background: rgba(0, 0, 0, 0.5);
 }
 
-.chat-name-modal.dark {
+.student-chat-name-modal.dark {
     background: rgba(0, 0, 0, 0.7);
 }
 
-.chat-name-modal.light {
+.student-chat-name-modal.light {
     background: rgba(255, 255, 255, 0.7);
 }
 
-.chat-name-modal .chat-name-modal-content {
+.student-chat-name-modal .student-chat-name-modal-content {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -896,22 +911,22 @@ button.submit-query:hover.light {
     color: var(--text-light);
 }
 
-.chat-name-modal .chat-name-modal-content.dark {
+.student-chat-name-modal .student-chat-name-modal-content.dark {
     background: var(--sidebar-dark);
     color: var(--text-dark);
 }
 
-.chat-name-modal .chat-name-modal-content.light {
+.student-chat-name-modal .student-chat-name-modal-content.light {
     background: var(--sidebar-light);
     color: var(--text-light);
 }
 
-.chat-name-modal .chat-name-modal-content p {
+.student-chat-name-modal .student-chat-name-modal-content p {
     margin-bottom: 20px;
     font-size: 16px;
 }
 
-.chat-name-modal .chat-name-modal-content.dark input {
+.student-chat-name-modal .student-chat-name-modal-content.dark input {
     width: 100%;
     padding: 10px;
     margin-bottom: 20px;
@@ -923,7 +938,7 @@ button.submit-query:hover.light {
     border: 1px solid var(--tab-dark);
 }
 
-.chat-name-modal .chat-name-modal-content.light input {
+.student-chat-name-modal .student-chat-name-modal-content.light input {
     width: 100%;
     padding: 10px;
     margin-bottom: 20px;
@@ -935,84 +950,84 @@ button.submit-query:hover.light {
     border: 1px solid var(--tab-light);
 }
 
-.chat-name-modal .chat-name-modal-content.dark input::placeholder {
+.student-chat-name-modal .student-chat-name-modal-content.dark input::placeholder {
     color: var(--code-text-dark);
 }
 
-.chat-name-modal .chat-name-modal-content.light input::placeholder {
+.student-chat-name-modal .student-chat-name-modal-content.light input::placeholder {
     color: var(--input-placeholder-light);
 }
 
-.chat-name-modal .chat-name-modal-actions {
+.student-chat-name-modal .student-chat-name-modal-actions {
     display: flex;
     justify-content: space-between;
 }
 
-.chat-name-modal .chat-name-modal-actions.dark button {
+.student-chat-name-modal .student-chat-name-modal-actions.dark button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease;
+    
     background: #4CAF50;
     color: var(--text-dark);
 }
 
-.chat-name-modal .chat-name-modal-actions.light button {
+.student-chat-name-modal .student-chat-name-modal-actions.light button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease;
+    
     background: #4CAF50;
     color: var(--text-light);
 }
 
-.chat-name-modal-actions button {
+.student-chat-name-modal-actions button {
     padding: 10px 20px;
     margin: 0 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease;
+    
 }
 
-.chat-name-modal-actions.dark button {
+.student-chat-name-modal-actions.dark button {
     background: #353535;
     background-color: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.chat-name-modal-actions.light button {
+.student-chat-name-modal-actions.light button {
     background: #c2c2c2;
     background-color: var(--bg-light);
     color: var(--text-light);
 }
 
-.chat-name-modal-actions.dark button:first-child:hover {
+.student-chat-name-modal-actions.dark button:first-child:hover {
     background: #60ad65;
 }
 
-.chat-name-modal-actions.light button:first-child:hover {
+.student-chat-name-modal-actions.light button:first-child:hover {
     background: #4baf51;
 }
 
-.chat-name-modal-actions.dark button:last-child:hover {
+.student-chat-name-modal-actions.dark button:last-child:hover {
     background: #b43e3e;
 }
 
-.chat-name-modal-actions.light button:last-child:hover {
+.student-chat-name-modal-actions.light button:last-child:hover {
     background: #df4040;
 }
 
-.bold-text {
+.student-bold-text {
     font-weight: bold;
 }
 
-.no-chat-selected {
+.student-no-chat-selected {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1023,41 +1038,67 @@ button.submit-query:hover.light {
     transition: transform 0.3s ease;
 }
 
-.no-chat-selected.sidebar-hidden {
-    margin-left: -45vh; /* -320px margin when sidebar is hidden */
+.student-no-chat-selected.sidebar-hidden {
+    margin-left: -45vh;
 }
 
-.loading-container {
+.student-loading-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     font-size: 1.5rem;
-  }
+}
 
-  .no-chat-box {
+.student-no-chat-box {
     width: 100vh;
     font-family: Arial, sans-serif;
     padding: 20px;
     border-radius: 10px;
-  }
-  
-  .newchat-container {
+}
+
+.student-no-chat-box.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.student-no-chat-box.light {
+    background: var(--bg-light);
+    color: var(--text-light);
+}
+
+.student-newchat-container {
     display: flex;
     flex-direction: column;
-  }
-  
-  .newchat-header h1 {
-    font-size: 24px;
-    color: #333;
-  }
-  
-  .newchat-header p {
-    font-size: 16px;
-    color: #666;
-  }
+}
 
-  .newchat-message{
+.student-newchat-header h1 {
+    font-size: 24px;
+    color: var(--text-dark);
+}
+
+.student-newchat-header p {
+    font-size: 16px;
+    color: var(--text-dark);
+}
+
+.student-newchat-header.dark h1 {
+    color: var(--text-dark);
+}
+
+.student-newchat-header.dark p {
+    color: var(--text-dark);
+}
+
+.student-newchat-header.light h1 {
+    color: var(--text-light);
+}
+
+.student-newchat-header.light p {
+    color: var(--text-light);
+}
+
+.student-newchat-message {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1065,13 +1106,48 @@ button.submit-query:hover.light {
     background: var(--input-dark);
     border-radius: 3vh;
     padding: 2vh;
-  }
-  
-  .newchat-message button{
-    align-self: last baseline;
-  }
+}
 
-  .newchat-message textarea{
+.student-newchat-message.dark {
+    background: var(--input-dark);
+    color: var(--text-dark);
+}
+
+.student-newchat-message.light {
+    background: var(--input-light);
+    color: var(--text-light);
+}
+
+.student-newchat-message button {
+    align-self: last baseline;
+    background: var(--button-dark);
+    color: var(--text-dark);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+}
+
+.student-newchat-message button.dark {
+    background: var(--button-dark);
+    color: var(--text-dark);
+}
+
+.student-newchat-message button.light {
+    background: var(--button-light);
+    color: var(--text-light);
+}
+
+.student-newchat-message button:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.student-newchat-message button:hover.light {
+    background: var(--button-hover-light);
+}
+
+.student-newchat-message textarea {
     padding: 2% 2% 0% 2%;
     border: 1px solid var(--tab-dark);
     width: 100%;
@@ -1086,4 +1162,26 @@ button.submit-query:hover.light {
     min-height: 10%;
     max-height: 100%;
     border: none;
+}
+
+.student-newchat-message textarea.dark {
+    background: var(--input-dark);
+    color: var(--text-dark);
+}
+
+.student-newchat-message textarea.light {
+    background: var(--input-light);
+    color: var(--text-light);
+}
+
+.student-newchat-message textarea::placeholder.dark {
+    color: var(--input-placeholder-dark);
+}
+
+.student-newchat-message textarea::placeholder.light {
+    color: var(--input-placeholder-light);
+}
+
+.student-newchat-message textarea:focus {
+    outline: none;
 }

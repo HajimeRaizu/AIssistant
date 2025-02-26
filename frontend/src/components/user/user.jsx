@@ -19,12 +19,12 @@ const UserPage = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [chatToDelete, setChatToDelete] = useState(null);
   const [theme, setTheme] = useState("light");
-  const [showChatNameModal, setShowChatNameModal] = useState(false);
-  const [chatNameInput, setChatNameInput] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCreatingNewChat, setIsCreatingNewChat] = useState(false);
   const navigate = useNavigate();
   const textareaRef = useRef(null);
+  const chatBodyRef = useRef(null);
 
   const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
 
@@ -39,12 +39,16 @@ const UserPage = () => {
       try {
         const response = await axios.get(`${base_url}/api/getChats/${userId}`);
         setChats(response.data);
-  
-        if (response.data.length === 0) {
-          setCurrentChatId(null);
-        } else {
-          setCurrentChatId(null); // Set the latest chat as the current chat
+
+        const storedChatId = localStorage.getItem("currentChatId");
+        if (storedChatId && response.data.some(chat => chat.id === storedChatId)) {
+          setCurrentChatId(storedChatId);
+          await fetchChatHistory(storedChatId);
+        } else if (response.data.length > 0) {
+          setCurrentChatId(response.data[0].id);
           await fetchChatHistory(response.data[0].id);
+        } else {
+          setCurrentChatId(null);
         }
       } catch (error) {
         console.error("Failed to fetch chats:", error);
@@ -52,7 +56,7 @@ const UserPage = () => {
         setIsLoading(false);
       }
     };
-  
+
     if (userId) {
       fetchChats();
     }
@@ -67,38 +71,66 @@ const UserPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   const handleSend = async () => {
     if (input.trim() === "") return;
-  
+
+    if (isCreatingNewChat) {
+      await createNewChat();
+      return;
+    }
+
     const newMessages = [
       ...messages,
       { text: input, sender: "user", timestamp: new Date().toLocaleString() },
     ];
     setMessages(newMessages);
-  
+
     setInput("");
-    setIsDisabled(true);
+    setIsDisabled(true); // Disable the submit button
     setIsTyping(true);
-  
+
     try {
-      const response = await axios.post(`${base_url}/api/llama`, { input });
-      const botText = response.data.generated_text || "No response received.";
-  
-      const updatedMessages = [
-        ...newMessages,
-        { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
-      ];
-      setMessages(updatedMessages);
-  
-      // Retrieve the chat name from the chats state
+      const response = await fetch(`${base_url}/api/llama`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ input, userId }),
+      });
+
+      const reader = response.body.getReader();
+      let botText = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = new TextDecoder().decode(value);
+        botText += chunk;
+
+        const updatedMessages = [
+          ...newMessages,
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
+        ];
+        setMessages(updatedMessages);
+      }
+
       const currentChat = chats.find(chat => chat.id === currentChatId);
       const chatNameToStore = currentChat?.chatName || "Unnamed Chat";
-  
-      // Pass the chatName to the backend when storing the chat
+
       await axios.post(`${base_url}/api/storeChat`, {
         chatId: currentChatId,
-        messages: updatedMessages,
-        chatName: chatNameToStore, // Pass the chat name here
+        messages: [
+          ...newMessages,
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
+        ],
+        chatName: chatNameToStore,
         userId,
       });
     } catch (error) {
@@ -110,14 +142,16 @@ const UserPage = () => {
       setMessages(updatedMessages);
     } finally {
       setIsTyping(false);
-      setIsDisabled(false);
+      setIsDisabled(false); // Re-enable the submit button
     }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      if (!isDisabled) { // Check if the submit button is disabled
+        handleSend();
+      }
     } else if (e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
       setInput((prevInput) => prevInput + "\n");
@@ -144,7 +178,7 @@ const UserPage = () => {
       return parts.map((part, index) => {
         if (index % 2 === 1) {
           return (
-            <pre key={index} className={`code-block ${theme}`}>
+            <pre key={index} className={`student-code-block ${theme}`}>
               <code>{part}</code>
             </pre>
           );
@@ -152,7 +186,7 @@ const UserPage = () => {
 
         const boldParts = part.split(boldTextRegex);
         return (
-          <span key={index} className="message-text" style={{ whiteSpace: 'pre-wrap' }}>
+          <span key={index} className="student-message-text" style={{ whiteSpace: 'pre-wrap' }}>
             {boldParts.map((boldPart, boldIndex) => {
               if (boldIndex % 2 === 1) {
                 return <strong key={boldIndex}>{boldPart}</strong>;
@@ -164,7 +198,7 @@ const UserPage = () => {
       });
     } else {
       return (
-        <span className="message-text" style={{ whiteSpace: 'pre-wrap' }}>
+        <span className="student-message-text" style={{ whiteSpace: 'pre-wrap' }}>
           {text}
         </span>
       );
@@ -175,32 +209,78 @@ const UserPage = () => {
     setInput(e.target.value);
 
     const textarea = textareaRef.current;
-    textarea.style.height = "auto";
-    textarea.style.height = `${Math.min(textarea.scrollHeight, 7 * 24)}px`;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 7 * 24)}px`;
+    }
   };
 
   const createNewChat = async () => {
-    setSelectedTab(null);
-    setCurrentChatId(null);
-    setShowChatNameModal(true);
-  };
-  
-  const handleChatNameSubmit = async () => {
-    if (chatNameInput.trim() === "" || isSubmitting) return;
-    
+    if (input.trim() === "") return;
+
     setIsSubmitting(true);
-  
+    setIsCreatingNewChat(true);
+
     try {
-      const response = await axios.post(`${base_url}/api/createChat`, { chatName: chatNameInput, userId });
-      setChats([response.data, ...chats]);
-      setCurrentChatId(response.data.id);
+      const response = await axios.post(`${base_url}/api/createChat`, {
+        userId,
+        firstMessage: input,
+      });
+
+      const newChat = response.data;
+      setChats([newChat, ...chats]);
+      setCurrentChatId(newChat.id);
       setMessages([]);
-      setShowChatNameModal(false);
-      setChatNameInput("");
+
+      const newMessages = [
+        { text: input, sender: "user", timestamp: new Date().toLocaleString() },
+      ];
+      setMessages(newMessages);
+
+      setIsDisabled(true);
+      setIsTyping(true);
+
+      const aiResponse = await fetch(`${base_url}/api/llama`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ input, userId }),
+      });
+
+      const reader = aiResponse.body.getReader();
+      let botText = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = new TextDecoder().decode(value);
+        botText += chunk;
+
+        const updatedMessages = [
+          ...newMessages,
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
+        ];
+        setMessages(updatedMessages);
+      }
+
+      await axios.post(`${base_url}/api/storeChat`, {
+        chatId: newChat.id,
+        messages: [
+          ...newMessages,
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
+        ],
+        chatName: newChat.chatName,
+        userId,
+      });
     } catch (error) {
       console.error("Failed to create new chat:", error);
     } finally {
       setIsSubmitting(false);
+      setIsTyping(false);
+      setIsDisabled(false);
+      setIsCreatingNewChat(false);
     }
   };
 
@@ -239,92 +319,98 @@ const UserPage = () => {
     setIsSidebarVisible(prev => !prev);
   };
 
+  const handleNewChatClick = () => {
+    setIsCreatingNewChat(true);
+    setInput("");
+    setMessages([]);
+    setCurrentChatId(null);
+  };
+
   if (isLoading) {
-    return <div className={`loading-container ${theme}`}>Loading...</div>;
+    return <div className={`student-loading-container ${theme}`}>Loading...</div>;
   }
 
   return (
-    <div className={`user-container ${theme}`}>
-      <button className={`theme-toggle ${theme}`} onClick={toggleTheme}>
+    <div className={`student-user-container ${theme}`}>
+      <button className={`student-theme-toggle ${theme}`} onClick={toggleTheme}>
           {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
         </button>
 
-        <button className={`exercises-button ${theme}`} onClick={() => navigate('/exercises')}>
+        <button className={`student-exercises-button ${theme}`} onClick={() => navigate('/exercises')}>
           Exercises
         </button>
-      <div className={`user-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
-        <button className="new-chat" onClick={createNewChat}>New Chat</button>
-        <div className="chat-list">
+      <div className={`student-user-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
+        <button className="student-new-chat" onClick={handleNewChatClick}>New Chat</button>
+        <div className="student-chat-list">
           {chats.map(chat => (
             <div
               key={chat.id}
-              className={`chat-item ${chat.id === currentChatId ? 'active' : ''} ${theme}`}
+              className={`student-chat-item ${chat.id === currentChatId ? 'active' : ''} ${theme}`}
               onClick={() => {
                 setCurrentChatId(chat.id);
                 fetchChatHistory(chat.id);
                 setSelectedTab("chat");
               }}
             >
-              {chat.chatName || `Chat ${chat.id}`} {/* Fallback to "Chat {id}" if chatName is not available */}
-              <button className="delete-chat" onClick={(e) => {
+              {chat.chatName || `Chat ${chat.id}`}
+              <button className="student-delete-chat" onClick={(e) => {
                 e.stopPropagation();
                 handleDeleteChat(chat.id);
-              }}><MdOutlineDelete className={`delete-icon ${theme}`} /></button>
+              }}><MdOutlineDelete className={`student-delete-icon ${theme}`} /></button>
             </div>
           ))}
         </div>
-        <div className="logout-section">
-          <button className={`user-logout-button ${theme}`} onClick={handleLogout}>Logout</button>
+        <div className="student-logout-section">
+          <button className={`student-user-logout-button ${theme}`} onClick={handleLogout}>Logout</button>
         </div>
 
-        <button className={`sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} onClick={toggleSidebar}>
+        <button className={`student-sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} onClick={toggleSidebar}>
           {isSidebarVisible ? <MdChevronLeft /> : <MdChevronRight />}
         </button>
       </div>
 
       {currentChatId && (
-        <div className={`student-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
-          <div className="chat-container">
-            <div className={`chat-header ${theme}`}>
+        <div className={`student-student-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
+          <div className="student-chat-container">
+            <div className={`student-chat-header ${theme}`}>
               <h2>AIssistant Chat</h2>
-              <p className="disclaimer">This chat will respond to queries in any language.</p>
+              <p className="student-disclaimer">This chat will respond to queries in any language.</p>
             </div>
-            <div className={`chat-body ${theme}`}>
+            <div className={`student-chat-body ${theme}`} ref={chatBodyRef}>
               {messages.map((message, index) => (
-                <div className={`message ${message.sender}`} key={index}>
-                  <div className={`message ${message.sender} ${theme}`}>
+                <div className={`student-message ${message.sender}`} key={index}>
+                  <div className={`student-message ${message.sender} ${theme}`}>
                     {message.sender === "user" ? (
                       <p>{formatMessageText(message.text, message.sender)}</p>
                     ) : (
-                      <div className="bot-response">
+                      <div className="student-bot-response">
                         {formatMessageText(message.text, message.sender)}
                       </div>
                     )}
                   </div>
-                  <span className={`timestamp ${message.sender}`}>{message.timestamp}</span>
+                  <span className={`student-timestamp ${message.sender}`}>{message.timestamp}</span>
                 </div>
               ))}
               {isTyping && (
-                <div className="message bot">
-                  <p className="typing-indicator">Typing...</p>
+                <div className="student-message bot">
+                  <p className="student-typing-indicator">Typing...</p>
                 </div>
               )}
             </div>
-            <div className={`chat-input ${theme}`}>
+            <div className={`student-chat-input ${theme}`}>
               <textarea
                 ref={textareaRef}
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Ask a question..."
-                disabled={isDisabled}
                 className={theme}
                 style={{ height: "auto", minHeight: "96px", maxHeight: "168px", whiteSpace: 'pre-wrap' }}
               />
-              <div className={`chat-input-button ${theme}`}>
+              <div className={`student-chat-input-button ${theme}`}>
                 <button 
                   onClick={handleSend} 
-                  className={`submit-query ${theme}`} 
+                  className={`student-submit-query ${theme}`} 
                   disabled={isDisabled}
                 >
                   Ask
@@ -336,16 +422,24 @@ const UserPage = () => {
       )}
 
       {!currentChatId && (
-        <div className={`no-chat-selected ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
-          <div className={`no-chat-box`}>
-            <div className="newchat-container">
-              <div className="newchat-header">
+        <div className={`student-no-chat-selected ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'} ${theme}`}>
+          <div className={`student-no-chat-box ${theme}`}>
+            <div className={`student-newchat-container ${theme}`}>
+              <div className={`student-newchat-header ${theme}`}>
                 <h1>Hello World! I am AIssistant.</h1>
                 <p>Your personal academia companion.</p>
               </div>
-              <div className="newchat-message">
-                <textarea type="text" placeholder="Ask a question" />
-                <button>Send</button>
+              <div className={`student-newchat-message ${theme}`}>
+                <textarea
+                  className={`${theme}`}
+                  ref={textareaRef}
+                  type="text"
+                  placeholder="Ask a question"
+                  value={input}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                />
+                <button onClick={handleSend}>Send</button>
               </div>
             </div>
           </div>
@@ -353,30 +447,12 @@ const UserPage = () => {
       )}
 
       {showDeleteConfirmation && (
-        <div className={`confirmation-modal ${theme}`}>
-          <div className={`user-modal-content ${theme}`}>
+        <div className={`student-confirmation-modal ${theme}`}>
+          <div className={`student-user-modal-content ${theme}`}>
             <p>Are you sure you want to delete this chat?</p>
-            <div className={`chat-name-modal-actions ${theme}`}>
+            <div className={`student-chat-name-modal-actions ${theme}`}>
               <button onClick={confirmDeleteChat}>Yes</button>
               <button onClick={cancelDeleteChat}>No</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showChatNameModal && (
-        <div className={`chat-name-modal ${theme}`}>
-          <div className={`chat-name-modal-content ${theme}`}>
-            <p>Enter a name for the new chat:</p>
-            <input
-              type="text"
-              value={chatNameInput}
-              onChange={(e) => setChatNameInput(e.target.value)}
-              placeholder="Chat name"
-            />
-            <div className="chat-name-modal-actions">
-              <button onClick={handleChatNameSubmit}>Submit</button>
-              <button onClick={() => setShowChatNameModal(false)}>Cancel</button>
             </div>
           </div>
         </div>
