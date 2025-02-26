@@ -2,19 +2,35 @@ import React, { useState, useEffect } from "react";
 import './instructor_page.css';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { MdLightMode, MdDarkMode } from "react-icons/md";
-import { Line } from "react-chartjs-2";
-import { Chart, registerables } from "chart.js";
-Chart.register(...registerables);
+import { MdOutlineDashboard, MdOutlineQuestionAnswer } from "react-icons/md";
+import { LuBookMarked } from "react-icons/lu";
+import { BiLogOut } from "react-icons/bi";
+import logo from '../assets/AIssistant.png';
+import DataTable from 'react-data-table-component';
+import {
+  LineChart,
+  Label,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ReferenceLine,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Sector,
+  Cell,
+} from 'recharts';
 
 const InstructorPage = () => {
-  const base_url = `https://aissistant-backend.vercel.app`;
-  //const base_url = `http://localhost:5000`;
+  //const base_url = `https://aissistant-backend.vercel.app`;
+  const base_url = `http://localhost:5000`;
   const [activeTab, setActiveTab] = useState('dashboard');
   const [totalQueries, setTotalQueries] = useState(0);
   const [queryData, setQueryData] = useState([]);
   const [graphFilter, setGraphFilter] = useState('weekly');
-  const [theme, setTheme] = useState("light");
   const [faq, setFaq] = useState("");
   const [learningMaterials, setLearningMaterials] = useState({});
   const [selectedSubject, setSelectedSubject] = useState(null);
@@ -23,6 +39,7 @@ const InstructorPage = () => {
   const [editingExercise, setEditingExercise] = useState(null);
   const [showSubjectConfirmModal, setShowSubjectConfirmModal] = useState(false);
   const [subjectToDelete, setSubjectToDelete] = useState(null);
+  const [totalLearningMaterials, setTotalLearningMaterials] = useState(0); // New state for learning materials count
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,6 +69,10 @@ const InstructorPage = () => {
           params: { instructorEmail }, // Pass the instructorEmail as a query parameter
         });
         setLearningMaterials(response.data);
+
+        // Calculate the number of unique subjects uploaded by the instructor
+        const uniqueSubjects = new Set(Object.keys(response.data));
+        setTotalLearningMaterials(uniqueSubjects.size);
       } catch (error) {
         console.error("Failed to fetch learning materials:", error);
       }
@@ -76,13 +97,9 @@ const InstructorPage = () => {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("instructorEmail"); // Remove the instructor's email
     localStorage.removeItem("instructorName");
-  
+
     // Redirect to the login page
     navigate("/instructor-login");
-  };
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   const getGraphData = () => {
@@ -93,78 +110,72 @@ const InstructorPage = () => {
 
     allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
-    const groupedData = {};
-    allMessages.forEach(message => {
-      const date = new Date(message.timestamp);
-      let groupKey;
+    if (allMessages.length === 0) return [];
 
-      if (graphFilter === 'weekly') {
-        const firstMonday = new Date(allMessages[0].timestamp);
-        firstMonday.setDate(firstMonday.getDate() - firstMonday.getDay() + 1);
-        const diff = Math.floor((date - firstMonday) / (7 * 24 * 60 * 60 * 1000));
-        groupKey = `Week ${diff + 1}`;
-      } else if (graphFilter === 'monthly') {
-        groupKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      }
+    const firstDate = new Date(allMessages[0].timestamp);
+    const lastDate = new Date(allMessages[allMessages.length - 1].timestamp);
 
-      if (!groupedData[groupKey]) {
-        groupedData[groupKey] = 0;
-      }
-      groupedData[groupKey]++;
-    });
+    let groupedData = {};
+
+    if (graphFilter === 'weekly') {
+        const firstMonday = new Date(firstDate);
+        if (firstMonday.getDay() !== 1) {
+            firstMonday.setDate(firstMonday.getDate() - firstMonday.getDay() + 1);
+        }
+
+        let currentDate = new Date(firstMonday);
+        let weekNumber = 1;
+
+        while (currentDate <= lastDate) {
+            let groupKey = `Week ${weekNumber}`;
+            groupedData[groupKey] = 0;
+            weekNumber++;
+            currentDate.setDate(currentDate.getDate() + 7);
+        }
+
+        allMessages.forEach(message => {
+            const date = new Date(message.timestamp);
+            const diff = Math.floor((date - firstMonday) / (7 * 24 * 60 * 60 * 1000));
+            const groupKey = `Week ${Math.max(1, diff + 1)}`;
+
+            if (groupKey in groupedData) {
+                groupedData[groupKey]++;
+            }
+        });
+    } else if (graphFilter === 'monthly') {
+        let currentDate = new Date(firstDate);
+        currentDate.setDate(1);
+
+        while (currentDate <= lastDate) {
+            const groupKey = `${currentDate.toLocaleString('default', { month: 'short' })} ${currentDate.getFullYear()}`;
+            groupedData[groupKey] = 0;
+            currentDate.setMonth(currentDate.getMonth() + 1);
+        }
+
+        allMessages.forEach(message => {
+            const date = new Date(message.timestamp);
+            const groupKey = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
+
+            if (groupKey in groupedData) {
+                groupedData[groupKey]++;
+            }
+        });
+    }
 
     const sortedLabels = Object.keys(groupedData).sort((a, b) => {
-      if (graphFilter === 'weekly') {
-        return parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]);
-      } else {
-        return a.localeCompare(b);
-      }
+        if (graphFilter === 'weekly') {
+            return parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]);
+        } else if (graphFilter === 'monthly') {
+            return new Date(a) - new Date(b);
+        }
+        return 0;
     });
 
-    const totalQueriesDataset = sortedLabels.map(label => groupedData[label]);
-
-    return {
-      labels: sortedLabels,
-      datasets: [
-        {
-          label: 'Total Queries',
-          data: totalQueriesDataset,
-          fill: false,
-          borderColor: theme === "dark" ? 'rgb(75, 192, 192)' : 'rgb(75, 192, 192)',
-          backgroundColor: theme === "dark" ? 'rgba(75, 192, 192, 0.2)' : 'rgba(75, 192, 192, 0.2)',
-          tension: 0.1
-        }
-      ]
-    };
+    return sortedLabels.map(label => ({
+        name: label,
+        queries: groupedData[label]
+    }));
   };
-
-  const getGraphOptions = () => ({
-    scales: {
-      x: {
-        ticks: {
-          color: theme === "dark" ? 'white' : 'black'
-        },
-        grid: {
-          color: theme === "dark" ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-        }
-      },
-      y: {
-        ticks: {
-          color: theme === "dark" ? 'white' : 'black'
-        },
-        grid: {
-          color: theme === "dark" ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-        }
-      }
-    },
-    plugins: {
-      legend: {
-        labels: {
-          color: theme === "dark" ? 'white' : 'black'
-        }
-      }
-    }
-  });
 
   const handleDeleteSubject = async (subject) => {
     try {
@@ -193,11 +204,11 @@ const InstructorPage = () => {
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
-  
+
       // Get the instructor's email from localStorage
       const instructorEmail = localStorage.getItem("instructorEmail");
       formData.append("instructorEmail", instructorEmail);
-  
+
       try {
         await axios.post(`${base_url}/api/uploadLearningMaterials`, formData, {
           headers: {
@@ -209,6 +220,10 @@ const InstructorPage = () => {
           params: { instructorEmail }, // Pass the instructorEmail when fetching learning materials
         });
         setLearningMaterials(response.data);
+
+        // Update the count of learning materials
+        const uniqueSubjects = new Set(Object.keys(response.data));
+        setTotalLearningMaterials(uniqueSubjects.size);
       } catch (error) {
         console.error("Error uploading learning materials:", error);
         alert("Failed to upload learning materials.");
@@ -228,7 +243,7 @@ const InstructorPage = () => {
     setSelectedSubtopic(null);
     setEditingExercise(null);
   };
-  
+
   const handleBackToSubtopics = () => {
     setSelectedSubtopic(null);
     setEditingExercise(null);
@@ -250,19 +265,19 @@ const InstructorPage = () => {
         questions: editingExercise.questions,
         answers: editingExercise.answers,
       };
-  
+
       await axios.put(
         `${base_url}/api/updateExercise/${editingExercise.docId}`,
         updatedExercise
       );
-  
+
       // Update local state
       const updatedLearningMaterials = { ...learningMaterials };
       const subtopic = updatedLearningMaterials[selectedSubject][selectedLesson][selectedSubtopic];
       subtopic.content = updatedExercise.content;
       subtopic.questions = updatedExercise.questions;
       subtopic.answers = updatedExercise.answers;
-  
+
       setLearningMaterials(updatedLearningMaterials);
       setEditingExercise(null);
       alert("Exercise updated successfully!");
@@ -278,12 +293,12 @@ const InstructorPage = () => {
       return Object.keys(learningMaterials).map((subject) => (
         <div
           key={subject}
-          className={`instructor-exercise-subject ${theme}`}
+          className="instructor-exercise-subject"
           onClick={() => setSelectedSubject(subject)}
         >
           <div>{subject}</div>
           <button
-            className={`instructor-delete-subject-button ${theme}`}
+            className="instructor-delete-subject-button"
             onClick={(e) => {
               e.stopPropagation();
               handleConfirmDeleteSubject(subject);
@@ -298,7 +313,7 @@ const InstructorPage = () => {
       return (
         <div>
           <button
-            className={`instructor-back-to-subjects-button ${theme}`}
+            className="instructor-back-to-subjects-button"
             onClick={handleBackToSubjects}
           >
             Back to Subjects
@@ -306,7 +321,7 @@ const InstructorPage = () => {
           {Object.keys(learningMaterials[selectedSubject]).map((lesson) => (
             <div
               key={lesson}
-              className={`instructor-exercise-lesson ${theme}`}
+              className="instructor-exercise-lesson"
               onClick={() => setSelectedLesson(lesson)}
             >
               {`${lesson}`}
@@ -317,7 +332,7 @@ const InstructorPage = () => {
     } else if (!selectedSubtopic) {
       // Render the list of subtopics for the selected lesson
       const subtopics = Object.keys(learningMaterials[selectedSubject][selectedLesson]);
-  
+
       // Sort subtopics numerically
       const sortedSubtopics = subtopics.sort((a, b) => {
         const aParts = a.split('.').map(Number);
@@ -329,11 +344,11 @@ const InstructorPage = () => {
         }
         return aParts.length - bParts.length;
       });
-  
+
       return (
         <div>
           <button
-            className={`instructor-back-to-lessons-button ${theme}`}
+            className="instructor-back-to-lessons-button"
             onClick={handleBackToLessons}
           >
             Back to Lessons
@@ -343,7 +358,7 @@ const InstructorPage = () => {
             return (
               <div
                 key={subtopicCode}
-                className={`instructor-exercise-subtopic ${theme}`}
+                className="instructor-exercise-subtopic"
                 onClick={() => setSelectedSubtopic(subtopicCode)}
               >
                 {`${subtopicCode} - ${subtopic.subtopicTitle}`}
@@ -355,15 +370,15 @@ const InstructorPage = () => {
     } else {
       // Render the content of the selected subtopic
       const subtopic = learningMaterials[selectedSubject][selectedLesson][selectedSubtopic];
-  
+
       return (
-        <div className={`instructor-exercise-content ${theme}`}>
+        <div className="instructor-exercise-content">
           <h2>{subtopic.subtopicTitle}</h2>
-  
+
           {/* Content Section */}
           {editingExercise ? (
             <textarea
-              className={`instructor-content-textarea ${theme}`}
+              className="instructor-content-textarea"
               value={editingExercise.content}
               onChange={(e) =>
                 setEditingExercise({ ...editingExercise, content: e.target.value })
@@ -372,15 +387,15 @@ const InstructorPage = () => {
           ) : (
             <pre>{subtopic.content}</pre>
           )}
-  
+
           {/* Images Section */}
           {subtopic.images && <img src={subtopic.images} alt="Subtopic" />}
-  
+
           {/* Exercises Section */}
           <h3>Exercises</h3>
           {editingExercise ? (
             <textarea
-              className={`instructor-exercise-textarea ${theme}`}
+              className="instructor-exercise-textarea"
               value={editingExercise.questions}
               onChange={(e) =>
                 setEditingExercise({ ...editingExercise, questions: e.target.value })
@@ -389,12 +404,12 @@ const InstructorPage = () => {
           ) : (
             <pre>{subtopic.questions}</pre>
           )}
-  
+
           {/* Answers Section */}
           <h3>Answers</h3>
           {editingExercise ? (
             <textarea
-              className={`instructor-exercise-textarea ${theme}`}
+              className="instructor-exercise-textarea"
               value={editingExercise.answers}
               onChange={(e) =>
                 setEditingExercise({ ...editingExercise, answers: e.target.value })
@@ -403,7 +418,7 @@ const InstructorPage = () => {
           ) : (
             <pre>{subtopic.answers}</pre>
           )}
-  
+
           {/* Edit/Save/Cancel Buttons */}
           {editingExercise ? (
             <div className="instructor-e-buttons">
@@ -434,7 +449,7 @@ const InstructorPage = () => {
               Edit
             </button>
           )}
-  
+
           {/* Back Buttons */}
           <button onClick={handleBackToSubtopics}>Back to Subtopics</button>
           <button onClick={handleBackToLessons}>Back to Lessons</button>
@@ -444,50 +459,142 @@ const InstructorPage = () => {
     }
   };
 
+  const pieChartData = [
+    { name: 'Queries', value: totalQueries },
+  ];
+
+  const COLORS = ['#005f9e'];
+
+  const customStyles = {
+    head: {
+      style: {
+        fontSize: '16px',
+        fontWeight: 'bold',
+        backgroundColor: '#005f9e',
+        color: '#ffffff',
+      },
+    },
+    rows: {
+      style: {
+        fontSize: '14px',
+        color: '#333333',
+        backgroundColor: '#f9f9f9',
+        '&:hover': {
+          backgroundColor: '#e0e0e0',
+        },
+      },
+    },
+    cells: {
+      style: {
+        padding: '12px',
+      },
+    },
+    pagination: {
+      style: {
+        fontSize: '14px',
+        color: '#005f9e',
+      },
+    },
+  };
+
   return (
-    <div className={`instructor-container ${theme}`}>
-      <div className={`instructor-sidebar ${theme}`}>
+    <div className="instructor-container">
+      <div className="instructor-sidebar">
+        <div className="instructor-aissistant-logo-title">
+          <img src={logo} alt="aissistant logo" />
+          <div className="instructor-aissistant-title">
+            <h1 className="instructor-ai">AI</h1>
+            <h1>ssistant</h1>
+          </div>
+        </div>
         <button 
-          className={`instructor-tab ${activeTab === 'dashboard' ? 'active' : ''} ${theme}`}
+          className={`instructor-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => setActiveTab('dashboard')}
         >
+          <MdOutlineDashboard />
           Dashboard
         </button>
         <button 
-          className={`instructor-tab ${activeTab === 'learning-materials' ? 'active' : ''} ${theme}`}
+          className={`instructor-tab ${activeTab === 'learning-materials' ? 'active' : ''}`}
           onClick={() => setActiveTab('learning-materials')}
         >
+          <LuBookMarked />
           Manage Learning Materials
         </button>
         <button 
-          className={`instructor-logout-button ${theme}`}
+          className="instructor-logout-button"
           onClick={handleLogout}
         >
+          <BiLogOut />
           Logout
         </button>
       </div>
-      <div className={`instructor-content ${theme}`}>
+      <div className="instructor-content">
         {activeTab === 'dashboard' ? (
-          <div className={`instructor-dashboard-tab ${theme}`}>
-            <h1>Dashboard</h1>
+          <div className="instructor-dashboard-tab">
+            <h1><MdOutlineDashboard />Dashboard</h1>
             <div className="instructor-statistics">
-              <div className={`instructor-statistics-box queries ${theme}`}>
-                <h3>Total Queries</h3>
+              <div className="instructor-statistics-box queries">
+                <h3><MdOutlineQuestionAnswer className='instructor-statistics-box-icon' />Total Queries</h3>
                 <p>{totalQueries}</p>
               </div>
-            </div>
-            <div className={`instructor-line-graph-container ${theme}`}>
-              <div className="instructor-graph-filters">
-                <button className={`instructor-${theme}`} onClick={() => setGraphFilter('weekly')}>Weekly</button>
-                <button className={`instructor-${theme}`} onClick={() => setGraphFilter('monthly')}>Monthly</button>
+              <div className="instructor-statistics-box-2 learning-materials">
+                <h3><LuBookMarked className='instructor-statistics-box-icon' />Learning Materials</h3>
+                <p>{totalLearningMaterials}</p>
               </div>
-              <Line data={getGraphData()} options={getGraphOptions()} />
+            </div>
+            <div className="instructor-graph-container">
+              <div style={{ display: 'flex', gap: '3%', alignItems: 'center' }}>
+                <ResponsiveContainer className='instructor-line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
+                  <LineChart className='instructor-line'
+                    data={getGraphData()}
+                    margin={{
+                      top: 10,
+                      right: 30,
+                      left: 0,
+                      bottom: 0,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" padding={{ left: 10, right: 10 }}>
+                    </XAxis>
+                    <YAxis
+                      tickFormatter={(value) => (value === 0 ? "" : Math.floor(value))}
+                      domain={[0, "dataMax"]}
+                      allowDecimals={false}
+                    >
+                      <Label
+                        value="Number of Queries"
+                        angle={-90}
+                        position="insideLeft"
+                        style={{ textAnchor: "middle" }}
+                      />
+                    </YAxis>
+                    <Tooltip />
+                    <Line type="monotone" dataKey="queries" stroke="rgb(101, 134, 145)" strokeWidth={3} activeDot={{ r: 8 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="instructor-graph-filters">
+                <button 
+                  className={graphFilter === 'weekly' ? 'active' : ''} 
+                  onClick={() => setGraphFilter('weekly')}
+                >
+                  Weekly
+                </button>
+                <button 
+                  className={graphFilter === 'monthly' ? 'active' : ''} 
+                  onClick={() => setGraphFilter('monthly')}
+                >
+                  Monthly
+                </button>
+              </div>
             </div>
             <div className="instructor-faq-section">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>Frequently Asked Questions</h2>
                 <button 
-                  className={`instructor-generate-faq-button ${theme}`}
+                  className="instructor-generate-faq-button"
                   onClick={handleGenerateFAQ}
                 >
                   Generate FAQ
@@ -497,8 +604,8 @@ const InstructorPage = () => {
             </div>
           </div>
         ) : (
-          <div className={`instructor-manage-learning-materials-tab ${theme}`}>
-            <h1>Manage Learning Materials</h1>
+          <div className="instructor-manage-learning-materials-tab">
+            <h1><LuBookMarked />Manage Learning Materials</h1>
             <input 
               type="file" 
               accept=".xlsx" 
@@ -511,15 +618,12 @@ const InstructorPage = () => {
           </div>
         )}
       </div>
-      <button className={`instructor-theme-toggle ${theme}`} onClick={toggleTheme}>
-        {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
-      </button>
 
       {showSubjectConfirmModal && (
-        <div className={`instructor-confirmation-modal ${theme}`}>
-          <div className={`instructor-modal-content ${theme}`}>
+        <div className="instructor-confirmation-modal">
+          <div className="instructor-modal-content">
             <p>Are you sure you want to delete this subject?</p>
-            <div className={`instructor-modal-actions ${theme}`}>
+            <div className="instructor-modal-actions">
               <button onClick={() => {
                 handleDeleteSubject(subjectToDelete);
                 setShowSubjectConfirmModal(false);

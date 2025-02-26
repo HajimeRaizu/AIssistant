@@ -1,4 +1,4 @@
-import React, { useState, useEffect, PureComponent } from "react";
+import React, { useState, useEffect } from "react";
 import './admin_page.css';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -9,6 +9,7 @@ import { MdOutlineQuestionAnswer } from "react-icons/md";
 import { LuBookMarked } from "react-icons/lu";
 import logo from '../assets/AIssistant.png';
 import { BiLogOut } from "react-icons/bi";
+import DataTable from 'react-data-table-component';
 import {
   LineChart,
   Label,
@@ -152,14 +153,13 @@ const AdminPage = () => {
     let groupedData = {};
 
     if (graphFilter === 'weekly') {
-        // Ensure first week starts correctly
         const firstMonday = new Date(firstDate);
-        if (firstMonday.getDay() !== 1) { // Make sure it starts on a Monday
+        if (firstMonday.getDay() !== 1) {
             firstMonday.setDate(firstMonday.getDate() - firstMonday.getDay() + 1);
         }
 
         let currentDate = new Date(firstMonday);
-        let weekNumber = 1; // Start from Week 1
+        let weekNumber = 1;
 
         while (currentDate <= lastDate) {
             let groupKey = `Week ${weekNumber}`;
@@ -171,7 +171,7 @@ const AdminPage = () => {
         allMessages.forEach(message => {
             const date = new Date(message.timestamp);
             const diff = Math.floor((date - firstMonday) / (7 * 24 * 60 * 60 * 1000));
-            const groupKey = `Week ${Math.max(1, diff + 1)}`; // Ensure Week 1 is correctly assigned
+            const groupKey = `Week ${Math.max(1, diff + 1)}`;
 
             if (groupKey in groupedData) {
                 groupedData[groupKey]++;
@@ -211,9 +211,6 @@ const AdminPage = () => {
         queries: groupedData[label]
     }));
 };
-
-
-
 
   const handleEditUser = (user) => {
     setEditingUser(user);
@@ -382,13 +379,61 @@ const AdminPage = () => {
     return instructor.email.toLowerCase().includes(searchLower);
   });
 
-  // Data for the PieChart
   const pieChartData = [
     { name: 'Students', value: totalStudents },
     { name: 'Instructors', value: totalInstructors },
   ];
 
   const COLORS = ['#005f9e', '#00816a'];
+
+  const userColumns = [
+    {
+      name: 'ID',
+      selector: row => row.id,
+      sortable: true,
+    },
+    {
+      name: 'Name',
+      selector: row => row.name,
+      sortable: true,
+    },
+    {
+      name: 'Email',
+      selector: row => row.email,
+      sortable: true,
+    },
+    {
+      name: 'Actions',
+      cell: row => (
+        <div>
+          <button className="edit-button" onClick={() => handleEditUser(row)}>Edit</button>
+          <button className="delete-button" onClick={() => handleConfirmDelete(row.id)}>Delete</button>
+        </div>
+      ),
+    },
+  ];
+
+  const instructorColumns = [
+    {
+      name: 'Name',
+      selector: row => row.name,
+      sortable: true,
+    },
+    {
+      name: 'Email',
+      selector: row => row.email,
+      sortable: true,
+    },
+    {
+      name: 'Actions',
+      cell: row => (
+        <div>
+          <button className="edit-button" onClick={() => handleEditUser(row)}>Edit</button>
+          <button className="delete-button" onClick={() => handleConfirmDeleteInstructor(row.email)}>Delete</button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="admin-container">
@@ -412,14 +457,14 @@ const AdminPage = () => {
           onClick={() => setActiveTab('settings')}
         >
           <FaRegUser />
-          Manage Students
+          Students
         </button>
         <button 
           className={`admin-tab ${activeTab === 'instructors' ? 'active' : ''}`}
           onClick={() => setActiveTab('instructors')}
         >
           <PiStudentBold />
-          Manage Instructors
+          Instructors
         </button>
         <button 
           className="admin-logout-button"
@@ -541,69 +586,13 @@ const AdminPage = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <input 
-              type="file" 
-              accept=".xlsx" 
-              onChange={handleFileUpload} 
+            <DataTable
+              columns={userColumns}
+              data={filteredUsers}
+              pagination
+              highlightOnHover
+              responsive
             />
-            <button 
-              className="add-user-button"
-              onClick={() => setShowAddUserModal(true)}
-            >
-              Add User
-            </button>
-            <table className="users-table">
-              <thead>
-                <tr>
-                  <th className="id-column">ID</th>
-                  <th className="name-column">Name</th>
-                  <th className="email-column">Email</th>
-                  <th className="actions-column">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredUsers.map(user => (
-                  <tr key={user.id}>
-                    <td>{user.id}</td>
-                    <td>
-                      {editingUser && editingUser.id === user.id ? (
-                        <input 
-                          type="text" 
-                          value={editingUser.name} 
-                          onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })} 
-                        />
-                      ) : (
-                        user.name
-                      )}
-                    </td>
-                    <td>
-                      {editingUser && editingUser.id === user.id ? (
-                        <input 
-                          type="text" 
-                          value={editingUser.email} 
-                          onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })} 
-                        />
-                      ) : (
-                        user.email
-                      )}
-                    </td>
-                    <td>
-                      {editingUser && editingUser.id === user.id ? (
-                        <>
-                          <button className="save-button" onClick={() => handleSaveUser(editingUser)}>Save</button>
-                          <button className="cancel-button" onClick={() => setEditingUser(null)}>Cancel</button>
-                        </>
-                      ) : (
-                        <>
-                          <button className="edit-button" onClick={() => handleEditUser(user)}>Edit</button>
-                          <button className="delete-button" onClick={() => handleConfirmDelete(user.id)}>Delete</button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         ) : activeTab === 'instructors' ? (
           <div className="manage-instructors-tab">
@@ -616,67 +605,14 @@ const AdminPage = () => {
                 onChange={(e) => setInstructorSearchTerm(e.target.value)} 
               />
             </div>
-            <input 
-              type="file" 
-              accept=".xlsx" 
-              onChange={handleUploadInstructors} 
+            <DataTable
+              className="data-tables"
+              columns={instructorColumns}
+              data={filteredInstructors}
+              pagination
+              highlightOnHover
+              responsive
             />
-            <button 
-              className="add-instructor-button"
-              onClick={() => setShowAddInstructorModal(true)}
-            >
-              Add Instructor
-            </button>
-            <table className="instructors-table">
-              <thead>
-                <tr>
-                  <th className="name-column">Name</th>
-                  <th className="email-column">Email</th>
-                  <th className="actions-column">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-              {filteredInstructors.map((instructor, index) => (
-                <tr key={index}>
-                  <td>
-                    {editingUser && editingUser.email === instructor.email ? (
-                      <input 
-                        type="text" 
-                        value={editingUser.name || ''} 
-                        onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })} 
-                      />
-                    ) : (
-                      instructor.name || 'N/A'
-                    )}
-                  </td>
-                  <td>
-                    {editingUser && editingUser.email === instructor.email ? (
-                      <input 
-                        type="text" 
-                        value={editingUser.email} 
-                        onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })} 
-                      />
-                    ) : (
-                      instructor.email
-                    )}
-                  </td>
-                  <td>
-                    {editingUser && editingUser.email === instructor.email ? (
-                      <>
-                        <button className="save-button" onClick={() => handleSaveUser(editingUser)}>Save</button>
-                        <button className="cancel-button" onClick={() => setEditingUser(null)}>Cancel</button>
-                      </>
-                    ) : (
-                      <>
-                        <button className="edit-button" onClick={() => handleEditUser(instructor)}>Edit</button>
-                        <button className="delete-button" onClick={() => handleConfirmDeleteInstructor(instructor.email)}>Delete</button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-              </tbody>
-            </table>
           </div>
         ) : (
           <div className="university-info-tab">

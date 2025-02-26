@@ -6,34 +6,40 @@ import multer from "multer";
 import XLSX from "xlsx";
 import { HfInference } from "@huggingface/inference";
 import admin from "firebase-admin";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const type= process.env.FIREBASE_TYPE;
-const project_id= process.env.FIREBASE_PROJECT_ID;
-const private_key_id= process.env.FIREBASE_PRIVATE_KEY_ID;
-const private_key= process.env.FIREBASE_PRIVATE_KEY;
-const client_email= process.env.FIREBASE_CLIENT_EMAIL;
-const client_id= process.env.FIREBASE_CLIENT_ID;
-const auth_uri= process.env.FIREBASE_AUTH_URI;
-const token_uri= process.env.FIREBASE_TOKEN_URI;
-const auth_provider_x509_cert_url= process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL;
-const client_x509_cert_url= process.env.FIREBASE_CLIENT_X509_CERT_URL;
-const universe_domain= process.env.FIREBASE_UNIVERSE_DOMAIN;
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const type = process.env.FIREBASE_TYPE;
+const project_id = process.env.FIREBASE_PROJECT_ID;
+const private_key_id = process.env.FIREBASE_PRIVATE_KEY_ID;
+const private_key = process.env.FIREBASE_PRIVATE_KEY;
+const client_email = process.env.FIREBASE_CLIENT_EMAIL;
+const client_id = process.env.FIREBASE_CLIENT_ID;
+const auth_uri = process.env.FIREBASE_AUTH_URI;
+const token_uri = process.env.FIREBASE_TOKEN_URI;
+const auth_provider_x509_cert_url = process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL;
+const client_x509_cert_url = process.env.FIREBASE_CLIENT_X509_CERT_URL;
+const universe_domain = process.env.FIREBASE_UNIVERSE_DOMAIN;
+
 // Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert({
-    "type": type,
-    "project_id": project_id,
-    "private_key_id": private_key_id,
-    "private_key": private_key,
-    "client_email": client_email,
-    "client_id": client_id,
-    "auth_uri": auth_uri,
-    "token_uri": token_uri,
-    "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
-    "client_x509_cert_url": client_x509_cert_url,
-    "universe_domain": universe_domain
-  }
-  ),
+    type,
+    project_id,
+    private_key_id,
+    private_key,
+    client_email,
+    client_id,
+    auth_uri,
+    token_uri,
+    auth_provider_x509_cert_url,
+    client_x509_cert_url,
+    universe_domain,
+  }),
 });
 
 const db = admin.firestore();
@@ -253,6 +259,7 @@ app.post("/api/generateFAQ", async (req, res) => {
       Guidelines:
       1. Create a top 10 most frequently asked questions based in the given questions below.
       2. DO NOT ANSWER THE QUESTIONS.
+      3. Just answer with the top 10 frequently asked questions, nothing else.
 
       Questions:
       ${prompts.map((prompt, index) => `${index + 1}. ${prompt}`).join("\n")}
@@ -503,29 +510,58 @@ app.post("/api/login", async (req, res) => {
 
 // 5. Learning materials and exercises functions
 // Get learning materials for the logged-in instructor
+app.get("/api/getLearningMaterials", async (req, res) => {
+  const instructorEmail = req.query.instructorEmail;
+
+  try {
+    let query = db.collection("learningMaterials");
+    if (instructorEmail) {
+      query = query.where("instructorEmail", "==", instructorEmail);
+    }
+
+    const exercisesSnapshot = await query.get();
+    const exercises = exercisesSnapshot.docs.map((doc) => ({
+      docId: doc.id, // Include the document ID
+      ...doc.data(),
+    }));
+
+    // Organize the learning materials by subjectName, lesson, and subtopicCode
+    const organizedLearningMaterials = exercises.reduce((acc, material) => {
+      const { subjectName, lesson, subtopicCode } = material;
+
+      if (!acc[subjectName]) {
+        acc[subjectName] = {};
+      }
+
+      if (!acc[subjectName][lesson]) {
+        acc[subjectName][lesson] = {};
+      }
+
+      if (!acc[subjectName][lesson][subtopicCode]) {
+        acc[subjectName][lesson][subtopicCode] = material;
+      }
+
+      return acc;
+    }, {});
+
+    res.status(200).json(organizedLearningMaterials);
+  } catch (error) {
+    console.error("Error fetching learning materials:", error);
+    res.status(500).json({ error: "Failed to fetch learning materials" });
+  }
+});
+
+// Add this endpoint to get the total number of learning materials
 app.get("/api/getTotalLearningMaterials", async (req, res) => {
   try {
     const learningMaterialsSnapshot = await db.collection("learningMaterials").get();
-    
-    // Use a Set to store unique subjectIds
-    const uniqueSubjectIds = new Set();
-    
-    learningMaterialsSnapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.subjectId) {
-        uniqueSubjectIds.add(data.subjectId);
-      }
-    });
-
-    const totalUniqueSubjects = uniqueSubjectIds.size; // Count unique subjectIds
-
-    res.status(200).json({ totalLearningMaterials: totalUniqueSubjects });
+    const totalLearningMaterials = learningMaterialsSnapshot.size; // Get the total count of documents
+    res.status(200).json({ totalLearningMaterials });
   } catch (error) {
     console.error("Error fetching total learning materials:", error);
     res.status(500).json({ error: "Failed to fetch total learning materials" });
   }
 });
-
 
 app.post("/api/uploadLearningMaterials", upload.single("file"), async (req, res) => {
   try {
