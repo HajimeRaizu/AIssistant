@@ -394,7 +394,7 @@ const AdminPage = () => {
               </div>
             </div>
             <div className="line-graph-container">
-              <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '2%', alignItems: 'center' }}>
                   <ResponsiveContainer className='line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
                     <LineChart className='line'
                       data={getGraphData()}
