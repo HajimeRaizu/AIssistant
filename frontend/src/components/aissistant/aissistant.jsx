@@ -13,6 +13,9 @@ const AIssistant = () => {
 
   return (
       <div className='aissistant-container'>
+        <div className='aissistant-header'>
+          <div className='landing-aissistant'><h1 className='ai'>AI</h1><h1 className='landing-welcome'>ssistant</h1></div>
+        </div>
         <div className="aissistant">
           <div className='aissistant-text'>
             <h1>lorem</h1>

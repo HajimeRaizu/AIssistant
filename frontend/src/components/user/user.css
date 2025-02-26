@@ -97,13 +97,14 @@
 }
 
 .student-chat-item {
+    height: fit-content;
+    width: 35vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 10px 10px 10px;
     border-radius: 5px;
     cursor: pointer;
-    
 }
 
 .student-chat-item.dark {
@@ -300,17 +301,17 @@
 }
 
 .student-chat-body::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .student-chat-body::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 4px;
-  }
-  
-  .student-chat-body::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
-  }
+  width: 8px;
+}
+
+.student-chat-body::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.student-chat-body::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
 
 .student-chat-body.dark {
     background: var(--bg-dark);
