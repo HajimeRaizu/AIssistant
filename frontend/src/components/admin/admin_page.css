@@ -11,7 +11,7 @@
 
 /* Sidebar */
 .admin-sidebar {
-    width: 250px;
+    width: 40vh;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -30,7 +30,7 @@
     border: none;
     cursor: pointer;
     border-radius: 5px;
-    background-color: rgb(241, 241, 241);
+    background: rgb(241, 241, 241);
     color: rgb(81, 110, 119);
     font-size: medium;
 }
@@ -77,6 +77,36 @@
     gap: 10px;
 }
 
+.aissistant-logo-title{
+  padding: 10% 0 10% 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2vh;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.507);
+  margin-bottom: 2vh;
+}
+
+.aissistant-logo-title img{
+    height: 8vh;
+    width: 8vh;
+}
+
+.aissistant-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.aissistant-logo-title .aissistant-title h1.ai{
+    color: rgb(66, 66, 233);
+}
+
+.aissistant-logo-title .aissistant-title h1{
+    color: black;
+}
+
 .statistics {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -90,8 +120,16 @@
     padding: 20px;
     border-radius: 10px;
     width: 100%;
-    background-color: rgb(184, 184, 184);
+    background: rgba(136, 185, 202, 0.726);
+    box-shadow: 0px 0px 5px 1px gray;
     color: black;
+}
+.statistics-box-2 {
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: 0px 0px 5px 1px gray;
+  color: black;
 }
 
 .statistics-box-icon{
@@ -114,6 +152,29 @@
 }
 
 .statistics-box .logo {
+    margin-right: 10px;
+}
+
+.statistics-box-2-icon{
+  height: 15%;
+  width: 15%;
+}
+
+.statistics-box-2 h3 {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.statistics-box-2 p{
+  display: flex;
+  align-items: center;
+  padding-left: 20%;
+  font-size: larger;
+}
+
+.statistics-box-2 .logo {
     margin-right: 10px;
 }
 
@@ -236,7 +297,7 @@ table{
 }
 
 .users-table tr:hover {
-    background-color: #ccc;
+    background: #ccc;
 }
 
 .users-table button {
@@ -293,7 +354,7 @@ table{
 }
 
 .add-user-button, .add-instructor-button{
-  background-color: #45a049;
+  background: #45a049;
 }
 
 /* Confirmation Modal */
@@ -415,7 +476,7 @@ table{
 }
 
 .instructors-table tr:hover {
-    background-color: #ccc;
+    background: #ccc;
 }
 
 .instructors-table button {

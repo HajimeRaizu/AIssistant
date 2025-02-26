@@ -7,6 +7,7 @@ import { PiStudentBold } from "react-icons/pi";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineQuestionAnswer } from "react-icons/md";
 import { LuBookMarked } from "react-icons/lu";
+import logo from '../assets/AIssistant.png';
 import { BiLogOut } from "react-icons/bi";
 import {
   LineChart,
@@ -140,45 +141,79 @@ const AdminPage = () => {
       timestamp: new Date(message.timestamp),
       text: message.text
     }));
-
+  
     allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  
+    if (allMessages.length === 0) return [];
+  
+    const firstDate = new Date(allMessages[0].timestamp);
+    const lastDate = new Date(allMessages[allMessages.length - 1].timestamp);
+  
+    let groupedData = {};
 
-    const groupedData = {};
-    allMessages.forEach(message => {
-      const date = new Date(message.timestamp);
-      let groupKey;
+    if (graphFilter === 'weekly') {
+        // Ensure first week starts correctly
+        const firstMonday = new Date(firstDate);
+        if (firstMonday.getDay() !== 1) { // Make sure it starts on a Monday
+            firstMonday.setDate(firstMonday.getDate() - firstMonday.getDay() + 1);
+        }
 
-      if (graphFilter === 'weekly') {
-        const firstMonday = new Date(allMessages[0].timestamp);
-        firstMonday.setDate(firstMonday.getDate() - firstMonday.getDay() + 1);
-        const diff = Math.floor((date - firstMonday) / (7 * 24 * 60 * 60 * 1000));
-        groupKey = `Week ${diff + 1}`;
-      } else if (graphFilter === 'monthly') {
-        groupKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      }
+        let currentDate = new Date(firstMonday);
+        let weekNumber = 1; // Start from Week 1
 
-      if (!groupedData[groupKey]) {
-        groupedData[groupKey] = 0;
-      }
-      groupedData[groupKey]++;
-    });
+        while (currentDate <= lastDate) {
+            let groupKey = `Week ${weekNumber}`;
+            groupedData[groupKey] = 0;
+            weekNumber++;
+            currentDate.setDate(currentDate.getDate() + 7);
+        }
+
+        allMessages.forEach(message => {
+            const date = new Date(message.timestamp);
+            const diff = Math.floor((date - firstMonday) / (7 * 24 * 60 * 60 * 1000));
+            const groupKey = `Week ${Math.max(1, diff + 1)}`; // Ensure Week 1 is correctly assigned
+
+            if (groupKey in groupedData) {
+                groupedData[groupKey]++;
+            }
+        });
+    } else if (graphFilter === 'monthly') {
+        let currentDate = new Date(firstDate);
+        currentDate.setDate(1);
+
+        while (currentDate <= lastDate) {
+            const groupKey = `${currentDate.toLocaleString('default', { month: 'short' })} ${currentDate.getFullYear()}`;
+            groupedData[groupKey] = 0;
+            currentDate.setMonth(currentDate.getMonth() + 1);
+        }
+
+        allMessages.forEach(message => {
+            const date = new Date(message.timestamp);
+            const groupKey = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
+
+            if (groupKey in groupedData) {
+                groupedData[groupKey]++;
+            }
+        });
+    }
 
     const sortedLabels = Object.keys(groupedData).sort((a, b) => {
-      if (graphFilter === 'weekly') {
-        return parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]);
-      } else {
-        return a.localeCompare(b);
-      }
+        if (graphFilter === 'weekly') {
+            return parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]);
+        } else if (graphFilter === 'monthly') {
+            return new Date(a) - new Date(b);
+        }
+        return 0;
     });
 
-    // Format data for recharts
-    const chartData = sortedLabels.map(label => ({
-      name: label,
-      queries: groupedData[label]
+    return sortedLabels.map(label => ({
+        name: label,
+        queries: groupedData[label]
     }));
+};
 
-    return chartData;
-  };
+
+
 
   const handleEditUser = (user) => {
     setEditingUser(user);
@@ -358,6 +393,13 @@ const AdminPage = () => {
   return (
     <div className="admin-container">
       <div className="admin-sidebar">
+        <div className="aissistant-logo-title">
+          <img src={logo} alt="aissistant logo" />
+          <div className="aissistant-title">
+            <h1 className="ai">AI</h1>
+            <h1>ssistant</h1>
+          </div>
+        </div>
         <button 
           className={`admin-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => setActiveTab('dashboard')}
@@ -396,7 +438,7 @@ const AdminPage = () => {
                 <h3><MdOutlineQuestionAnswer className='statistics-box-icon' />Total Queries</h3>
                 <p>{totalQueries}</p>
               </div>
-              <div className="statistics-box users">
+              <div className="statistics-box-2 users">
                 <h3><FaRegUser className='statistics-box-icon' />Students</h3>
                 <p>{totalStudents}</p>
               </div>
@@ -404,48 +446,42 @@ const AdminPage = () => {
                 <h3><PiStudentBold className='statistics-box-icon' />Instructors</h3>
                 <p>{totalInstructors}</p>
               </div>
-              <div className="statistics-box learning-materials">
+              <div className="statistics-box-2 learning-materials">
                 <h3><LuBookMarked className='statistics-box-icon' />Learning Materials</h3>
                 <p>{totalLearningMaterials}</p>
               </div>
             </div>
             <div className="graph-container">
               <div style={{ display: 'flex', gap: '3%', alignItems: 'center' }}>
-                  <ResponsiveContainer className='line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
-                    <LineChart className='line'
-                      data={getGraphData()}
-                      margin={{
-                        top: 10,
-                        right: 30,
-                        left: 0,
-                        bottom: 0,
-                      }}
+                <ResponsiveContainer className='line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
+                  <LineChart className='line'
+                    data={getGraphData()}
+                    margin={{
+                      top: 10,
+                      right: 30,
+                      left: 0,
+                      bottom: 0,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" padding={{ left: 10, right: 10 }}>
+                    </XAxis>
+                    <YAxis
+                      tickFormatter={(value) => (value === 0 ? "" : Math.floor(value))}
+                      domain={[0, "dataMax"]}
+                      allowDecimals={false}
                     >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" padding={{ left: 30, right: 30 }}>
-                        <Label
-                          value={graphFilter === "weekly" ? "Time (Weeks)" : "Time (Months)"}
-                          offset={0}
-                          position="insideBottom"
-                        />
-                      </XAxis>
-                      <YAxis
-                        tickFormatter={(value) => (value === 0 ? "" : Math.floor(value))}
-                        domain={[0, "dataMax"]}
-                        allowDecimals={false}
-                      >
-                        <Label
-                          value="Number of Queries"
-                          angle={-90}
-                          position="insideLeft"
-                          style={{ textAnchor: "middle" }}
-                        />
-                      </YAxis>
-                      <Tooltip />
-                      <Legend />
-                      <Line type="monotone" dataKey="queries" stroke="rgb(101, 134, 145)" strokeWidth={3} activeDot={{ r: 8 }} />
-                    </LineChart>
-                  </ResponsiveContainer>
+                      <Label
+                        value="Number of Queries"
+                        angle={-90}
+                        position="insideLeft"
+                        style={{ textAnchor: "middle" }}
+                      />
+                    </YAxis>
+                    <Tooltip />
+                    <Line type="monotone" dataKey="queries" stroke="rgb(101, 134, 145)" strokeWidth={3} activeDot={{ r: 8 }} />
+                  </LineChart>
+                </ResponsiveContainer>
                 <ResponsiveContainer className='pie-graph' width="25%" height={300} style={{ display: 'flex', alignItems: 'center', paddingBottom: '20px'}}>
                   <PieChart>
                     <Pie
@@ -467,8 +503,18 @@ const AdminPage = () => {
                 </ResponsiveContainer>
               </div>
               <div className="graph-filters">
-                <button onClick={() => setGraphFilter('weekly')}>Weekly</button>
-                <button onClick={() => setGraphFilter('monthly')}>Monthly</button>
+                <button 
+                  className={graphFilter === 'weekly' ? 'active' : ''} 
+                  onClick={() => setGraphFilter('weekly')}
+                >
+                  Weekly
+                </button>
+                <button 
+                  className={graphFilter === 'monthly' ? 'active' : ''} 
+                  onClick={() => setGraphFilter('monthly')}
+                >
+                  Monthly
+                </button>
               </div>
             </div>
             <div className="faq-section">
