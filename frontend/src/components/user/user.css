@@ -165,7 +165,7 @@
 }
 
 .user-sidebar {
-    width: 320px;
+    width: 45vh;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -192,7 +192,7 @@
 .sidebar-toggle {
     position: absolute;
     top: 0px;
-    left: 320px; /* Position it just outside the sidebar */
+    left: 45vh; /* Position it just outside the sidebar */
     padding: 10px;
     border: none;
     border-radius: 0px 5px 5px 0px;
@@ -238,7 +238,7 @@
 }
 
 .student-content.sidebar-hidden {
-    margin-left: -320px; /* -320px margin when sidebar is hidden */
+    margin-left: -45vh; /* -320px margin when sidebar is hidden */
 }
 
 .student-content.sidebar-visible {
@@ -1020,15 +1020,11 @@ button.submit-query:hover.light {
     width: 100%;
     text-align: center;
     font-size: 1.2em;
-    color: inherit;
+    transition: transform 0.3s ease;
 }
 
-.no-chat-selected.dark {
-    color: var(--text-dark);
-}
-
-.no-chat-selected.light {
-    color: var(--text-light);
+.no-chat-selected.sidebar-hidden {
+    margin-left: -45vh; /* -320px margin when sidebar is hidden */
 }
 
 .loading-container {
@@ -1040,24 +1036,15 @@ button.submit-query:hover.light {
   }
 
   .no-chat-box {
+    width: 100vh;
     font-family: Arial, sans-serif;
     padding: 20px;
     border-radius: 10px;
-    background-color: #f5f5f5;
-  }
-
-  .no-chat-box.light{
-    background-color: red;
-  }
-
-  .no-chat-box.dark{
-    background-color: orange;
   }
   
   .newchat-container {
-    max-width: 400px;
-    margin: 0 auto;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
   }
   
   .newchat-header h1 {
@@ -1069,28 +1056,34 @@ button.submit-query:hover.light {
     font-size: 16px;
     color: #666;
   }
-  
-  .newchat-message, .newchat-search {
-    margin-top: 20px;
+
+  .newchat-message{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--input-dark);
+    border-radius: 3vh;
+    padding: 2vh;
   }
   
-  .newchat-message input, .newchat-search input {
-    width: 70%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px;
+  .newchat-message button{
+    align-self: last baseline;
   }
-  
-  .newchat-message button, .newchat-search button {
-    padding: 10px 20px;
+
+  .newchat-message textarea{
+    padding: 2% 2% 0% 2%;
+    border: 1px solid var(--tab-dark);
+    width: 100%;
+    border-radius: 3vh 3vh 0px 0px;
+    font-family: "Host Grotesk", sans-serif;
+    font-size: large;
+    background: var(--input-dark);
+    color: var(--text-dark);
+    resize: none;
+    font-size: 18px;
+    overflow-y: auto;
+    min-height: 10%;
+    max-height: 100%;
     border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .newchat-message button:hover, .newchat-search button:hover {
-    background-color: #0056b3;
-  }
+}

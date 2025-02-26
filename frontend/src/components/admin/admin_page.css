@@ -120,7 +120,7 @@
     padding: 20px;
     border-radius: 10px;
     width: 100%;
-    background: rgb(136, 185, 202);
+    background: #3E92CC;
     box-shadow: 0px 0px 5px 1px gray;
     color: black;
 }
@@ -128,8 +128,9 @@
   padding: 20px;
   border-radius: 10px;
   width: 100%;
+  background: #2A628F;
   box-shadow: 0px 0px 5px 1px gray;
-  color: black;
+  color: white;
 }
 
 .statistics-box-icon{

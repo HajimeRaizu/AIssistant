@@ -245,6 +245,13 @@ const UserPage = () => {
 
   return (
     <div className={`user-container ${theme}`}>
+      <button className={`theme-toggle ${theme}`} onClick={toggleTheme}>
+          {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
+        </button>
+
+        <button className={`exercises-button ${theme}`} onClick={() => navigate('/exercises')}>
+          Exercises
+        </button>
       <div className={`user-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
         <button className="new-chat" onClick={createNewChat}>New Chat</button>
         <div className="chat-list">
@@ -281,13 +288,6 @@ const UserPage = () => {
             <div className={`chat-header ${theme}`}>
               <h2>AIssistant Chat</h2>
               <p className="disclaimer">This chat will respond to queries in any language.</p>
-              <button className={`theme-toggle ${theme}`} onClick={toggleTheme}>
-                {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
-              </button>
-
-              <button className={`exercises-button ${theme}`} onClick={() => navigate('/exercises')}>
-                Exercises
-              </button>
             </div>
             <div className={`chat-body ${theme}`}>
               {messages.map((message, index) => (
@@ -336,20 +336,16 @@ const UserPage = () => {
       )}
 
       {!currentChatId && (
-        <div className={`no-chat-selected ${theme}`}>
-          <div className={`no-chat-box ${theme}`}>
+        <div className={`no-chat-selected ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
+          <div className={`no-chat-box`}>
             <div className="newchat-container">
               <div className="newchat-header">
                 <h1>Hello World! I am AIssistant.</h1>
                 <p>Your personal academia companion.</p>
               </div>
               <div className="newchat-message">
-                <input type="text" placeholder="Message DeepSeek" />
+                <textarea type="text" placeholder="Ask a question" />
                 <button>Send</button>
-              </div>
-              <div className="newchat-search">
-                <input type="text" placeholder="DeepThink (R1) Search" />
-                <button>Search</button>
               </div>
             </div>
           </div>
