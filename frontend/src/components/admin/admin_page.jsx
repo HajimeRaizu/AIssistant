@@ -384,7 +384,7 @@ const AdminPage = () => {
     { name: 'Instructors', value: totalInstructors },
   ];
 
-  const COLORS = ['#005f9e', '#00816a'];
+  const COLORS = ['#F3F3E0', '#98D8EF'];
 
   const userColumns = [
     {
