@@ -589,7 +589,6 @@ button {
   }
 
 .subject-code-input input {
-    width: 210px;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid var(--tab-dark);
