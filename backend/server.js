@@ -249,7 +249,7 @@ app.post("/api/llama", async (req, res) => {
     const response = await deepseek.chat.completions.create({
       model: "deepseek-chat",
       messages,
-      max_tokens: 15000,
+      max_tokens: 8192,
       stream: true, // Enable streaming
     });
 

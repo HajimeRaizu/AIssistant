@@ -5,8 +5,8 @@ import axios from "axios";
 import { MdOutlineDelete, MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 const UserPage = () => {
-  const base_url = `https://aissistant-backend.vercel.app`;
-  //const base_url = `http://localhost:5000`;
+  //const base_url = `https://aissistant-backend.vercel.app`;
+  const base_url = `http://localhost:5000`;
   const [selectedTab, setSelectedTab] = useState("chat");
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [messages, setMessages] = useState([]);
