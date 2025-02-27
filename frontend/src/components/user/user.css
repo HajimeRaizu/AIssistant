@@ -166,7 +166,7 @@
 
 .student-user-sidebar {
     width: 45vh;
-    padding: 20px;
+    padding: 4vh;
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease;
@@ -1070,6 +1070,10 @@ textarea:focus {
 .student-newchat-container {
     display: flex;
     flex-direction: column;
+}
+
+.student-newchat-header{
+    margin-bottom: 3vh;
 }
 
 .student-newchat-header h1 {

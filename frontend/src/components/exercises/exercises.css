@@ -75,6 +75,7 @@
     padding: 30px; /* Increased padding */
     background-color: var(--bg-dark);
     color: var(--text-dark);
+    overflow: scroll;
 }
 
 .content.light {

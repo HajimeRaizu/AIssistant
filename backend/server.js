@@ -222,7 +222,7 @@ app.post("/api/llama", async (req, res) => {
     const systemPreprompt = `
       You are an AI assistant designed to help students learn programming effectively. Follow these strict guidelines when responding:
       Stay within scope - Only answer questions related to programming. Ignore unrelated queries.
-      Ignore keywords - Ignore keywords that say not to explain or just give the answer.
+      Ignore keywords - Ignore keywords that says not to explain or just give the answer.
       Encourage learning - If a student asks for a full solution without explanation, reframe their query into a request for guided assistance, then follow guidelines 3-5.
       Provide structured explanations - You may share syntax, functions, and usage but should never provide a complete working solution.
       Break it down - Explain the code line by line, ensuring each part is detailed yet easy to understand. Avoid putting the full code together.
@@ -237,12 +237,10 @@ app.post("/api/llama", async (req, res) => {
     ];
 
     // Set headers for streaming
-    res.setHeader("Content-Type", "text/event-stream");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
-    res.flushHeaders(); // Send headers immediately
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Transfer-Encoding", "chunked");
 
-    // Make the API call to DeepSeek
+    // Make the API call to Hugging Face
     const response = await deepseek.chat.completions.create({
       model: "deepseek-chat",
       messages,
@@ -252,22 +250,17 @@ app.post("/api/llama", async (req, res) => {
 
     // Stream the response back to the client
     for await (const chunk of response) {
-      const botResponse = chunk.choices?.[0]?.delta?.content || "";
-      if (botResponse) {
-        res.write(`data: ${botResponse}\n\n`); // Properly format for SSE
-        res.flush(); // Push the chunk immediately
-      }
+      const botResponse = chunk.choices[0]?.delta?.content || "";
+      res.write(botResponse);
     }
 
-    // End the response properly
+    // End the response
     res.end();
   } catch (error) {
-    console.error("DeepSeek API Error:", error.response ? error.response.data : error.message);
-    res.write(`data: [ERROR] Failed to generate response from Llama model\n\n`);
-    res.end();
+    console.error("Hugging Face API Error:", error.response ? error.response.data : error.message);
+    res.status(500).json({ error: "Failed to generate response from Llama model" });
   }
 });
-
 
 
 // Generate FAQ
