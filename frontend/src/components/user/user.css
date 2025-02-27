@@ -842,11 +842,6 @@ textarea:focus {
     border-radius: 0px 0px 4px 4px;
     margin-right: 10px;
     font-family: "Host Grotesk", sans-serif;
-    font-size: large;
-    color: var(--text-dark);
-    resize: none;
-    font-size: 18px;
-    overflow-y: auto;
     direction: rtl;
 }
 
@@ -1231,4 +1226,50 @@ textarea:focus {
 
 .student-newchat-message textarea:focus {
     outline: none;
+}
+
+@media (max-aspect-ratio: 1/1) {
+    .student-sidebar {
+        width: 70%; /* Sidebar takes 70% of the screen width on mobile */
+        position: fixed; /* Position the sidebar above the content */
+        top: 0;
+        left: 0;
+        height: 100vh; /* Full height */
+        z-index: 1000; /* Ensure it's above other content */
+    }
+
+    .student-sidebar.visible {
+        transform: translateX(-100%); /* Show sidebar when toggled */
+    }
+
+    .student-sidebar.hidden{
+        transform: translateX(0);
+    }
+
+    .student-content,
+    .student-no-chat-selected {
+        width: 100%; /* Full width on mobile */
+        margin-left: 0; /* Reset margin */
+    }
+    
+
+    .student-content.sidebar-hidden,
+    .student-no-chat-selected.sidebar-hidden {
+        margin-left: 0;
+    }
+
+    .student-sidebar-toggle {
+        position: fixed; /* Position the toggle button above the content */
+        top: 10px;
+        left: 100%;
+        z-index: 1001; /* Ensure it's above the sidebar */
+    }
+
+    .student-sidebar-toggle.hidden {
+        transform: translateX(0); /* No translation when sidebar is hidden */
+    }
+
+    .student-sidebar-toggle.visible {
+        transform: translateX(70%); /* Move toggle button when sidebar is visible */
+    }
 }
