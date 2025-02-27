@@ -519,7 +519,7 @@ const InstructorPage = () => {
           onClick={() => setActiveTab('learning-materials')}
         >
           <LuBookMarked />
-          Manage Learning Materials
+          Learning Materials
         </button>
         <button 
           className="instructor-logout-button"

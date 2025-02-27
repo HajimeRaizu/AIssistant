@@ -55,6 +55,11 @@ const deepseek = new OpenAI({
   apiKey: process.env.DEEPSEEK_API_KEY,
 });
 
+const qwen = new OpenAI({
+  "baseURL": "https://iwmxarro86n6da1a.us-east4.gcp.endpoints.huggingface.cloud/v1/",
+  "apiKey": process.env.HUGGINGFACE_API_TOKEN
+});
+
 app.use(express.json());
 app.use(cors({
   origin: "*", // Your frontend URL
@@ -244,9 +249,18 @@ app.post("/api/llama", async (req, res) => {
     const response = await deepseek.chat.completions.create({
       model: "deepseek-chat",
       messages,
-      max_tokens: 250,
+      max_tokens: 15000,
       stream: true, // Enable streaming
     });
+
+    /*const response = await qwen.chat.completions.create({
+      "model": "tgi",
+      messages,
+      "top_p": 0.4,
+      "temperature": 1,
+      "max_tokens": 15000,
+      "stream": true
+    });*/
 
     // Stream the response back to the client
     for await (const chunk of response) {
