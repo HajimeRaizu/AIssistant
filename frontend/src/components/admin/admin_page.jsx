@@ -109,8 +109,21 @@ const AdminPage = () => {
 
     const fetchTotalLearningMaterials = async () => {
       try {
-        const response = await axios.get(`${base_url}/api/getTotalLearningMaterials`);
-        setTotalLearningMaterials(response.data.totalLearningMaterials);
+        const response = await axios.get(`${base_url}/api/getLearningMaterials`);
+        const learningMaterials = response.data;
+
+        // Count unique subject codes across all learning materials
+        const uniqueSubjects = new Set();
+        Object.keys(learningMaterials).forEach(subjectName => {
+          Object.keys(learningMaterials[subjectName]).forEach(lesson => {
+            Object.keys(learningMaterials[subjectName][lesson]).forEach(subtopicCode => {
+              const subjectId = learningMaterials[subjectName][lesson][subtopicCode].subjectId;
+              uniqueSubjects.add(subjectId);
+            });
+          });
+        });
+
+        setTotalLearningMaterials(uniqueSubjects.size);
       } catch (error) {
         console.error("Failed to fetch total learning materials:", error);
       }
@@ -384,7 +397,7 @@ const AdminPage = () => {
     { name: 'Instructors', value: totalInstructors },
   ];
 
-  const COLORS = ['#F3F3E0', '#98D8EF'];
+  const COLORS = ['#FFD700', '#e66db3'];
 
   const userColumns = [
     {

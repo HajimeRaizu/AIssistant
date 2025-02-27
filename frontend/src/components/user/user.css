@@ -86,7 +86,7 @@
     margin-bottom: 20px;
     margin-right: 20px;
     padding: 10px 0px 0px 0px;
-    width: 35vh;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -164,7 +164,7 @@
     background: #45a049;
 }
 
-.student-user-sidebar {
+.student-sidebar {
     width: 45vh;
     padding: 4vh;
     display: flex;
@@ -172,19 +172,19 @@
     transition: transform 0.3s ease;
 }
 
-.student-user-sidebar.dark {
+.student-sidebar.dark {
     background: var(--sidebar-dark);
 }
 
-.student-user-sidebar.light {
+.student-sidebar.light {
     background: var(--sidebar-light);
 }
 
-.student-user-sidebar.hidden {
+.student-sidebar.hidden {
     transform: translateX(-100%);
 }
 
-.student-user-sidebar.visible {
+.student-sidebar.visible {
     transform: translateX(0);
 }
 
@@ -227,7 +227,7 @@
     background: var(--button-hover-light);
 }
 
-.student-student-content {
+.student-content {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -236,20 +236,20 @@
     margin-left: 0;
 }
 
-.student-student-content.sidebar-hidden {
+.student-content.sidebar-hidden {
     margin-left: -45vh;
 }
 
-.student-student-content.sidebar-visible {
+.student-content.sidebar-visible {
     margin-left: 0px;
 }
 
-.student-student-content.dark {
+.student-content.dark {
     background: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.student-student-content.light {
+.student-content.light {
     background: var(--bg-light);
     color: var(--text-light);
 }
@@ -297,19 +297,6 @@
     flex-direction: column;
     gap: 10px;
     height: calc(100vh - 200px);
-}
-
-.student-chat-body::-webkit-scrollbar {
-  width: 8px;
-}
-
-.student-chat-body::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 4px;
-}
-
-.student-chat-body::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
 }
 
 .student-chat-body.dark {
@@ -360,6 +347,10 @@
     position: relative;
     display: flex;
     flex-direction: column;
+}
+
+.student-message.bot *{
+    width: 100%;
 }
 
 .student-message.user {
@@ -1230,4 +1221,51 @@ textarea:focus {
 
 .student-newchat-message textarea:focus {
     outline: none;
+}
+
+@media screen and (max-width: 768px) {
+    /* Sidebar becomes a full-width sliding menu */
+    .student-sidebar {
+        width: 80vw;
+        left: -80vw; /* Hidden by default */
+        position: fixed;
+        top: 0;
+        height: 100%;
+        transition: left 0.3s ease-in-out;
+    }
+
+    .student-sidebar.visible {
+        left: 0;
+    }
+
+    .student-sidebar-toggle{
+        left: 80vw;
+    }
+
+    /* Prevents content from being pushed */
+    .student-content {
+        width: 100vh;
+        margin-left: 0;
+    }
+
+    .student-content *{
+        width: 100%;
+    }
+
+    /* Chat body resizes dynamically */
+    .student-chat-body {
+        height: calc(100vh - 150px);
+        padding: 5px;
+    }
+
+    /* Adjust chat input for smaller screens */
+    .student-chat-input textarea {
+        font-size: 14px;
+        min-height: 50px;
+    }
+
+    .student-chat-input button {
+        font-size: 14px;
+        padding: 8px;
+    }
 }

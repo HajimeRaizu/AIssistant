@@ -339,7 +339,7 @@ const UserPage = () => {
         <button className={`student-exercises-button ${theme}`} onClick={() => navigate('/exercises')}>
           Exercises
         </button>
-      <div className={`student-user-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
+      <div className={`student-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
         <button 
           className="student-new-chat" 
           onClick={handleNewChatClick} 
@@ -386,7 +386,7 @@ const UserPage = () => {
       </div>
 
       {currentChatId && (
-        <div className={`student-student-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
+        <div className={`student-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
           <div className="student-chat-container">
             <div className={`student-chat-header ${theme}`}>
               <h2>AIssistant Chat</h2>
