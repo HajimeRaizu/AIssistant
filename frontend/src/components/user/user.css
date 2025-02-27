@@ -1075,7 +1075,6 @@ textarea:focus {
 
 .student-newchat-header h1 {
     font-size: 24px;
-    color: var(--text-dark);
 }
 
 .student-newchat-header p {
@@ -1085,6 +1084,14 @@ textarea:focus {
 
 .student-newchat-header.dark h1 {
     color: var(--text-dark);
+}
+
+.student-newchat-header.light h1.ai {
+    color: rgb(86, 86, 255);
+}
+
+.student-newchat-header.dark h1.ai {
+    color: rgb(138, 138, 255);
 }
 
 .student-newchat-header.dark p {
@@ -1097,6 +1104,17 @@ textarea:focus {
 
 .student-newchat-header.light p {
     color: var(--text-light);
+}
+
+.intro{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.hello{
+    color: black;
 }
 
 .student-newchat-message {

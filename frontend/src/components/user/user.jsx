@@ -426,7 +426,10 @@ const UserPage = () => {
           <div className={`student-no-chat-box ${theme}`}>
             <div className={`student-newchat-container ${theme}`}>
               <div className={`student-newchat-header ${theme}`}>
-                <h1>Hello World! I am AIssistant.</h1>
+                  <div className='intro'>
+                    <h1 className="hello">Hello World! I am</h1>
+                    <div className='landing-aissistant'><h1 className='ai'>AI</h1><h1 className='landing-welcome'>ssistant.</h1></div>
+                  </div>
                 <p>Your personal academia companion.</p>
               </div>
               <div className={`student-newchat-message ${theme}`}>
@@ -439,7 +442,7 @@ const UserPage = () => {
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
                 />
-                <button onClick={handleSend}>Send</button>
+                <button className={`student-submit-query ${theme}`} onClick={handleSend}>Send</button>
               </div>
             </div>
           </div>
