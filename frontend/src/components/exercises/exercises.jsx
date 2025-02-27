@@ -186,6 +186,7 @@ const ExercisesPage = () => {
       alert(`Failed to add subject ID: ${error.response?.data?.error || error.message}`);
     }
   };
+
   if (isLoading) {
     return <div className={`loading-container ${theme}`}>Loading...</div>;
   }
@@ -210,7 +211,7 @@ const ExercisesPage = () => {
             {Object.keys(learningMaterials).map((subject) => (
               <li
                 key={subject}
-                className={`${theme}`}
+                className={`${theme} ${selectedSubject === subject ? 'active' : ''}`} // Add active class if selected
                 onClick={() => handleSubjectClick(subject)}
               >
                 {subject}
@@ -225,7 +226,7 @@ const ExercisesPage = () => {
         </button>
       </div>
 
-      <div className={`content ${theme}`}>
+      <div className={`exercises-content ${theme}`}>
         {hasSubjectCode && selectedSubject && <h1 className={theme}>{selectedSubject}</h1>}
 
         {hasSubjectCode && selectedSubject && !selectedLesson && (
@@ -248,6 +249,9 @@ const ExercisesPage = () => {
         {hasSubjectCode && selectedLesson && !selectedSubtopic && (
           <div className="subtopics">
             <h2 className={theme}>Subtopics for {selectedLesson}</h2>
+            <button className={`back-button ${theme}`} onClick={() => setSelectedLesson(null)}>
+              Back to Lessons
+            </button>
             <ul>
               {sortSubtopics(learningMaterials[selectedSubject][selectedLesson]).map((subtopic) => (
                 <li
@@ -288,7 +292,7 @@ const ExercisesPage = () => {
       </button>
 
       <button className={`exercises-user-button ${theme}`} onClick={() => navigate('/user')}>
-        User
+        Chat
       </button>
     </div>
   );

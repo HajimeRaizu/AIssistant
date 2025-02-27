@@ -5,7 +5,6 @@
     display: flex;
     height: 100vh;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .exercises-page.dark {
@@ -19,11 +18,10 @@
 }
 
 .sidebar {
-    width: 250px;
+    width: 35vh;
     background: var(--sidebar-dark);
     color: var(--text-dark);
     padding: 20px;
-    transition: background 0.3s ease;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -51,7 +49,6 @@
     cursor: pointer;
     padding: 12px; /* Increased padding */
     border-radius: 5px;
-    transition: background 0.3s ease;
 }
 
 .sidebar li.active {
@@ -70,26 +67,26 @@
     background: var(--button-hover-light);
 }
 
-.content {
+.exercises-content {
     flex: 1;
     padding: 30px; /* Increased padding */
     background: var(--bg-dark);
     color: var(--text-dark);
-    overflow: scroll;
+    overflow: auto;
 }
 
-.content.light {
+.exercises-content.light {
     background: var(--bg-light);
     color: var(--text-light); /* Font color in light mode */
 }
 
-.content h1 {
+.exercises-content h1 {
     margin-bottom: 25px; /* Increased spacing */
     font-size: 2.2rem; /* Increased font size */
     color: var(--text-dark);
 }
 
-.content h1.light {
+.exercises-content h1.light {
     color: var(--text-light); /* Font color in light mode */
 }
 
@@ -106,7 +103,6 @@
     padding: 20px; /* Increased padding */
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -152,7 +148,6 @@
     padding: 20px; /* Increased padding */
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -201,7 +196,6 @@
     border-radius: 5px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease;
 }
 
 .theme-toggle.dark {
@@ -231,7 +225,6 @@ code {
     padding: 30px; /* Increased padding */
     background: var(--bg-dark);
     color: var(--text-dark);
-    transition: background 0.3s ease;
 }
 
 .subtopic-content.light {
@@ -281,7 +274,6 @@ code {
     border: 1px solid var(--tab-dark);
     background: rgba(255, 255, 255, 0.2);
     color: var(--text-dark);
-    transition: border 0.3s ease;
     font-size: 1.1rem; /* Increased font size */
 }
 
@@ -296,7 +288,6 @@ code {
     width: 100%;
     padding: 12px; /* Increased padding */
     border-radius: 5px;
-    transition: border 0.3s ease;
     font-size: 1.1rem; /* Increased font size */
 }
 
@@ -311,7 +302,6 @@ code {
     background: var(--button-dark);
     color: var(--text-dark);
     cursor: pointer;
-    transition: background 0.3s ease;
     font-size: 1.1rem; /* Increased font size */
 }
 
@@ -322,7 +312,6 @@ code {
     background: var(--button-light);
     color: var(--text-light);
     cursor: pointer;
-    transition: background 0.3s ease;
     font-size: 1.1rem; /* Increased font size */
 }
 
@@ -357,7 +346,6 @@ code {
     font-size: 16px;
     font-weight: 700;
     margin-top: 20px;
-    transition: background 0.3s ease, color 0.3s ease;
     position: absolute;
     bottom: 20px;
 }
@@ -390,7 +378,6 @@ button {
     cursor: pointer;
     font-size: 14px;
     font-weight: bold;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
   }
   
   button:hover {
@@ -542,7 +529,6 @@ button {
     border-radius: 5px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease;
 }
 
 .exercises-user-button.dark {
@@ -573,7 +559,6 @@ button {
     text-align: left;
     cursor: pointer;
     border-radius: 5px;
-    transition: background 0.3s ease;
     bottom: 0;
 }
 
@@ -620,4 +605,13 @@ button {
 .subject-code-input input.light {
     background: var(--input-light);
     color: var(--text-light);
+}
+
+.submit-button.light{
+    background: rgb(127, 228, 127);
+}
+
+.submit-button.dark{
+    background: rgb(48, 116, 48);
+    color: white;
 }

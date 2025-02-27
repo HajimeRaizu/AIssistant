@@ -455,7 +455,7 @@ const UserPage = () => {
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
                 />
-                <button className={`student-submit-query ${theme}`} onClick={handleSend}>Send</button>
+                <button className={`student-submit-query ${theme}`} onClick={handleSend}>Ask</button>
               </div>
             </div>
           </div>
