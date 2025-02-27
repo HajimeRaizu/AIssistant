@@ -3,6 +3,7 @@ import "./exercises.css";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { IoIosChatboxes } from "react-icons/io";
 
 const ExercisesPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -291,8 +292,8 @@ const ExercisesPage = () => {
         {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
       </button>
 
-      <button className={`exercises-user-button ${theme}`} onClick={() => navigate('/user')}>
-        Chat
+      <button className={`exercises-chat-button ${theme}`} onClick={() => navigate('/user')}>
+        <IoIosChatboxes/>
       </button>
     </div>
   );

@@ -189,11 +189,12 @@
 
 .theme-toggle {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 2vh;
+    right: 2vw;
     padding: 12px; /* Increased padding */
+    border-radius: 10vh;
     border: none;
-    border-radius: 5px;
+    border-radius: 0vh;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
 }
@@ -520,32 +521,36 @@ button {
     width: 35vh;
 }
 
-.exercises-user-button {
+.exercises-chat-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: absolute;
-    top: 20px;
-    right: 80px; /* Adjust the position to avoid overlapping with the theme toggle button */
-    padding: 10px 20px;
+    top: 2vh;
+    right: 14vw; /* Adjust the position to avoid overlapping with the theme toggle button */
+    padding: 10px 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: 100%;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
+    font-size: larger;
 }
 
-.exercises-user-button.dark {
+.exercises-chat-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.exercises-user-button.light {
+.exercises-chat-button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.exercises-user-button:hover.dark {
+.exercises-chat-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.exercises-user-button:hover.light {
+.exercises-chat-button:hover.light {
     background: var(--button-hover-light);
 }
 

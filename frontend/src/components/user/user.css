@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
 
-.student-user-container {
+.student-container {
     display: flex;
     height: 100vh;
     width: 100vw;
@@ -8,12 +8,12 @@
     font-family: "Host Grotesk", sans-serif;
 }
 
-.student-user-container.dark {
+.student-container.dark {
     background: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.student-user-container.light {
+.student-container.light {
     background: var(--bg-light);
     color: var(--text-light);
 }
@@ -49,7 +49,7 @@
     background: var(--tab-active-light);
 }
 
-.student-user-logout-button {
+.student-logout-button {
     font-family: "Host Grotesk", sans-serif;
     display: block;
     width: 100%;
@@ -62,21 +62,21 @@
     
 }
 
-.student-user-logout-button.dark {
+.student-logout-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.student-user-logout-button.light {
+.student-logout-button.light {
     background: var(--tab-light);
     color: var(--text-light);
 }
 
-.student-user-logout-button:hover.dark {
+.student-logout-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.student-user-logout-button:hover.light {
+.student-logout-button:hover.light {
     background: var(--button-hover-light);
 }
 
@@ -718,26 +718,26 @@ textarea:focus {
     background: rgba(255, 255, 255, 0.5);
 }
 
-.student-user-modal-content {
+.student-modal-content {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
 
-.student-user-modal-content.dark {
+.student-modal-content.dark {
     background: var(--sidebar-light);
     background-color: var(--bg-light);
     color: var(--text-light);
 }
 
-.student-user-modal-content.light {
+.student-modal-content.light {
     background: var(--sidebar-dark);
     background-color: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.student-user-modal-content p {
+.student-modal-content p {
     margin-bottom: 20px;
 }
 
@@ -788,15 +788,19 @@ textarea:focus {
 }
 
 .student-theme-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 10px;
+    top: 2vh;
+    right: 2vw;
+    padding: 11px 11px; /* Increased padding */
+    border-radius: 10vh;
     border: none;
-    border-radius: 5px;
+    border-radius: 100%;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    
+    font-size: large;
 }
 
 .student-theme-toggle.dark {
@@ -862,15 +866,18 @@ textarea:focus {
 }
 
 .student-exercises-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: absolute;
-    top: 20px;
-    right: 80px;
-    padding: 10px;
+    top: 2vh;
+    right: 6vw; /* Adjust the position to avoid overlapping with the theme toggle button */
+    padding: 10px 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: 100%;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    
+    font-size: larger;
 }
 
 .student-exercises-button.dark {
@@ -1229,8 +1236,15 @@ textarea:focus {
 }
 
 @media (max-aspect-ratio: 1/1) {
+    .student-chat-header{
+        direction: ltr;
+        padding-right: 30%;
+        padding-top: 0;
+    }
+
     .student-sidebar {
         width: 70%; /* Sidebar takes 70% of the screen width on mobile */
+        padding: 4%;
         position: fixed; /* Position the sidebar above the content */
         top: 0;
         left: 0;
@@ -1271,5 +1285,13 @@ textarea:focus {
 
     .student-sidebar-toggle.visible {
         transform: translateX(70%); /* Move toggle button when sidebar is visible */
+    }
+
+    .student-theme-toggle {
+        right: 1%;
+    }
+    
+    .student-exercises-button {
+        right: 9%; /* Adjust the position to avoid overlapping with the theme toggle button */
     }
 }

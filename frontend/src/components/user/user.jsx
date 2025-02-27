@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./user.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { LuBookMarked } from "react-icons/lu";
 import { MdOutlineDelete, MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 const UserPage = () => {
@@ -331,13 +332,13 @@ const UserPage = () => {
   }
 
   return (
-    <div className={`student-user-container ${theme}`}>
+    <div className={`student-container ${theme}`}>
       <button className={`student-theme-toggle ${theme}`} onClick={toggleTheme}>
           {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
         </button>
 
         <button className={`student-exercises-button ${theme}`} onClick={() => navigate('/exercises')}>
-          Exercises
+          <LuBookMarked/>
         </button>
       <div className={`student-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
         <button 
@@ -377,7 +378,7 @@ const UserPage = () => {
           ))}
         </div>
         <div className="student-logout-section">
-          <button className={`student-user-logout-button ${theme}`} onClick={handleLogout}>Logout</button>
+          <button className={`studentFai-logout-button ${theme}`} onClick={handleLogout}>Logout</button>
         </div>
 
         <button className={`student-sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} onClick={toggleSidebar}>
@@ -464,7 +465,7 @@ const UserPage = () => {
 
       {showDeleteConfirmation && (
         <div className={`student-confirmation-modal ${theme}`}>
-          <div className={`student-user-modal-content ${theme}`}>
+          <div className={`studentFai-modal-content ${theme}`}>
             <p>Are you sure you want to delete this chat?</p>
             <div className={`student-chat-name-modal-actions ${theme}`}>
               <button onClick={confirmDeleteChat}>Yes</button>
