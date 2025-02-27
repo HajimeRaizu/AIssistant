@@ -20,7 +20,7 @@
 
 .sidebar {
     width: 250px;
-    background-color: var(--sidebar-dark);
+    background: var(--sidebar-dark);
     color: var(--text-dark);
     padding: 20px;
     transition: background 0.3s ease;
@@ -30,7 +30,7 @@
 }
 
 .sidebar.light {
-    background-color: var(--sidebar-light);
+    background: var(--sidebar-light);
     color: var(--text-light); /* Font color in light mode */
 }
 
@@ -55,31 +55,31 @@
 }
 
 .sidebar li.active {
-    background-color: var(--tab-active-dark);
+    background: var(--tab-active-dark);
 }
 
 .sidebar li.active.light {
-    background-color: var(--tab-active-light);
+    background: var(--tab-active-light);
 }
 
 .sidebar li:hover {
-    background-color: var(--button-hover-dark);
+    background: var(--button-hover-dark);
 }
 
 .sidebar li:hover.light {
-    background-color: var(--button-hover-light);
+    background: var(--button-hover-light);
 }
 
 .content {
     flex: 1;
     padding: 30px; /* Increased padding */
-    background-color: var(--bg-dark);
+    background: var(--bg-dark);
     color: var(--text-dark);
     overflow: scroll;
 }
 
 .content.light {
-    background-color: var(--bg-light);
+    background: var(--bg-light);
     color: var(--text-light); /* Font color in light mode */
 }
 
@@ -100,7 +100,7 @@
 
 .lessons li {
     cursor: pointer;
-    background-color: var(--tab-dark);
+    background: var(--tab-dark);
     color: var(--text-dark);
     margin: 15px 0; /* Increased spacing */
     padding: 20px; /* Increased padding */
@@ -113,16 +113,16 @@
 }
 
 .lessons li.light {
-    background-color: var(--tab-light);
+    background: var(--tab-light);
     color: var(--text-light); /* Font color in light mode */
 }
 
 .lessons li:hover {
-    background-color: var(--button-hover-dark);
+    background: var(--button-hover-dark);
 }
 
 .lessons li:hover.light {
-    background-color: var(--button-hover-light);
+    background: var(--button-hover-light);
 }
 
 .subtopics {
@@ -146,7 +146,7 @@
 
 .subtopics li {
     cursor: pointer;
-    background-color: var(--tab-dark);
+    background: var(--tab-dark);
     color: var(--text-dark);
     margin: 15px 0; /* Increased spacing */
     padding: 20px; /* Increased padding */
@@ -159,7 +159,7 @@
 }
 
 .subtopics li.light {
-    background-color: var(--tab-light);
+    background: var(--tab-light);
     color: var(--text-light); /* Font color in light mode */
 }
 
@@ -229,13 +229,13 @@ code {
 /* Additional styles for subtopic content */
 .subtopic-content {
     padding: 30px; /* Increased padding */
-    background-color: var(--bg-dark);
+    background: var(--bg-dark);
     color: var(--text-dark);
     transition: background 0.3s ease;
 }
 
 .subtopic-content.light {
-    background-color: var(--bg-light);
+    background: var(--bg-light);
     color: var(--text-light);
 }
 
@@ -279,7 +279,7 @@ code {
     padding: 12px; /* Increased padding */
     border-radius: 5px;
     border: 1px solid var(--tab-dark);
-    background-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
     color: var(--text-dark);
     transition: border 0.3s ease;
     font-size: 1.1rem; /* Increased font size */
@@ -291,7 +291,7 @@ code {
 
 .subtopic-content.light .exercises input[type="text"], .subtopic-content.light .exercises textarea {
     border: 1px solid var(--tab-light);
-    background-color: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.1);
     color: var(--text-light);
     width: 100%;
     padding: 12px; /* Increased padding */
@@ -308,7 +308,7 @@ code {
     padding: 12px 25px; /* Increased padding */
     border: none;
     border-radius: 5px;
-    background-color: var(--button-dark);
+    background: var(--button-dark);
     color: var(--text-dark);
     cursor: pointer;
     transition: background 0.3s ease;
@@ -319,7 +319,7 @@ code {
     padding: 12px 25px; /* Increased padding */
     border: none;
     border-radius: 5px;
-    background-color: var(--button-light);
+    background: var(--button-light);
     color: var(--text-light);
     cursor: pointer;
     transition: background 0.3s ease;
@@ -327,11 +327,11 @@ code {
 }
 
 .subtopic-content.dark .exercises button:hover {
-    background-color: var(--button-hover-dark);
+    background: var(--button-hover-dark);
 }
 
 .subtopic-content.light .exercises button:hover {
-    background-color: var(--button-hover-light);
+    background: var(--button-hover-light);
 }
 
 .line.dark {
@@ -399,13 +399,13 @@ button {
   
   /* AIssistant Chat Button */
   .aissistant-chat-button {
-    background-color: var(--button-bg-color);
+    background: var(--button-bg-color);
     color: var(--button-text-color);
     margin-top: 20px;
   }
   
 .aissistant-chat-button:hover {
-    background-color: var(--button-hover-bg-color);
+    background: var(--button-hover-bg-color);
   }
   
 /* Back Button Styling */
@@ -421,13 +421,13 @@ button {
 /* Dark Theme Specific Styles */
 .back-button.dark {
     color: white;
-    background-color: transparent;
+    background: transparent;
 }
 
 /* Light Theme Specific Styles */
 .back-button.light {
     color: black;
-    background-color: transparent;
+    background: transparent;
 }
 
 .back-button:hover{
@@ -439,7 +439,7 @@ button {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: var(--button-bg-color);
+    background: var(--button-bg-color);
     color: var(--button-text-color);
     padding: 10px;
     border-radius: 50%;
@@ -451,7 +451,7 @@ button {
 }
   
 .theme-toggle:hover {
-    background-color: var(--button-hover-bg-color);
+    background: var(--button-hover-bg-color);
 }
   
   /* Button container for back buttons */
@@ -475,25 +475,18 @@ button {
 }
 
 .exercise-snippet.light{
-    background-color: rgb(182, 182, 182);
+    background: rgb(182, 182, 182);
     color: black;
 }
 
 .exercise-snippet.dark{
-    background-color: rgb(43, 43, 43);
+    background: rgb(43, 43, 43);
     color: white;
 }
 
 .exercise-input.light{
     color: black;
-    background-color: rgb(209, 209, 209);
-    border: none;
-    border-radius: 5px;
-    height: 40px;
-    padding-left: 10px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    font-size: large;
+    background: rgb(209, 209, 209);
 }
 
 .exercise-input.light::placeholder{
@@ -502,14 +495,7 @@ button {
 
 .exercise-input.dark{
     color: white;
-    background-color: rgb(51, 51, 51);
-    border: none;
-    border-radius: 5px;
-    height: 40px;
-    padding-left: 10px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    font-size: large;
+    background: rgb(51, 51, 51);
 }
 
 .exercise-input.dark::placeholder{
@@ -517,7 +503,7 @@ button {
 }
 
 .check-answers-button {
-    background-color: #4caf50; /* Green */
+    background: #4caf50; /* Green */
     color: white;
     padding: 10px 20px;
     border: none;
@@ -527,7 +513,7 @@ button {
 }
   
 .check-answers-button.dark {
-    background-color: #45a049; /* Darker green for dark theme */
+    background: #45a049; /* Darker green for dark theme */
 }
 
 .exercise-text {
@@ -536,7 +522,15 @@ button {
 }
   
 .exercise-input {
-    margin-top: 5px; /* Adds space above the input field */
+    margin-top: 5px;
+    border: none;
+    border-radius: 5px;
+    height: 40px;
+    padding-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    font-size: large;
+    width: 35vh;
 }
 
 .exercises-user-button {
