@@ -17,53 +17,62 @@
     color: var(--text-light);
 }
 
-.sidebar {
-    width: 35vh;
-    background: var(--sidebar-dark);
-    color: var(--text-dark);
-    padding: 20px;
+.exercises-sidebar {
+    width: 23vw;
+    padding: 2vh 2vw 2vh 2vw;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    transition: transform 0.3s ease;
 }
 
-.sidebar.light {
+.exercises-sidebar.dark {
+    background: var(--sidebar-dark);
+}
+
+.exercises-sidebar.light {
     background: var(--sidebar-light);
-    color: var(--text-light); /* Font color in light mode */
 }
 
-.sidebar h2 {
+.exercises-sidebar.hidden {
+    transform: translateX(-100%);
+}
+
+.exercises-sidebar.visible {
+    transform: translateX(0);
+}
+
+.exercises-sidebar h2 {
     margin-bottom: 20px;
     font-size: 1.8rem; /* Increased font size */
 }
 
-.sidebar ul {
+.exercises-sidebar ul {
     list-style: none;
     padding: 0;
     overflow-y: auto;
     flex: 1;
 }
 
-.sidebar li {
+.exercises-sidebar li {
     margin: 15px 0; /* Increased spacing */
     cursor: pointer;
     padding: 12px; /* Increased padding */
     border-radius: 5px;
 }
 
-.sidebar li.active {
+.exercises-sidebar li.active {
     background: var(--tab-active-dark);
 }
 
-.sidebar li.active.light {
+.exercises-sidebar li.active.light {
     background: var(--tab-active-light);
 }
 
-.sidebar li:hover {
+.exercises-sidebar li:hover {
     background: var(--button-hover-dark);
 }
 
-.sidebar li:hover.light {
+.exercises-sidebar li:hover.light {
     background: var(--button-hover-light);
 }
 
@@ -337,7 +346,7 @@ code {
 }
 
 /* Add styles for the AIssistant Chat button */
-.sidebar .aissistant-chat-button {
+.exercises-sidebar .aissistant-chat-button {
     width: 210px;
     height: 45px;
     border-radius: 25px;
@@ -351,23 +360,23 @@ code {
     bottom: 20px;
 }
 
-.sidebar .aissistant-chat-button.dark {
+.exercises-sidebar .aissistant-chat-button.dark {
     background: rgb(54, 54, 54);
     color: var(--text-dark);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.sidebar .aissistant-chat-button.light {
+.exercises-sidebar .aissistant-chat-button.light {
     background: rgb(179, 179, 179);
     color: var(--text-light);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.sidebar .aissistant-chat-button:hover.dark {
+.exercises-sidebar .aissistant-chat-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.sidebar .aissistant-chat-button:hover.light {
+.exercises-sidebar .aissistant-chat-button:hover.light {
     background: var(--button-hover-light);
 }
 
@@ -618,4 +627,43 @@ button {
 .submit-button.dark{
     background: rgb(48, 116, 48);
     color: white;
+}
+
+.exercises-sidebar-toggle {
+    position: absolute;
+    top: 0px;
+    left: 23vw;
+    padding: 10px;
+    border: none;
+    border-radius: 0px 5px 5px 0px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.exercises-sidebar-toggle.hidden {
+    transform: translateX(-23vw);
+}
+
+.exercises-sidebar-toggle.visible {
+    transform: translateX(0);
+}
+
+.exercises-sidebar-toggle.dark {
+    background: var(--sidebar-dark);
+    color: var(--text-dark);
+}
+
+.exercises-sidebar-toggle.light {
+    background: var(--sidebar-light);
+    color: var(--text-light);
+}
+
+.exercises-sidebar-toggle:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.exercises-sidebar-toggle:hover.light {
+    background: var(--button-hover-light);
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./exercises.css";
-import { MdLightMode, MdDarkMode } from "react-icons/md";
+import { MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { IoIosChatboxes } from "react-icons/io";
@@ -15,9 +15,10 @@ const ExercisesPage = () => {
   const [learningMaterials, setLearningMaterials] = useState({});
   const [userAnswers, setUserAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [subjectId, setSubjectId] = useState(""); // Change from subjectCode to subjectId
+  const [subjectId, setSubjectId] = useState("");
   const [studentId, setStudentId] = useState("");
-  const [hasSubjectCode, setHasSubjectCode] = useState(false); // Add this line
+  const [hasSubjectCode, setHasSubjectCode] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Add this line
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,21 +39,19 @@ const ExercisesPage = () => {
 
   const fetchLearningMaterials = async () => {
     try {
-      // Fetch the subject IDs associated with the student's ID
       const accessResponse = await axios.get(`${base_url}/api/getAccessLearningMaterials`, {
         params: { studentId },
       });
-      const subjectIds = accessResponse.data.subjectIds; // Change from subjectCodes to subjectIds
+      const subjectIds = accessResponse.data.subjectIds;
 
       if (subjectIds.length > 0) {
-        setHasSubjectCode(true); // Set hasSubjectCode to true if subject IDs exist
-        // Fetch the learning materials for the subject IDs
+        setHasSubjectCode(true);
         const materialsResponse = await axios.get(`${base_url}/api/getLearningMaterials`, {
-          params: { subjectIds }, // Change from subjectCodes to subjectIds
+          params: { subjectIds },
         });
         setLearningMaterials(materialsResponse.data);
       } else {
-        setHasSubjectCode(false); // Set hasSubjectCode to false if no subject IDs exist
+        setHasSubjectCode(false);
         setLearningMaterials({});
       }
     } catch (error) {
@@ -79,6 +78,10 @@ const ExercisesPage = () => {
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarVisible(prev => !prev);
   };
 
   const handleAnswerChange = (questionIndex, value) => {
@@ -194,25 +197,25 @@ const ExercisesPage = () => {
 
   return (
     <div className={`exercises-page ${theme}`}>
-      <div className={`sidebar ${theme}`}>
+      <div className={`exercises-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
         <h2>Subjects</h2>
         <div className={`subject-code-input ${theme}`}>
           <input
             type="text"
             value={subjectId}
             onChange={(e) => setSubjectId(e.target.value)}
-            placeholder="Enter subject ID" // Update the placeholder
+            placeholder="Enter subject ID"
           />
         </div>
         <button onClick={handleSubjectCodeSubmit} className={`submit-button ${theme}`}>
           Submit
         </button>
-        {hasSubjectCode ? ( // Conditionally render based on hasSubjectCode
+        {hasSubjectCode ? (
           <ul>
             {Object.keys(learningMaterials).map((subject) => (
               <li
                 key={subject}
-                className={`${theme} ${selectedSubject === subject ? 'active' : ''}`} // Add active class if selected
+                className={`${theme} ${selectedSubject === subject ? 'active' : ''}`}
                 onClick={() => handleSubjectClick(subject)}
               >
                 {subject}
@@ -220,14 +223,21 @@ const ExercisesPage = () => {
             ))}
           </ul>
         ) : (
-          <p>No subject IDs added yet. Please add a subject ID to view learning materials.</p> // Update the message
+          <p>No subject IDs added yet. Please add a subject ID to view learning materials.</p>
         )}
         <button className={`exercises-logout-button ${theme}`} onClick={handleLogout}>
           Logout
         </button>
       </div>
 
-      <div className={`exercises-content ${theme}`}>
+      <button 
+        className={`exercises-sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} 
+        onClick={toggleSidebar}
+      >
+        {isSidebarVisible ? <MdChevronLeft /> : <MdChevronRight />}
+      </button>
+
+      <div className={`exercises-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
         {hasSubjectCode && selectedSubject && <h1 className={theme}>{selectedSubject}</h1>}
 
         {hasSubjectCode && selectedSubject && !selectedLesson && (

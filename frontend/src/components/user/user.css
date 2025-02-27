@@ -1296,6 +1296,6 @@ textarea:focus {
     }
     
     .student-exercises-button {
-        right: 9%; /* Adjust the position to avoid overlapping with the theme toggle button */
+        right: 17%; /* Adjust the position to avoid overlapping with the theme toggle button */
     }
 }
