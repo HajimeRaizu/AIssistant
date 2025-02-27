@@ -3,10 +3,9 @@
 .student-user-container {
     display: flex;
     height: 100vh;
-    width: 100%;
+    width: 100vw;
     overflow: hidden;
     font-family: "Host Grotesk", sans-serif;
-    
 }
 
 .student-user-container.dark {
@@ -165,8 +164,8 @@
 }
 
 .student-sidebar {
-    width: 45vh;
-    padding: 4vh;
+    width: 23vw;
+    padding: 2vh 2vw 2vh 2vw;
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease;
@@ -191,7 +190,7 @@
 .student-sidebar-toggle {
     position: absolute;
     top: 0px;
-    left: 45vh;
+    left: 23vw;
     padding: 10px;
     border: none;
     border-radius: 0px 5px 5px 0px;
@@ -202,7 +201,7 @@
 }
 
 .student-sidebar-toggle.hidden {
-    transform: translateX(-100%);
+    transform: translateX(-23vw);
 }
 
 .student-sidebar-toggle.visible {
@@ -228,16 +227,18 @@
 }
 
 .student-content {
+    width: 100%;
     flex: 1;
     display: flex;
     flex-direction: column;
     padding: 20px;
     overflow-y: auto;
     margin-left: 0;
+    transition: margin 0.3s ease;
 }
 
 .student-content.sidebar-hidden {
-    margin-left: -45vh;
+    margin-left: -23vw;
 }
 
 .student-content.sidebar-visible {
@@ -1042,19 +1043,28 @@ textarea:focus {
     font-weight: bold;
 }
 
+.student-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    margin-left: 0;
+}
+
 .student-no-chat-selected {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 100%;
+    width: 77vw;
     text-align: center;
     font-size: 1.2em;
     transition: transform 0.3s ease;
 }
 
 .student-no-chat-selected.sidebar-hidden {
-    margin-left: -45vh;
+    transform: translateX(-11.5vw);
 }
 
 .student-loading-container {
@@ -1221,51 +1231,4 @@ textarea:focus {
 
 .student-newchat-message textarea:focus {
     outline: none;
-}
-
-@media screen and (max-width: 768px) {
-    /* Sidebar becomes a full-width sliding menu */
-    .student-sidebar {
-        width: 80vw;
-        left: -80vw; /* Hidden by default */
-        position: fixed;
-        top: 0;
-        height: 100%;
-        transition: left 0.3s ease-in-out;
-    }
-
-    .student-sidebar.visible {
-        left: 0;
-    }
-
-    .student-sidebar-toggle{
-        left: 80vw;
-    }
-
-    /* Prevents content from being pushed */
-    .student-content {
-        width: 100vh;
-        margin-left: 0;
-    }
-
-    .student-content *{
-        width: 100%;
-    }
-
-    /* Chat body resizes dynamically */
-    .student-chat-body {
-        height: calc(100vh - 150px);
-        padding: 5px;
-    }
-
-    /* Adjust chat input for smaller screens */
-    .student-chat-input textarea {
-        font-size: 14px;
-        min-height: 50px;
-    }
-
-    .student-chat-input button {
-        font-size: 14px;
-        padding: 8px;
-    }
 }
