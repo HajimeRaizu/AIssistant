@@ -426,10 +426,7 @@ const UserPage = () => {
           <div className={`student-no-chat-box ${theme}`}>
             <div className={`student-newchat-container ${theme}`}>
               <div className={`student-newchat-header ${theme}`}>
-                  <div className='intro'>
-                    <h1 className="hello">Hello World! I am</h1>
-                    <div className='landing-aissistant'><h1 className='ai'>AI</h1><h1 className='landing-welcome'>ssistant.</h1></div>
-                  </div>
+                <h1>Hello World! I am AIssistant.</h1>
                 <p>Your personal academia companion.</p>
               </div>
               <div className={`student-newchat-message ${theme}`}>

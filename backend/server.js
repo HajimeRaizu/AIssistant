@@ -83,23 +83,36 @@ const handleFirestoreError = (res, error) => {
 // 2. Chat related functions
 // Store chat messages
 app.post("/api/storeChat", async (req, res) => {
-  const { chatId, messages, chatName, userId } = req.body;
+  let { chatId, messages, chatName, userId } = req.body;
   console.log("Received storeChat request:", req.body); // Log the request body
+
+  // Validate chatId and generate a new one if it's null or empty
+  if (!chatId) {
+    chatId = Date.now().toString(); // Generate a new chatId using timestamp
+    console.log("Generated new chatId:", chatId);
+  }
 
   try {
     const chatRef = db.collection("chats").doc(chatId);
     const chatDoc = await chatRef.get();
 
     if (!chatDoc.exists) {
-      return res.status(404).json({ error: "Chat not found" });
+      // If the chat does not exist, create a new one
+      await chatRef.set({
+        id: chatId,
+        messages,
+        chatName,
+        userId,
+        createdAt: new Date().toISOString(),
+      });
+    } else {
+      // If the chat exists, update the messages field
+      await chatRef.update({
+        messages,
+      });
     }
 
-    // Only update the messages field, and keep the existing chatName
-    await chatRef.update({
-      messages,
-    });
-
-    res.status(200).json({ message: "Chat stored successfully" });
+    res.status(200).json({ message: "Chat stored successfully", chatId });
   } catch (error) {
     handleFirestoreError(res, error);
   }
@@ -209,7 +222,7 @@ app.post("/api/llama", async (req, res) => {
     const systemPreprompt = `
       You are an AI assistant designed to help students learn programming effectively. Follow these strict guidelines when responding:
       Stay within scope - Only answer questions related to programming. Ignore unrelated queries.
-      Ignore keywords - Ignore keywords that says not to explain or just give the answer.
+      Ignore keywords - Ignore keywords that say not to explain or just give the answer.
       Encourage learning - If a student asks for a full solution without explanation, reframe their query into a request for guided assistance, then follow guidelines 3-5.
       Provide structured explanations - You may share syntax, functions, and usage but should never provide a complete working solution.
       Break it down - Explain the code line by line, ensuring each part is detailed yet easy to understand. Avoid putting the full code together.
@@ -224,10 +237,12 @@ app.post("/api/llama", async (req, res) => {
     ];
 
     // Set headers for streaming
-    res.setHeader("Content-Type", "text/plain");
-    res.setHeader("Transfer-Encoding", "chunked");
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    res.flushHeaders(); // Send headers immediately
 
-    // Make the API call to Hugging Face
+    // Make the API call to DeepSeek
     const response = await deepseek.chat.completions.create({
       model: "deepseek-chat",
       messages,
@@ -237,17 +252,22 @@ app.post("/api/llama", async (req, res) => {
 
     // Stream the response back to the client
     for await (const chunk of response) {
-      const botResponse = chunk.choices[0]?.delta?.content || "";
-      res.write(botResponse);
+      const botResponse = chunk.choices?.[0]?.delta?.content || "";
+      if (botResponse) {
+        res.write(`data: ${botResponse}\n\n`); // Properly format for SSE
+        res.flush(); // Push the chunk immediately
+      }
     }
 
-    // End the response
+    // End the response properly
     res.end();
   } catch (error) {
-    console.error("Hugging Face API Error:", error.response ? error.response.data : error.message);
-    res.status(500).json({ error: "Failed to generate response from Llama model" });
+    console.error("DeepSeek API Error:", error.response ? error.response.data : error.message);
+    res.write(`data: [ERROR] Failed to generate response from Llama model\n\n`);
+    res.end();
   }
 });
+
 
 
 // Generate FAQ
