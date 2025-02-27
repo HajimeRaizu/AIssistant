@@ -86,7 +86,7 @@
     margin-bottom: 20px;
     margin-right: 20px;
     padding: 10px 0px 0px 0px;
-    width: 280px;
+    width: 35vh;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -98,7 +98,6 @@
 
 .student-chat-item {
     height: fit-content;
-    width: 35vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
