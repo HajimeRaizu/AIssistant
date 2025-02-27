@@ -25,8 +25,8 @@ import {
 } from 'recharts';
 
 const InstructorPage = () => {
-  //const base_url = `https://aissistant-backend.vercel.app`;
-  const base_url = `http://localhost:5000`;
+  const base_url = `https://aissistant-backend.vercel.app`;
+  //const base_url = `http://localhost:5000`;
   const [activeTab, setActiveTab] = useState('dashboard');
   const [totalQueries, setTotalQueries] = useState(0);
   const [queryData, setQueryData] = useState([]);

@@ -340,23 +340,39 @@ const UserPage = () => {
           Exercises
         </button>
       <div className={`student-user-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
-        <button className="student-new-chat" onClick={handleNewChatClick}>New Chat</button>
+        <button 
+          className="student-new-chat" 
+          onClick={handleNewChatClick} 
+          disabled={isDisabled} // Disable the button when isDisabled is true
+        >
+          New Chat
+        </button>
         <div className="student-chat-list">
           {chats.map(chat => (
             <div
               key={chat.id}
-              className={`student-chat-item ${chat.id === currentChatId ? 'active' : ''} ${theme}`}
+              className={`student-chat-item ${chat.id === currentChatId ? 'active' : ''} ${theme} ${isDisabled ? 'disabled' : ''}`} // Add 'disabled' class when isDisabled is true
               onClick={() => {
-                setCurrentChatId(chat.id);
-                fetchChatHistory(chat.id);
-                setSelectedTab("chat");
+                if (!isDisabled) { // Only allow navigation if not disabled
+                  setCurrentChatId(chat.id);
+                  fetchChatHistory(chat.id);
+                  setSelectedTab("chat");
+                }
               }}
             >
               {chat.chatName || `Chat ${chat.id}`}
-              <button className="student-delete-chat" onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteChat(chat.id);
-              }}><MdOutlineDelete className={`student-delete-icon ${theme}`} /></button>
+              <button 
+                className="student-delete-chat" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!isDisabled) { // Only allow deletion if not disabled
+                    handleDeleteChat(chat.id);
+                  }
+                }}
+                disabled={isDisabled} // Disable the delete button when isDisabled is true
+              >
+                <MdOutlineDelete className={`student-delete-icon ${theme}`} />
+              </button>
             </div>
           ))}
         </div>
