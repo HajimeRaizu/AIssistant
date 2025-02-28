@@ -293,7 +293,7 @@ const UserPage = () => {
       await axios.delete(`${base_url}/api/deleteChat/${chatId}/${userId}`);
       setChats(chats.filter(chat => chat.id !== chatId));
       if (currentChatId === chatId) {
-        setCurrentChatId(chats.length > 1 ? chats[0].id : null);
+        handleNewChatClick();
         setMessages([]);
       }
     } catch (error) {
@@ -470,7 +470,7 @@ const UserPage = () => {
 
       {showDeleteConfirmation && (
         <div className={`student-confirmation-modal ${theme}`}>
-          <div className={`studentFai-modal-content ${theme}`}>
+          <div className={`student-modal-content ${theme}`}>
             <p>Are you sure you want to delete this chat?</p>
             <div className={`student-chat-name-modal-actions ${theme}`}>
               <button onClick={confirmDeleteChat}>Yes</button>

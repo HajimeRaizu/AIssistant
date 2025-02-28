@@ -75,4 +75,9 @@
         background: rgba(0, 0, 0, 0.5); /* Dark overlay effect */
         z-index: 999; /* Below sidebar, but above content */
     }
+
+    .student-modal-content{
+        padding: 10px;
+        margin: 15px;
+    }
 }
