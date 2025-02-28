@@ -42,10 +42,19 @@
     flex-direction: column;
 }
 
+.aissistant-text h1{
+    margin-bottom: 10px;
+}
+
+.aissistant-text span.combined-text{
+    display: none;
+}
+
 .aissistant-user-type{
     align-self: center;
     background-color: lightblue;
     width: 100px;
+    margin-top: 25px;
 }
 
 .aissistant-header{
@@ -63,6 +72,14 @@
         height: 100dvh;
         width: 100dvw;
         background-size: cover;
+    }
+
+    .aissistant-text span.combined-text{
+        display: block;
+    }
+
+    .aissistant-text p.single-text{
+        display: none;
     }
     
     .aissistant-header{
@@ -95,7 +112,7 @@
         text-align: justify;
     }
 
-    .aissistant-text span{
+    .aissistant-text p{
         font-size: small;
         text-align: justify;
     }
