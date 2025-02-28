@@ -239,6 +239,7 @@ const UserPage = () => {
         { text: input, sender: "user", timestamp: new Date().toLocaleString() },
       ];
       setMessages(newMessages);
+      setInput("");
 
       setIsDisabled(true);
       setIsTyping(true);
@@ -280,7 +281,6 @@ const UserPage = () => {
     } catch (error) {
       console.error("Failed to create new chat:", error);
     } finally {
-      setInput("");
       setIsSubmitting(false);
       setIsTyping(false);
       setIsDisabled(false);
