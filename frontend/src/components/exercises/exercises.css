@@ -258,7 +258,7 @@ code {
 }
 
 .subtopic-content h2, .subtopic-content h3, .subtopic-content h4 {
-    margin-bottom: 15px; /* Increased spacing */
+    margin: 15px 0px 15px 0px; /* Increased spacing */
     font-size: 1.6rem; /* Increased font size */
 }
 

@@ -22,6 +22,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 /* Header Styles */
@@ -58,7 +59,7 @@ body {
     gap: 50px;
 }
 
-.user-type-box {
+.user-type-box-admin, .user-type-box-instructor, .user-type-box-student {
     width: 300px;
     padding: 30px;
     background-color: rgba(236, 236, 236, .3);
@@ -69,17 +70,17 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
-.user-type-box:hover {
+.user-type-box-admin:hover, .user-type-box-instructor:hover, .user-type-box-student:hover {
     transform: translateY(-10px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.user-type-box h2 {
+.user-type-box-admin h2, .user-type-box-instructor h2, .user-type-box-student h2 {
     font-size: 26px;
     margin-bottom: 2dvh;
 }
 
-.user-type-box p {
+.user-type-box-admin p, .user-type-box-instructor p, .user-type-box-student p {
     font-size: 16px;
     color: #555;
 }
@@ -103,24 +104,61 @@ body {
     padding: 0px 0px 0px 10px;
 }
 
+.usertype-landing-aissistant{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    top: 20px;
+    left: 20px;
+}
+
+.usertype-landing-aissistant .usertype-landing-welcome{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: row;
+}
+
+.usertype-landing-aissistant .ai{
+    color: rgb(86, 86, 255);
+    padding: 0px 0px 0px 10px;
+}
+
 @media (max-aspect-ratio: 1/1){
     .user-type-action-boxes{
         flex-direction: column;
         align-items: center;
+        padding: 10dvh 0dvw 0dvh 0dvw;
     }
 
-    .user-type-box{
+    .user-type-box-admin, .user-type-box-instructor{
+        display: none;
+    }
+
+    .user-type-box-student{
         width: 80%;
         padding: 10px;
     }
 
-    .user-type-box h2 {
+    .user-type-box-student h2 {
         font-size: 24px;
         margin-bottom: 5px;
     }
     
-    .user-type-box p {
+    .user-type-box-student p {
         font-size: 14px;
         color: #555;
+    }
+
+    .usertype-landing-aissistant{
+        position: inherit;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
     }
 }

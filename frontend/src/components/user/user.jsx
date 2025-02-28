@@ -381,7 +381,7 @@ const UserPage = () => {
           ))}
         </div>
         <div className="student-logout-section">
-          <button className={`studentFai-logout-button ${theme}`} onClick={handleLogout}>Logout</button>
+          <button className={`student-logout-button ${theme}`} onClick={handleLogout}>Logout</button>
         </div>
 
         <button className={`student-sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} onClick={toggleSidebar}>

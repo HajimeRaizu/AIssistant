@@ -16,17 +16,19 @@ const UserType = () => {
   
     return (
       <div className="user-type-page">
-        {/* Action Boxes Section */}
+        <div className='usertype-landing-aissistant'
+          onClick={() => handleBoxClick('/')}
+        ><h1 className='ai'>AI</h1><h1 className='landing-welcome'>ssistant</h1></div>
         <section className="user-type-action-boxes">
           <div
-            className="user-type-box"
+            className="user-type-box-admin"
             onClick={() => handleBoxClick('/admin')} // Redirect to AI Chat page
           >
             <h2>Admin</h2>
             <p>Login as an admin and manage the users of AIssistant</p>
           </div>
           <div
-            className="user-type-box"
+            className="user-type-box-instructor"
             onClick={() => handleBoxClick('/instructor')} // Redirect to Exercises page
           >
             <h2>Instructor</h2>
@@ -34,7 +36,7 @@ const UserType = () => {
           </div>
 
           <div
-            className="user-type-box"
+            className="user-type-box-student"
             onClick={() => handleBoxClick('/student-landing')} // Redirect to Exercises page
           >
             <h2>Student</h2>
