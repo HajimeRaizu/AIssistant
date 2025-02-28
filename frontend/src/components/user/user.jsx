@@ -280,6 +280,7 @@ const UserPage = () => {
     } catch (error) {
       console.error("Failed to create new chat:", error);
     } finally {
+      setInput("");
       setIsSubmitting(false);
       setIsTyping(false);
       setIsDisabled(false);
@@ -428,7 +429,7 @@ const UserPage = () => {
               />
               <div className={`student-chat-input-button ${theme}`}>
                 <button 
-                  onClick={handleKeyDown} 
+                  onClick={handleSend} 
                   className={`student-submit-query ${theme}`} 
                   disabled={isDisabled}
                 >
@@ -458,7 +459,7 @@ const UserPage = () => {
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
                 />
-                <button className={`student-submit-query ${theme}`} onClick={handleKeyDown}>Ask</button>
+                <button className={`student-submit-query ${theme}`} onClick={handleSend}>Ask</button>
               </div>
             </div>
           </div>
