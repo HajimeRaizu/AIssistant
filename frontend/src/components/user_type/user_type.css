@@ -55,13 +55,12 @@ body {
 .user-type-action-boxes {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 50px;
     padding: 20px;
 }
 
 .user-type-box {
     width: 300px;
-    margin: 0px 25px 0px 25px;
     padding: 30px;
     background-color: rgba(236, 236, 236, .3);
     color: rgb(86, 86, 255);
@@ -77,12 +76,12 @@ body {
 }
 
 .user-type-box h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 2vw;
+    margin-bottom: 2vh;
 }
 
 .user-type-box p {
-    font-size: 16px;
+    font-size: 1.20vw;
     color: #555;
 }
 
@@ -103,4 +102,15 @@ body {
 .user-type-aissistant .ai{
     color: rgb(86, 86, 255);
     padding: 0px 0px 0px 10px;
+}
+
+@media (max-aspect-ratio: 1/1){
+    .user-type-action-boxes{
+        flex-direction: column;
+    }
+
+    .user-type-box{
+        width: 80%;
+        padding: 10px;
+    }
 }
