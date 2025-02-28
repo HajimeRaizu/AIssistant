@@ -424,6 +424,7 @@ const UserPage = () => {
                 value={input}
                 onChange={handleInputChange}
                 onInput={handleKeyDown}
+                onKeyDown={handleKeyDown}
                 placeholder="Ask a question..."
                 className={theme}
               />
@@ -458,6 +459,7 @@ const UserPage = () => {
                   value={input}
                   onChange={handleInputChange}
                   onInput={handleKeyDown}
+                  onKeyDown={handleKeyDown}
                 />
                 <button className={`student-submit-query ${theme}`} onClick={handleSend}>Ask</button>
               </div>
