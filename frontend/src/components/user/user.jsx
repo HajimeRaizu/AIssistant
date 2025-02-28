@@ -149,19 +149,15 @@ const UserPage = () => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      // Prevent the default behavior of the Enter key
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-  
-      // Check if the Shift key is pressed or if the user is on a mobile device
-      if (e.shiftKey || e.nativeEvent.inputType === "insertLineBreak") {
-        // Add a new line
-        setInput((prevInput) => prevInput + "\n");
-      } else if (!isDisabled) {
-        // Send the message if the submit button is not disabled
+      if (!isDisabled) { // Check if the submit button is disabled
         handleSend();
-        setInput(""); // Clear the input field
       }
+      setInput("");
+    } else if (e.key === "Enter" && e.shiftKey) {
+      e.preventDefault();
+      setInput((prevInput) => prevInput + "\n");
     }
   };
 
@@ -427,7 +423,7 @@ const UserPage = () => {
                 ref={textareaRef}
                 value={input}
                 onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
+                onInput={handleKeyDown}
                 placeholder="Ask a question..."
                 className={theme}
               />
@@ -461,7 +457,7 @@ const UserPage = () => {
                   placeholder="Ask a question"
                   value={input}
                   onChange={handleInputChange}
-                  onKeyDown={handleKeyDown}
+                  onInput={handleKeyDown}
                 />
                 <button className={`student-submit-query ${theme}`} onClick={handleSend}>Ask</button>
               </div>
