@@ -428,7 +428,7 @@ const UserPage = () => {
               />
               <div className={`student-chat-input-button ${theme}`}>
                 <button 
-                  onClick={handleSend} 
+                  onClick={handleKeyDown} 
                   className={`student-submit-query ${theme}`} 
                   disabled={isDisabled}
                 >
@@ -458,7 +458,7 @@ const UserPage = () => {
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
                 />
-                <button className={`student-submit-query ${theme}`} onClick={handleSend}>Ask</button>
+                <button className={`student-submit-query ${theme}`} onClick={handleKeyDown}>Ask</button>
               </div>
             </div>
           </div>
