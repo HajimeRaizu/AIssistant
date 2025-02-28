@@ -149,9 +149,13 @@ const UserPage = () => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (
+      e.key === "Enter" &&
+      !e.shiftKey &&
+      e.nativeEvent.inputType !== "insertLineBreak"
+    ) {
       e.preventDefault();
-      if (!isDisabled) { // Check if the submit button is disabled
+      if (!isDisabled) {
         handleSend();
       }
       setInput("");
@@ -160,6 +164,7 @@ const UserPage = () => {
       setInput((prevInput) => prevInput + "\n");
     }
   };
+  
 
   const handleLogout = () => {
     localStorage.removeItem("userId");
