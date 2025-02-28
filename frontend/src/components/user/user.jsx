@@ -149,13 +149,9 @@ const UserPage = () => {
   };
 
   const handleKeyDown = (e) => {
-    if (
-      e.key === "Enter" &&
-      !e.shiftKey &&
-      e.nativeEvent.inputType !== "insertLineBreak"
-    ) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      if (!isDisabled) {
+      if (!isDisabled) { // Check if the submit button is disabled
         handleSend();
       }
       setInput("");
@@ -164,7 +160,14 @@ const UserPage = () => {
       setInput((prevInput) => prevInput + "\n");
     }
   };
-  
+
+  const handleInput = (e) => {
+    // Check if the inputType is "insertParagraph" (which means Enter was pressed on mobile)
+    if (e.nativeEvent.inputType === "insertParagraph") {
+      e.preventDefault();
+      setInput((prevInput) => prevInput + "\n");
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("userId");
@@ -429,6 +432,7 @@ const UserPage = () => {
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
+                onInput={handleInput}
                 placeholder="Ask a question..."
                 className={theme}
               />
@@ -463,6 +467,7 @@ const UserPage = () => {
                   value={input}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
+                  onInput={handleInput}
                 />
                 <button className={`student-submit-query ${theme}`} onClick={handleSend}>Ask</button>
               </div>
