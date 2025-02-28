@@ -149,15 +149,15 @@ const UserPage = () => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === "Enter" && e.shiftKey) {
+      e.preventDefault();
+      setInput((prevInput) => prevInput + "\n");
+    } else if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (!isDisabled) { // Check if the submit button is disabled
         handleSend();
       }
       setInput("");
-    } else if (e.key === "Enter" && e.shiftKey) {
-      e.preventDefault();
-      setInput((prevInput) => prevInput + "\n");
     }
   };
 
