@@ -56,7 +56,6 @@ body {
     display: flex;
     justify-content: center;
     gap: 50px;
-    padding: 20px;
 }
 
 .user-type-box {
@@ -76,12 +75,12 @@ body {
 }
 
 .user-type-box h2 {
-    font-size: 2vw;
+    font-size: 26px;
     margin-bottom: 2vh;
 }
 
 .user-type-box p {
-    font-size: 1.20vw;
+    font-size: 16px;
     color: #555;
 }
 
@@ -107,10 +106,21 @@ body {
 @media (max-aspect-ratio: 1/1){
     .user-type-action-boxes{
         flex-direction: column;
+        align-items: center;
     }
 
     .user-type-box{
         width: 80%;
         padding: 10px;
+    }
+
+    .user-type-box h2 {
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
+    
+    .user-type-box p {
+        font-size: 14px;
+        color: #555;
     }
 }

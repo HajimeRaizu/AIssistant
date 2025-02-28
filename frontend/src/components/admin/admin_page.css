@@ -658,3 +658,9 @@ input {
 .line-graph:hover{
   transform: scale(1.03);
 }
+
+@media (max-aspect-ratio: 1/1){
+    .adming-container *{
+        visibility: hidden;
+    }
+}
