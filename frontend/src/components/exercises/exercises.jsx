@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./exercises.css";
+import "./exercises_android.css";
 import { MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -197,6 +198,7 @@ const ExercisesPage = () => {
 
   return (
     <div className={`exercises-page ${theme}`}>
+      <div className={`exercises-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar}/>
       <div className={`exercises-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
         <h2>Subjects</h2>
         <div className={`subject-code-input ${theme}`}>
@@ -238,8 +240,19 @@ const ExercisesPage = () => {
       </button>
 
       <div className={`exercises-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
-        {hasSubjectCode && selectedSubject && <h1 className={theme}>{selectedSubject}</h1>}
-
+        <div className='exercises-header-container'>
+          <div className="exercises-header">
+            {hasSubjectCode && selectedSubject && <h1 className={theme}>{selectedSubject}</h1>}
+          </div>
+          <div className="exercises-header-buttons">
+            <button className={`theme-toggle ${theme}`} onClick={toggleTheme}>
+              {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
+            </button>
+            <button className={`exercises-chat-button ${theme}`} onClick={() => navigate('/user')}>
+              <IoIosChatboxes/>
+            </button>
+          </div>
+        </div>
         {hasSubjectCode && selectedSubject && !selectedLesson && (
           <div className="lessons">
             <h2 className={theme}>Lessons</h2>
@@ -283,7 +296,7 @@ const ExercisesPage = () => {
               {selectedSubtopic} - {learningMaterials[selectedSubject][selectedLesson][selectedSubtopic].subtopicTitle}
             </h1>
             <p className={`line ${theme}`}></p>
-            <pre>{learningMaterials[selectedSubject][selectedLesson][selectedSubtopic].content}</pre>
+            <span>{learningMaterials[selectedSubject][selectedLesson][selectedSubtopic].content}</span>
             <h3>Exercises</h3>
             {renderExercises(learningMaterials[selectedSubject][selectedLesson][selectedSubtopic]?.questions)}
             <div className="button-container">
@@ -297,14 +310,6 @@ const ExercisesPage = () => {
           </div>
         )}
       </div>
-
-      <button className={`theme-toggle ${theme}`} onClick={toggleTheme}>
-        {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
-      </button>
-
-      <button className={`exercises-chat-button ${theme}`} onClick={() => navigate('/user')}>
-        <IoIosChatboxes/>
-      </button>
     </div>
   );
 };

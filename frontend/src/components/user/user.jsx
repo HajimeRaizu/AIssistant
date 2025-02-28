@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./user.css";
+import "./user_android.css"
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LuBookMarked } from "react-icons/lu";
@@ -153,6 +154,7 @@ const UserPage = () => {
       if (!isDisabled) { // Check if the submit button is disabled
         handleSend();
       }
+      setInput("");
     } else if (e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
       setInput((prevInput) => prevInput + "\n");
@@ -333,6 +335,7 @@ const UserPage = () => {
 
   return (
     <div className={`student-container ${theme}`}>
+      <div className={`student-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar}/>
       <button className={`student-theme-toggle ${theme}`} onClick={toggleTheme}>
           {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
         </button>
@@ -422,7 +425,6 @@ const UserPage = () => {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask a question..."
                 className={theme}
-                style={{ height: "auto", minHeight: "96px", maxHeight: "168px", whiteSpace: 'pre-wrap' }}
               />
               <div className={`student-chat-input-button ${theme}`}>
                 <button 

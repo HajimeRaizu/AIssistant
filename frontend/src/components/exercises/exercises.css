@@ -82,6 +82,11 @@
     background: var(--bg-dark);
     color: var(--text-dark);
     overflow: auto;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.exercises-content.sidebar-hidden{
+    margin-left: -23dvw;
 }
 
 .exercises-content.light {
@@ -90,7 +95,6 @@
 }
 
 .exercises-content h1 {
-    margin-bottom: 25px; /* Increased spacing */
     font-size: 2.2rem; /* Increased font size */
     color: var(--text-dark);
 }
@@ -196,16 +200,21 @@
     color: var(--text-light); /* Font color in light mode */
 }
 
+/* Theme Toggle Button */
 .theme-toggle {
-    position: absolute;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     top: 2dvh;
     right: 2dvw;
     padding: 12px; /* Increased padding */
     border-radius: 10dvh;
     border: none;
-    border-radius: 0dvh;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
+    font-size: large;
 }
 
 .theme-toggle.dark {
@@ -240,6 +249,12 @@ code {
 .subtopic-content.light {
     background: var(--bg-light);
     color: var(--text-light);
+}
+
+.subtopic-content span{
+    white-space: pre-line;
+    font-size: 14px;
+    text-align: justify;
 }
 
 .subtopic-content h2, .subtopic-content h3, .subtopic-content h4 {
@@ -345,41 +360,6 @@ code {
     margin-bottom: 20px;
 }
 
-/* Add styles for the AIssistant Chat button */
-.exercises-sidebar .aissistant-chat-button {
-    width: 210px;
-    height: 45px;
-    border-radius: 25px;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 700;
-    margin-top: 20px;
-    position: absolute;
-    bottom: 20px;
-}
-
-.exercises-sidebar .aissistant-chat-button.dark {
-    background: rgb(54, 54, 54);
-    color: var(--text-dark);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.exercises-sidebar .aissistant-chat-button.light {
-    background: rgb(179, 179, 179);
-    color: var(--text-light);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.exercises-sidebar .aissistant-chat-button:hover.dark {
-    background: var(--button-hover-dark);
-}
-
-.exercises-sidebar .aissistant-chat-button:hover.light {
-    background: var(--button-hover-light);
-}
-
 /* General button styling */
 button {
     padding: 10px 20px;
@@ -393,18 +373,7 @@ button {
   button:hover {
     transform: scale(1.05); /* Slight zoom effect on hover */
   }
-  
-  /* AIssistant Chat Button */
-  .aissistant-chat-button {
-    background: var(--button-bg-color);
-    color: var(--button-text-color);
-    margin-top: 20px;
-  }
-  
-.aissistant-chat-button:hover {
-    background: var(--button-hover-bg-color);
-  }
-  
+   
 /* Back Button Styling */
 .back-button {
     padding: 10px 20px;
@@ -429,26 +398,6 @@ button {
 
 .back-button:hover{
     text-decoration: underline;
-}
-  
-  /* Theme Toggle Button */
-.theme-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--button-bg-color);
-    color: var(--button-text-color);
-    padding: 10px;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-  
-.theme-toggle:hover {
-    background: var(--button-hover-bg-color);
 }
   
   /* Button container for back buttons */
@@ -516,6 +465,8 @@ button {
 .exercise-text {
     white-space: pre-line; /* Ensures line breaks are respected */
     margin-bottom: 10px; /* Adds space between the question and the input field */
+    font-size: 14px;
+    text-align: justify;
 }
   
 .exercise-input {
@@ -530,11 +481,34 @@ button {
     width: 35dvh;
 }
 
+.exercises-header-container{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.exercises-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    right: 0;
+    width: 100%;
+}
+
+.exercises-header-buttons{
+    width: 100dvw;
+    display: flex;
+    flex-direction: row;
+    direction: rtl;
+    padding: 0;
+}
+
 .exercises-chat-button {
+    justify-self: last baseline;
+    align-self: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
     top: 2dvh;
     right: 14dvw; /* Adjust the position to avoid overlapping with the theme toggle button */
     padding: 10px 10px;
@@ -642,12 +616,8 @@ button {
     z-index: 1000;
 }
 
-.exercises-sidebar-toggle.hidden {
+.exercises-sidebar-toggle.sidebar-hidden {
     transform: translateX(-23dvw);
-}
-
-.exercises-sidebar-toggle.visible {
-    transform: translateX(0);
 }
 
 .exercises-sidebar-toggle.dark {
