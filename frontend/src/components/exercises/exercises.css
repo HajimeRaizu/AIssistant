@@ -3,7 +3,7 @@
 
 .exercises-page {
     display: flex;
-    height: 100vh;
+    height: 100dvh;
     font-family: "Host Grotesk", sans-serif;
 }
 
@@ -18,8 +18,8 @@
 }
 
 .exercises-sidebar {
-    width: 23vw;
-    padding: 2vh 2vw 2vh 2vw;
+    width: 23dvw;
+    padding: 2dvh 2dvw 2dvh 2dvw;
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease;
@@ -198,12 +198,12 @@
 
 .theme-toggle {
     position: absolute;
-    top: 2vh;
-    right: 2vw;
+    top: 2dvh;
+    right: 2dvw;
     padding: 12px; /* Increased padding */
-    border-radius: 10vh;
+    border-radius: 10dvh;
     border: none;
-    border-radius: 0vh;
+    border-radius: 0dvh;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
 }
@@ -527,7 +527,7 @@ button {
     margin-top: 5px;
     margin-bottom: 15px;
     font-size: large;
-    width: 35vh;
+    width: 35dvh;
 }
 
 .exercises-chat-button {
@@ -535,8 +535,8 @@ button {
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 2vh;
-    right: 14vw; /* Adjust the position to avoid overlapping with the theme toggle button */
+    top: 2dvh;
+    right: 14dvw; /* Adjust the position to avoid overlapping with the theme toggle button */
     padding: 10px 10px;
     border: none;
     border-radius: 100%;
@@ -598,7 +598,7 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100dvh;
     font-size: 1.5rem;
   }
 
@@ -632,7 +632,7 @@ button {
 .exercises-sidebar-toggle {
     position: absolute;
     top: 0px;
-    left: 23vw;
+    left: 23dvw;
     padding: 10px;
     border: none;
     border-radius: 0px 5px 5px 0px;
@@ -643,7 +643,7 @@ button {
 }
 
 .exercises-sidebar-toggle.hidden {
-    transform: translateX(-23vw);
+    transform: translateX(-23dvw);
 }
 
 .exercises-sidebar-toggle.visible {

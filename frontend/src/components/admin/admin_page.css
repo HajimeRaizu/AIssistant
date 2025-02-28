@@ -3,7 +3,7 @@
 /* General Admin Container */
 .admin-container {
     display: flex;
-    height: 100vh;
+    height: 100dvh;
     width: 100%;
     font-family: "Host Grotesk", sans-serif;
     background: #4e73df;
@@ -11,7 +11,7 @@
 
 /* Sidebar */
 .admin-sidebar {
-    width: 40vh;
+    width: 20dvw;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -82,14 +82,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2vh;
+  gap: 10px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.507);
-  margin-bottom: 2vh;
+  margin-bottom: 2dvh;
 }
 
 .aissistant-logo-title img{
-    height: 8vh;
-    width: 8vh;
+    height: 8dvh;
+    width: 8dvh;
 }
 
 .aissistant-title{
@@ -125,19 +125,19 @@
 }
 
 .statistics-box.queries{
-    border-bottom: 2vh solid #4e73df;
+    border-bottom: 2dvh solid #4e73df;
 }
 
 .statistics-box.users{
-    border-bottom: 2vh solid #1cc88a;
+    border-bottom: 2dvh solid #1cc88a;
 }
 
 .statistics-box.instructors{
-    border-bottom: 2vh solid #36b9cc ;
+    border-bottom: 2dvh solid #36b9cc ;
 }
 
 .statistics-box.learning-materials{
-    border-bottom: 2vh solid #f6c23e;
+    border-bottom: 2dvh solid #f6c23e;
 }
 
 /*.statistics-box {

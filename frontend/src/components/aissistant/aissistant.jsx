@@ -18,8 +18,11 @@ const AIssistant = () => {
         </div>
         <div className="aissistant">
           <div className='aissistant-text'>
-            <h1>lorem</h1>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eum in animi commodi non autem cum numquam error fuga architecto molestias dignissimos, nihil nostrum quod eaque fugiat ad ipsam itaque. Incidunt?</p>
+            <h1>Enhance Your Programming Skills with AIssistant</h1>
+            <span>
+              Master coding with AI-powered guidance and real-time feedback.
+              Learn, practice, and improve—whether you're a beginner or an advanced developer.
+            </span>
             <button onClick={() => handleBoxClick()} className='aissistant-user-type'>login</button>
           </div>
           <div className='aissistant-logo'>

@@ -12,7 +12,7 @@ body {
 }
 .user-type-page {
     text-align: center;
-    height: 100vh;
+    height: 100dvh;
     width: 100%;
     background: 
         url("../assets/pic8.jpg");
@@ -76,7 +76,7 @@ body {
 
 .user-type-box h2 {
     font-size: 26px;
-    margin-bottom: 2vh;
+    margin-bottom: 2dvh;
 }
 
 .user-type-box p {

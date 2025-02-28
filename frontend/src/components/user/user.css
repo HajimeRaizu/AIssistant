@@ -2,8 +2,8 @@
 
 .student-container {
     display: flex;
-    height: 100vh;
-    width: 100vw;
+    height: 100dvh;
+    width: 100dvw;
     overflow: hidden;
     font-family: "Host Grotesk", sans-serif;
 }
@@ -164,8 +164,8 @@
 }
 
 .student-sidebar {
-    width: 23vw;
-    padding: 2vh 2vw 2vh 2vw;
+    width: 23dvw;
+    padding: 2dvh 2dvw 2dvh 2dvw;
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease;
@@ -190,7 +190,7 @@
 .student-sidebar-toggle {
     position: absolute;
     top: 0px;
-    left: 23vw;
+    left: 23dvw;
     padding: 10px;
     border: none;
     border-radius: 0px 5px 5px 0px;
@@ -201,7 +201,7 @@
 }
 
 .student-sidebar-toggle.hidden {
-    transform: translateX(-23vw);
+    transform: translateX(-23dvw);
 }
 
 .student-sidebar-toggle.visible {
@@ -238,7 +238,7 @@
 }
 
 .student-content.sidebar-hidden {
-    margin-left: -23vw;
+    margin-left: -23dvw;
 }
 
 .student-content.sidebar-visible {
@@ -297,7 +297,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    height: calc(100vh - 200px);
+    height: calc(100dvh - 200px);
 }
 
 .student-chat-body.dark {
@@ -792,10 +792,10 @@ textarea:focus {
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 2vh;
-    right: 2vw;
+    top: 2dvh;
+    right: 2dvw;
     padding: 11px 11px; /* Increased padding */
-    border-radius: 10vh;
+    border-radius: 10dvh;
     border: none;
     border-radius: 100%;
     cursor: pointer;
@@ -870,8 +870,8 @@ textarea:focus {
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 2vh;
-    right: 6vw; /* Adjust the position to avoid overlapping with the theme toggle button */
+    top: 2dvh;
+    right: 6dvw; /* Adjust the position to avoid overlapping with the theme toggle button */
     padding: 10px 10px;
     border: none;
     border-radius: 100%;
@@ -1059,26 +1059,26 @@ textarea:focus {
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 77vw;
+    width: 77dvw;
     text-align: center;
     font-size: 1.2em;
     transition: transform 0.3s ease;
 }
 
 .student-no-chat-selected.sidebar-hidden {
-    transform: translateX(-11.5vw);
+    transform: translateX(-11.5dvw);
 }
 
 .student-loading-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100dvh;
     font-size: 1.5rem;
 }
 
 .student-no-chat-box {
-    width: 100vh;
+    width: 100dvh;
     font-family: Arial, sans-serif;
     padding: 20px;
     border-radius: 10px;
@@ -1100,7 +1100,7 @@ textarea:focus {
 }
 
 .student-newchat-header{
-    margin-bottom: 3vh;
+    margin-bottom: 3dvh;
 }
 
 .student-newchat-header h1 {
@@ -1153,8 +1153,8 @@ textarea:focus {
     justify-content: center;
     align-items: center;
     background: var(--input-dark);
-    border-radius: 3vh;
-    padding: 2vh;
+    border-radius: 3dvh;
+    padding: 2dvh;
 }
 
 .student-newchat-message.dark {
@@ -1200,7 +1200,7 @@ textarea:focus {
     padding: 2% 2% 0% 2%;
     border: 1px solid var(--tab-dark);
     width: 100%;
-    border-radius: 3vh 3vh 0px 0px;
+    border-radius: 3dvh 3dvh 0px 0px;
     font-family: "Host Grotesk", sans-serif;
     font-size: large;
     background: var(--input-dark);
@@ -1237,7 +1237,7 @@ textarea:focus {
 
 @media (max-aspect-ratio: 1/1) {
     .student-container{
-        height: 100%;
+        height: 100dvh;
     }
 
     .student-chat-header{
@@ -1252,7 +1252,7 @@ textarea:focus {
         position: fixed; /* Position the sidebar above the content */
         top: 0;
         left: 0;
-        height: 100vh; /* Full height */
+        height: 100dvh; /* Full height */
         z-index: 1000; /* Ensure it's above other content */
     }
 

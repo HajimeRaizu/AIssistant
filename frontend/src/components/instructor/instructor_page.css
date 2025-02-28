@@ -3,7 +3,7 @@
 /* General Instructor Container */
 .instructor-container {
     display: flex;
-    height: 100vh;
+    height: 100dvh;
     width: 100%;
     font-family: "Host Grotesk", sans-serif;
     background: rgb(136, 186, 202);
@@ -11,7 +11,7 @@
 
 /* Sidebar */
 .instructor-sidebar {
-    width: 40vh;
+    width: 20dvw;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -82,14 +82,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2vh;
+  gap: 10px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.507);
-  margin-bottom: 2vh;
+  margin-bottom: 2dvh;
 }
 
 .instructor-aissistant-logo-title img {
-    height: 8vh;
-    width: 8vh;
+    height: 8dvh;
+    width: 8dvh;
 }
 
 .instructor-aissistant-title {
