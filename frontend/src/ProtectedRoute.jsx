@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (!isAuthenticated) {
     // Redirect to the login page if the user is not authenticated
-    return <Navigate to="/instructor-login" />;
+    return <Navigate to="/googleLogin" />;
   }
 
   return children;

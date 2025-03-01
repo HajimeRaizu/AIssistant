@@ -504,19 +504,19 @@ button {
 }
 
 .exercises-chat-button {
-    justify-self: last baseline;
     align-self: center;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     top: 2dvh;
-    right: 14dvw; /* Adjust the position to avoid overlapping with the theme toggle button */
-    padding: 10px 10px;
+    right: 2dvw;
+    padding: 12px; /* Increased padding */
+    border-radius: 10dvh;
     border: none;
-    border-radius: 100%;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    font-size: larger;
+    font-size: large;
 }
 
 .exercises-chat-button.dark {
@@ -636,4 +636,10 @@ button {
 
 .exercises-sidebar-toggle:hover.light {
     background: var(--button-hover-light);
+}
+
+.userPicture{
+    width: 42px;
+    height: 42px;
+    border-radius: 20px;
 }

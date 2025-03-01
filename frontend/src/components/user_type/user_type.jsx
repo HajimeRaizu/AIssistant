@@ -22,14 +22,14 @@ const UserType = () => {
         <section className="user-type-action-boxes">
           <div
             className="user-type-box-admin"
-            onClick={() => handleBoxClick('/admin')} // Redirect to AI Chat page
+            onClick={() => handleBoxClick('/googleLogin')} // Redirect to AI Chat page
           >
             <h2>Admin</h2>
             <p>Login as an admin and manage the users of AIssistant</p>
           </div>
           <div
             className="user-type-box-instructor"
-            onClick={() => handleBoxClick('/instructor')} // Redirect to Exercises page
+            onClick={() => handleBoxClick('/googleLogin')} // Redirect to Exercises page
           >
             <h2>Instructor</h2>
             <p>Login as an instructor and upload learning materials for students to use</p>
@@ -37,7 +37,7 @@ const UserType = () => {
 
           <div
             className="user-type-box-student"
-            onClick={() => handleBoxClick('/student-landing')} // Redirect to Exercises page
+            onClick={() => handleBoxClick('/googleLogin')} // Redirect to Exercises page
           >
             <h2>Student</h2>
             <p>Login as a student and interact with the AIssistant chat or view learning materials</p>

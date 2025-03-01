@@ -6,7 +6,7 @@
     height: 100dvh;
     width: 100%;
     font-family: "Host Grotesk", sans-serif;
-    background: rgb(136, 186, 202);
+    background: #4e73df;
 }
 
 /* Sidebar */
@@ -15,7 +15,7 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    background: rgb(136, 186, 202);
+    background: #4e73df;
 }
 
 .instructor-tab {
@@ -31,7 +31,7 @@
     cursor: pointer;
     border-radius: 5px;
     background: rgb(241, 241, 241);
-    color: rgb(81, 110, 119);
+    color: #4e73df;
     font-size: medium;
 }
 
@@ -47,7 +47,7 @@
     text-align: left;
     cursor: pointer;
     border-radius: 5px;
-    color: rgb(81, 110, 119);
+    color: #4e73df;
     font-size: medium;
 }
 
@@ -100,7 +100,7 @@
 }
 
 .instructor-aissistant-logo-title .instructor-aissistant-title h1.instructor-ai {
-    color: rgb(66, 66, 233);
+    color: white;
 }
 
 .instructor-aissistant-logo-title .instructor-aissistant-title h1 {
@@ -120,17 +120,16 @@
     padding: 20px;
     border-radius: 10px;
     width: 100%;
-    background: rgb(136, 185, 202);
     box-shadow: 0px 0px 5px 1px gray;
     color: black;
 }
 
-.instructor-statistics-box-2 {
-  padding: 20px;
-  border-radius: 10px;
-  width: 100%;
-  box-shadow: 0px 0px 5px 1px gray;
-  color: black;
+.instructor-statistics-box.queries{
+    border-bottom: 2dvh solid #4e73df;
+}
+
+.instructor-statistics-box.learning-materials{
+    border-bottom: 2dvh solid #f6c23e;
 }
 
 .instructor-statistics-box-icon {
@@ -206,7 +205,8 @@
 }
 
 .instructor-faq-box {
-  height: 300px;
+  height: 250px;
+  font-size: larger;
 }
 
 .instructor-generate-faq-button {
@@ -733,4 +733,10 @@
 
 .instructor-content-textarea::placeholder, .instructor-exercise-textarea::placeholder {
     color: var(--input-placeholder-light);
+}
+
+@media (max-aspect-ratio: 1/1){
+    .instructor-container *{
+        visibility: hidden;
+    }
 }

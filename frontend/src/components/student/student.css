@@ -350,8 +350,8 @@
     flex-direction: column;
 }
 
-.student-message.bot *{
-    width: 100%;
+.student-message.user p{
+    direction: ltr;
 }
 
 .student-message.user {
@@ -364,21 +364,20 @@
 }
 
 .student-message-text {
+    width: fit-content;
     white-space: pre-wrap;
 }
 
 .student-message.user.dark {
     background-color: var(--message-user-dark);
     color: var(--text-dark);
-    align-self: flex-end;
-    align-items: flex-end;
+    align-self: flex-start;
 }
 
 .student-message.user.light {
     background-color: var(--message-user-light);
     color: var(--text-light);
-    align-self: flex-end;
-    align-items: flex-end;
+    align-self: flex-start;
 }
 
 .student-message.bot.dark {
@@ -418,7 +417,9 @@
 .student-bot-response {
     padding: 8px 12px;
     border-radius: 8px;
+    width: 100%;
     align-self: flex-start;
+    overflow: hidden;
 }
 
 .student-bot-response.dark {
@@ -460,7 +461,7 @@
     font-size: 18px;
     overflow-y: auto;
     border: none;
-    height: auto;
+    min-height: fit-content;
     max-height: 168px;
     white-space: pre-wrap;
 }
@@ -1233,4 +1234,42 @@ textarea:focus {
 
 .student-newchat-message textarea:focus {
     outline: none;
+}
+
+.student-profile{
+    display: none;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    border: 1px solid grey;
+    padding: 5px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.student-profile img{
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+}
+
+.student-message-pfp.user{
+    display: flex;
+    flex-direction: row;
+    direction: rtl;
+}
+
+.student-message-pfp.bot{
+    display: flex;
+    flex-direction: row;
+    direction: ltr;
+}
+
+.sender-image{
+    margin-top: 8px;
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
 }

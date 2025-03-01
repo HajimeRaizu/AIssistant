@@ -22,14 +22,20 @@ const ExercisesPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Add this line
   const navigate = useNavigate();
 
+  const isAuthenticated = localStorage.getItem("isAuthenticated");
+  const userId = localStorage.getItem("userId");
+  const userName = localStorage.getItem("userName");
+  const userRole = localStorage.getItem("userRole");
+  const userEmail = localStorage.getItem("userEmail");
+  const userPicture = localStorage.getItem("profileImage");
+  
   useEffect(() => {
-    const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
-    if (!userId) {
-      navigate("/");
+    if (!userId || userRole !== 'student') {
+      navigate("/user-type");
     } else {
       setStudentId(userId);
     }
-  }, [navigate]);
+  }, [userId, navigate]);
 
   useEffect(() => {
     if (studentId) {
@@ -245,10 +251,11 @@ const ExercisesPage = () => {
             {hasSubjectCode && selectedSubject && <h1 className={theme}>{selectedSubject}</h1>}
           </div>
           <div className="exercises-header-buttons">
+            <img src={userPicture} className='userPicture' alt="" />
             <button className={`theme-toggle ${theme}`} onClick={toggleTheme}>
               {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
             </button>
-            <button className={`exercises-chat-button ${theme}`} onClick={() => navigate('/user')}>
+            <button className={`exercises-chat-button ${theme}`} onClick={() => navigate('/student')}>
               <IoIosChatboxes/>
             </button>
           </div>

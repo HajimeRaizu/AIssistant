@@ -39,11 +39,29 @@ const InstructorPage = () => {
   const [editingExercise, setEditingExercise] = useState(null);
   const [showSubjectConfirmModal, setShowSubjectConfirmModal] = useState(false);
   const [subjectToDelete, setSubjectToDelete] = useState(null);
-  const [totalLearningMaterials, setTotalLearningMaterials] = useState(0); // New state for learning materials count
+  const [totalLearningMaterials, setTotalLearningMaterials] = useState(0);
+  const [isGeneratingFAQ, setIsGeneratingFAQ] = useState(false);
   const navigate = useNavigate();
+  const isAuthenticated = localStorage.getItem("isAuthenticated");
+  const userId = localStorage.getItem("userId");
+  const userName = localStorage.getItem("userName");
+  const userRole = localStorage.getItem("userRole");
+  const userEmail = localStorage.getItem("userEmail");
+  const userPicture = localStorage.getItem("profileImage");
 
   useEffect(() => {
-    console.log(localStorage.getItem("instructorEmail"));
+    if (!userId || userRole !== 'admin') {
+      if (userRole === 'student') {
+        navigate("/student");
+      } else if (userRole === 'instructor'){
+        navigate("instructor");
+      } else{
+        navigate("/user-type");
+      }
+    }
+  }, [userId, navigate]);
+  
+  useEffect(() => {
     const fetchTotalQueries = async () => {
       try {
         const response = await axios.get(`${base_url}/api/getChats`);
@@ -83,23 +101,64 @@ const InstructorPage = () => {
   }, []);
 
   const handleGenerateFAQ = async () => {
+    if (isGeneratingFAQ) return; // Prevent multiple simultaneous requests
+    setIsGeneratingFAQ(true);
+    setFaq(""); // Clear the FAQ content before starting
+  
     try {
-      const prompts = queryData.map(query => query.text);
-      const response = await axios.post(`${base_url}/api/generateFAQ`, { prompts });
-      setFaq(response.data.generated_text);
+      const prompts = queryData.map((query) => query.text);
+  
+      // Use fetch for streaming
+      const response = await fetch(`${base_url}/api/generateFAQ`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompts }),
+      });
+
+      console.log("Response Object:", response);
+  
+      if (!response.ok) {
+        throw new Error("Failed to generate FAQ");
+      }
+  
+      // Read the streaming response
+      const reader = response.body.getReader();
+      let faqContent = "";
+  
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+  
+        // Decode the chunk and append it to the FAQ content
+        const chunk = new TextDecoder().decode(value);
+        faqContent += chunk;
+  
+        // Update the FAQ state with the new content
+        // Use a functional update to ensure the state is updated correctly
+        setFaq((prevFaq) => prevFaq + chunk);
+      }
     } catch (error) {
       console.error("Failed to generate FAQ:", error);
+      setFaq("Failed to generate FAQ. Please try again.");
+    } finally {
+      setIsGeneratingFAQ(false); // Reset the generating state
     }
   };
 
   const handleLogout = () => {
-    // Clear authentication status from localStorage
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
     localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("instructorEmail"); // Remove the instructor's email
-    localStorage.removeItem("instructorName");
-
-    // Redirect to the login page
-    navigate("/instructor-login");
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("userName");
+    sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem("userRole");
+    sessionStorage.removeItem("isAuthenticated");
+    navigate("/"); // Redirect to the login page
   };
 
   const getGraphData = () => {
@@ -538,7 +597,7 @@ const InstructorPage = () => {
                 <h3><MdOutlineQuestionAnswer className='instructor-statistics-box-icon' />Total Queries</h3>
                 <p>{totalQueries}</p>
               </div>
-              <div className="instructor-statistics-box-2 learning-materials">
+              <div className="instructor-statistics-box learning-materials">
                 <h3><LuBookMarked className='instructor-statistics-box-icon' />Learning Materials</h3>
                 <p>{totalLearningMaterials}</p>
               </div>
@@ -594,10 +653,11 @@ const InstructorPage = () => {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>Frequently Asked Questions</h2>
                 <button 
-                  className="instructor-generate-faq-button"
+                  className="generate-faq-button"
                   onClick={handleGenerateFAQ}
+                  disabled={isGeneratingFAQ}
                 >
-                  Generate FAQ
+                  {isGeneratingFAQ ? "Generating..." : "Generate FAQ"}
                 </button>
               </div>
               <pre className="instructor-faq-box">{faq}</pre>

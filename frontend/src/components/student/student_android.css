@@ -63,7 +63,11 @@
     }
 
     .student-message.bot {
-        max-width: 100%;
+        max-width: 90%;
+    }
+
+    .student-message.user {
+        overflow: hidden;
     }
 
     .student-overlay.hidden {
@@ -79,5 +83,15 @@
     .student-modal-content{
         padding: 10px;
         margin: 15px;
+    }
+    .sender-image{
+        margin-top: 8px;
+        height: 20px;
+        width: 20px;
+        border-radius: 20px;
+    }
+
+    .student-profile{
+        display: flex;
     }
 }

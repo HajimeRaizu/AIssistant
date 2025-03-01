@@ -89,12 +89,10 @@ const handleFirestoreError = (res, error) => {
 // Store chat messages
 app.post("/api/storeChat", async (req, res) => {
   let { chatId, messages, chatName, userId } = req.body;
-  console.log("Received storeChat request:", req.body); // Log the request body
 
   // Validate chatId and generate a new one if it's null or empty
   if (!chatId) {
     chatId = Date.now().toString(); // Generate a new chatId using timestamp
-    console.log("Generated new chatId:", chatId);
   }
 
   try {
@@ -276,7 +274,6 @@ app.post("/api/llama", async (req, res) => {
   }
 });
 
-
 // Generate FAQ
 app.post("/api/generateFAQ", async (req, res) => {
   const { prompts } = req.body;
@@ -298,9 +295,10 @@ app.post("/api/generateFAQ", async (req, res) => {
       ${prompts.map((prompt, index) => `${index + 1}. ${prompt}`).join("\n")}
     `;
 
-    console.log("Input Prompt:", inputPrompt);
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Transfer-Encoding", "chunked");
 
-    const completion = await deepseek.chat.completions.create({
+    const response = await deepseek.chat.completions.create({
       model: "deepseek-chat",
       messages: [
         {
@@ -308,22 +306,17 @@ app.post("/api/generateFAQ", async (req, res) => {
           content: inputPrompt,
         },
       ],
-      max_tokens: 250,
+      max_tokens: 8192,
+      stream: true
     });
 
-    let modelResponse = completion.choices[0]?.message?.content || "No response received.";
+    const stream = response.data;
+    for await (const chunk of response) {
+      const botResponse = chunk.choices[0]?.delta?.content || "";
+      res.write(botResponse);
+    }
 
-    console.log("Model Response:", modelResponse);
-
-    const groupedFaq = modelResponse
-      .split("\n")
-      .filter((line) => line.trim() !== "")
-      .map((line) => line.trim())
-      .slice(0, 10)
-      .map((line, index) => `${line.replace(/^\d+\.\s*/, "")}`)
-      .join("\n");
-
-    res.json({ generated_text: `FAQ:\n${groupedFaq}` });
+    res.end();
   } catch (error) {
     console.error("Error:", error.response ? error.response.data : error.message);
     res.status(500).json({ error: "Failed to generate FAQ" });
@@ -843,6 +836,45 @@ app.get("/api/getAccessLearningMaterials", async (req, res) => {
   } catch (error) {
     console.error("Error fetching access learning materials:", error);
     res.status(500).json({ error: "Failed to fetch access learning materials" });
+  }
+});
+
+// Add this endpoint to handle Google login and user role checking
+app.post("/api/googleLogin", async (req, res) => {
+  const { email, name, profileImage } = req.body;
+
+  try {
+    // Check if the email ends with @nemsu.edu.ph
+    if (!email.endsWith("@nemsu.edu.ph")) {
+      return res.status(403).json({ error: "Only @nemsu.edu.ph emails are allowed to login." });
+    }
+
+    // Check if the user exists in the database
+    const usersSnapshot = await db.collection("students").where("email", "==", email).get();
+
+    let userData;
+    if (usersSnapshot.empty) {
+      // If the user does not exist, create a new user with the default role as "student"
+      const newUserRef = db.collection("students").doc();
+      userData = {
+        id: newUserRef.id,
+        email,
+        name,
+        profileImage,
+        role: "student", // Default role
+        createdAt: new Date().toISOString(),
+      };
+      await newUserRef.set(userData);
+    } else {
+      // If the user exists, retrieve their data
+      userData = usersSnapshot.docs[0].data();
+    }
+
+    // Return the user data including their role
+    res.status(200).json(userData);
+  } catch (error) {
+    console.error("Error during Google login:", error);
+    res.status(500).json({ error: "Failed to process Google login" });
   }
 });
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import './landing_page.css';
+import './student_landing.css';
 import logo from '../assets/AIssistant.png';
 import { useNavigate } from 'react-router-dom';
 
-const LandingPage = () => {
+const StudentLanding = () => {
   const navigate = useNavigate();
 
   // Function to handle box clicks
@@ -11,7 +11,7 @@ const LandingPage = () => {
     // Store the selected path in sessionStorage
     sessionStorage.setItem('redirectPath', path);
     // Redirect to the login page
-    navigate('/login');
+    navigate(path);
   };
 
   return (
@@ -31,7 +31,7 @@ const LandingPage = () => {
       <section className="action-boxes">
         <div
           className="box"
-          onClick={() => handleBoxClick('/user')} // Redirect to AI Chat page
+          onClick={() => handleBoxClick('/student')} // Redirect to AI Chat page
         >
           <h2>AIssistant Chat</h2>
           <p>Engage in conversations with AIssistant.</p>
@@ -48,4 +48,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default StudentLanding;

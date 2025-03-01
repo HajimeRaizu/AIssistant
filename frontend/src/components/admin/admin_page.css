@@ -237,7 +237,7 @@
 }
 
 .faq-box{
-  height: 300px;
+  height: 250px;
   font-size: larger;
 }
 
@@ -661,7 +661,7 @@ input {
 }
 
 @media (max-aspect-ratio: 1/1){
-    .adming-container *{
+    .admin-container *{
         visibility: hidden;
     }
 }

@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./user.css";
-import "./user_android.css"
+import "./student.css";
+import "./student_android.css"
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LuBookMarked } from "react-icons/lu";
 import { MdOutlineDelete, MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
+import logo from '../assets/AIssistant.png';
 
-const UserPage = () => {
-  const base_url = `https://aissistant-backend.vercel.app`;
-  //const base_url = `http://localhost:5000`;
+const StudentPage = () => {
+  //const base_url = `https://aissistant-backend.vercel.app`;
+  const base_url = `http://localhost:5000`;
   const [selectedTab, setSelectedTab] = useState("chat");
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [messages, setMessages] = useState([]);
@@ -28,11 +29,16 @@ const UserPage = () => {
   const textareaRef = useRef(null);
   const chatBodyRef = useRef(null);
 
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+  const isAuthenticated = localStorage.getItem("isAuthenticated");
+  const userId = localStorage.getItem("userId");
+  const userName = localStorage.getItem("userName");
+  const userRole = localStorage.getItem("userRole");
+  const userEmail = localStorage.getItem("userEmail");
+  const userPicture = localStorage.getItem("profileImage");
 
   useEffect(() => {
-    if (!userId) {
-      navigate("/");
+    if (!userId || userRole !== 'student') {
+      navigate("/user-type");
     }
   }, [userId, navigate]);
 
@@ -41,7 +47,7 @@ const UserPage = () => {
       try {
         const response = await axios.get(`${base_url}/api/getChats/${userId}`);
         setChats(response.data);
-
+  
         const storedChatId = localStorage.getItem("currentChatId");
         if (storedChatId && response.data.some(chat => chat.id === storedChatId)) {
           setCurrentChatId(storedChatId);
@@ -50,7 +56,7 @@ const UserPage = () => {
           setCurrentChatId(response.data[0].id);
           await fetchChatHistory(response.data[0].id);
         } else {
-          setCurrentChatId(null);
+          handleNewChatClick();
         }
       } catch (error) {
         console.error("Failed to fetch chats:", error);
@@ -58,7 +64,7 @@ const UserPage = () => {
         setIsLoading(false);
       }
     };
-
+  
     if (userId) {
       fetchChats();
     }
@@ -81,6 +87,10 @@ const UserPage = () => {
 
   const handleSend = async () => {
     if (input.trim() === "") return;
+    const textarea = document.querySelector(".student-chat-input textarea");
+    if (textarea) {
+      textarea.style.height = "auto"; // Reset height to initial
+    }
 
     if (isCreatingNewChat) {
       await createNewChat();
@@ -164,9 +174,15 @@ const UserPage = () => {
   const handleLogout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("isAuthenticated");
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userName");
-    navigate("/");
+    sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem("userRole");
+    sessionStorage.removeItem("isAuthenticated");
+    navigate("/"); // Redirect to the login page
   };
 
   const formatMessageText = (text, sender) => {
@@ -345,6 +361,10 @@ const UserPage = () => {
           <LuBookMarked/>
         </button>
       <div className={`student-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
+        <div className="student-profile">
+          <img src={`${userPicture}`} alt={`${userName}.jpg`} />
+          <p>{userName}</p>
+        </div>
         <button 
           className="student-new-chat" 
           onClick={handleNewChatClick} 
@@ -399,17 +419,20 @@ const UserPage = () => {
             </div>
             <div className={`student-chat-body ${theme}`} ref={chatBodyRef}>
               {messages.map((message, index) => (
-                <div className={`student-message ${message.sender}`} key={index}>
-                  <div className={`student-message ${message.sender} ${theme}`}>
-                    {message.sender === "user" ? (
-                      <p>{formatMessageText(message.text, message.sender)}</p>
-                    ) : (
-                      <div className="student-bot-response">
-                        {formatMessageText(message.text, message.sender)}
-                      </div>
-                    )}
+                <div className={`student-message-pfp ${message.sender}`}>
+                  <img className="sender-image" src={`${message.sender === 'user' ? userPicture : logo}`} alt="sender.jpg" />
+                  <div className={`student-message ${message.sender}`} key={index}>
+                    <div className={`student-message ${message.sender} ${theme}`}>
+                      {message.sender === "user" ? (
+                        <p>{formatMessageText(message.text, message.sender)}</p>
+                      ) : (
+                        <div className="student-bot-response">
+                          {formatMessageText(message.text, message.sender)}
+                        </div>
+                      )}
+                    </div>
+                    <span className={`student-timestamp ${message.sender}`}>{message.timestamp}</span>
                   </div>
-                  <span className={`student-timestamp ${message.sender}`}>{message.timestamp}</span>
                 </div>
               ))}
               {isTyping && (
@@ -483,4 +506,4 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default StudentPage;

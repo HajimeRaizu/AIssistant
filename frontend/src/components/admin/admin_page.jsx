@@ -57,7 +57,26 @@ const AdminPage = () => {
   const [instructorEmailToDelete, setInstructorEmailToDelete] = useState(null);
   const [isAddingUser, setIsAddingUser] = useState(false);
   const [isAddingInstructor, setIsAddingInstructor] = useState(false);
+  const [isGeneratingFAQ, setIsGeneratingFAQ] = useState(false);
   const navigate = useNavigate();
+  const isAuthenticated = localStorage.getItem("isAuthenticated");
+  const userId = localStorage.getItem("userId");
+  const userName = localStorage.getItem("userName");
+  const userRole = localStorage.getItem("userRole");
+  const userEmail = localStorage.getItem("userEmail");
+  const userPicture = localStorage.getItem("profileImage");
+  
+  useEffect(() => {
+    if (!userId || userRole !== 'admin') {
+      if (userRole === 'student') {
+        navigate("/student");
+      } else if (userRole === 'instructor'){
+        navigate("instructor");
+      } else{
+        navigate("/user-type");
+      }
+    }
+  }, [userId, navigate]);
 
   useEffect(() => {
     const fetchTotalQueries = async () => {
@@ -137,17 +156,64 @@ const AdminPage = () => {
   }, []);
 
   const handleGenerateFAQ = async () => {
+    if (isGeneratingFAQ) return; // Prevent multiple simultaneous requests
+    setIsGeneratingFAQ(true);
+    setFaq(""); // Clear the FAQ content before starting
+  
     try {
-      const prompts = queryData.map(query => query.text);
-      const response = await axios.post(`${base_url}/api/generateFAQ`, { prompts });
-      setFaq(response.data.generated_text);
+      const prompts = queryData.map((query) => query.text);
+  
+      // Use fetch for streaming
+      const response = await fetch(`${base_url}/api/generateFAQ`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompts }),
+      });
+
+      console.log("Response Object:", response);
+  
+      if (!response.ok) {
+        throw new Error("Failed to generate FAQ");
+      }
+  
+      // Read the streaming response
+      const reader = response.body.getReader();
+      let faqContent = "";
+  
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+  
+        // Decode the chunk and append it to the FAQ content
+        const chunk = new TextDecoder().decode(value);
+        faqContent += chunk;
+  
+        // Update the FAQ state with the new content
+        // Use a functional update to ensure the state is updated correctly
+        setFaq((prevFaq) => prevFaq + chunk);
+      }
     } catch (error) {
       console.error("Failed to generate FAQ:", error);
+      setFaq("Failed to generate FAQ. Please try again.");
+    } finally {
+      setIsGeneratingFAQ(false); // Reset the generating state
     }
   };
 
   const handleLogout = () => {
-    navigate('/');
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("isAuthenticated");
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("userName");
+    sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem("userRole");
+    sessionStorage.removeItem("isAuthenticated");
+    navigate("/"); // Redirect to the login page
   };
 
   const getGraphData = () => {
@@ -397,7 +463,7 @@ const AdminPage = () => {
     { name: 'Instructors', value: totalInstructors },
   ];
 
-  const COLORS = ['#FFD700', '#e66db3'];
+  const COLORS = ['#F8E9A1', '#6DE88B'];
 
   const userColumns = [
     {
@@ -447,6 +513,31 @@ const AdminPage = () => {
       ),
     },
   ];
+
+  const customStyles = {
+    rows: {
+      style: {
+        minHeight: "50px", // Row height
+        backgroundColor: "#f8f9fa", // Light gray background
+        borderBottom: "1px solid #ddd", // Add border between rows
+      },
+    },
+    headCells: {
+      style: {
+        backgroundColor: "#4e73df", // Blue header background
+        color: "#fff", // White text
+        fontWeight: "bold",
+        border: "1px solid #ddd", // Add border around header cells
+      },
+    },
+    cells: {
+      style: {
+        padding: "10px",
+        fontSize: "14px",
+        border: "1px solid #ddd", // Add border around all cells
+      },
+    },
+  };
 
   return (
     <div className="admin-container">
@@ -581,8 +672,9 @@ const AdminPage = () => {
                 <button 
                   className="generate-faq-button"
                   onClick={handleGenerateFAQ}
+                  disabled={isGeneratingFAQ}
                 >
-                  Generate FAQ
+                  {isGeneratingFAQ ? "Generating..." : "Generate FAQ"}
                 </button>
               </div>
               <pre className="faq-box">{faq}</pre>
@@ -605,6 +697,7 @@ const AdminPage = () => {
               pagination
               highlightOnHover
               responsive
+              customStyles={customStyles}
             />
           </div>
         ) : activeTab === 'instructors' ? (
@@ -625,6 +718,7 @@ const AdminPage = () => {
               pagination
               highlightOnHover
               responsive
+              customStyles={customStyles}
             />
           </div>
         ) : (
