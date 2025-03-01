@@ -478,7 +478,7 @@ const InstructorPage = () => {
               }
             />
           ) : (
-            <pre>{subtopic.content}</pre>
+            <span>{subtopic.content}</span>
           )}
 
           {/* Images Section */}
@@ -495,7 +495,7 @@ const InstructorPage = () => {
               }
             />
           ) : (
-            <pre>{subtopic.questions}</pre>
+            <span>{subtopic.questions}</span>
           )}
 
           {/* Answers Section */}
@@ -509,10 +509,10 @@ const InstructorPage = () => {
               }
             />
           ) : (
-            <pre>{subtopic.answers}</pre>
+            <span>{subtopic.answers}</span>
           )}
 
-          {/* Edit/Save/Cancel Buttons */}
+          <div className='instructor-content-buttons'>
           {editingExercise ? (
             <div className="instructor-e-buttons">
               <button
@@ -542,11 +542,10 @@ const InstructorPage = () => {
               Edit
             </button>
           )}
-
-          {/* Back Buttons */}
-          <button onClick={handleBackToSubtopics}>Back to Subtopics</button>
-          <button onClick={handleBackToLessons}>Back to Lessons</button>
-          <button onClick={handleBackToSubjects}>Back to Subjects</button>
+            <button onClick={handleBackToSubtopics}>Back to Subtopics</button>
+            <button onClick={handleBackToLessons}>Back to Lessons</button>
+            <button onClick={handleBackToSubjects}>Back to Subjects</button>
+          </div>
         </div>
       );
     }

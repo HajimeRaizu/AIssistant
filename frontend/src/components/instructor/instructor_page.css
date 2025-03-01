@@ -676,10 +676,18 @@
     margin-bottom: 15px;
 }
 
+.instructor-exercise-content span {
+    white-space: pre-wrap;
+}
+
 .instructor-exercise-content p {
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 15px;
+}
+
+.instructor-content-buttons{
+    padding: 10px;
 }
 
 .instructor-exercise-content img {
@@ -692,11 +700,6 @@
 .instructor-exercise-content h3 {
     font-size: 20px;
     margin-bottom: 10px;
-}
-
-.instructor-exercise-content pre {
-    background: var(--code-light);
-    color: var(--code-text-light);
 }
 
 .instructor-exercise-content button, .instructor-back-to-subjects-button {
