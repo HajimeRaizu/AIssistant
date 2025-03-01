@@ -6,8 +6,8 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 const LoginGoogle = () => {
-  //const base_url = `https://aissistant-backend.vercel.app`;
-  const base_url = `http://localhost:5000`;
+  const base_url = `https://aissistant-backend.vercel.app`;
+  //const base_url = `http://localhost:5000`;
   const navigate = useNavigate();
   const isAuthenticated = localStorage.getItem("isAuthenticated") || null;
   const userId = localStorage.getItem("userId") || null;
@@ -32,7 +32,7 @@ const LoginGoogle = () => {
     try {
       // Check if the email ends with @nemsu.edu.ph
       if (!decodedToken.email.endsWith("@nemsu.edu.ph")) {
-        alert("Only @nemsu.edu.ph emails are allowed to login.");
+        alert("Invalid email.");
         return;
       }
   
