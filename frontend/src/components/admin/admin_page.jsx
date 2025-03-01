@@ -97,30 +97,25 @@ const AdminPage = () => {
       }
     };
 
+    // Update the fetchtotalStudents function to filter users by role
     const fetchtotalStudents = async () => {
       try {
         const response = await axios.get(`${base_url}/api/getUsers`);
-        setTotalStudents(response.data.length);
-        setUsers(response.data);
+        const students = response.data.filter(user => user.role === 'student'); // Filter users with role 'student'
+        setTotalStudents(students.length); // Set the total number of students
+        setUsers(response.data); // Set the full list of users
       } catch (error) {
         console.error("Failed to fetch total users:", error);
       }
     };
-    
-    const fetchUniversityInfo = async () => {
-      try {
-        const response = await axios.get(`${base_url}/api/getUniversityInfo`);
-        setUniversityInfo(response.data.info);
-      } catch (error) {
-        console.error("Failed to fetch university info:", error);
-      }
-    };
 
+    // Update the fetchInstructors function to filter users by role
     const fetchInstructors = async () => {
       try {
-        const response = await axios.get(`${base_url}/api/getInstructors`);
-        setInstructors(response.data);
-        setTotalInstructors(response.data.length);
+        const response = await axios.get(`${base_url}/api/getUsers`);
+        const instructors = response.data.filter(user => user.role === 'instructor'); // Filter users with role 'instructor'
+        setTotalInstructors(instructors.length); // Set the total number of instructors
+        setInstructors(instructors); // Set the list of instructors
       } catch (error) {
         console.error("Failed to fetch instructors:", error);
       }
@@ -150,7 +145,6 @@ const AdminPage = () => {
 
     fetchTotalQueries();
     fetchtotalStudents();
-    fetchUniversityInfo();
     fetchInstructors();
     fetchTotalLearningMaterials();
   }, []);

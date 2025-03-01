@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./loginGoogle.css";
+import "./loginGoogle_android.css";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
@@ -76,7 +77,8 @@ const LoginGoogle = () => {
     <GoogleOAuthProvider clientId="966546103505-am2u7fu5r31t4g0bq3n1ecp4chg7ji8j.apps.googleusercontent.com">
       <div className="centered">
         <div className="welcome">
-          <h1>Welcome to AIssistant</h1>
+          <h1>Welcome to</h1>
+          <div className='landing-aissistant'><h1 className='ai'>AI</h1><h1 className='landing-welcome'>ssistant</h1></div>
         </div>
 
         <h4 className="companion">Login with NEMSU email</h4>

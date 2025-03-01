@@ -1,0 +1,10 @@
+@media (max-aspect-ratio: 1/1) {
+    .welcome{
+        font-size: smaller;
+    }
+
+    .centered .companion{
+        font-size: small;
+        font-weight: 400;
+    }
+}
