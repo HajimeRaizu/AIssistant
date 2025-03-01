@@ -908,6 +908,24 @@ app.get("/api/getStudents", async (req, res) => {
   }
 });
 
+app.get("/api/getUserRole", async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const userSnapshot = await db.collection("users").where("email", "==", email).get();
+    if (userSnapshot.empty) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const userDoc = userSnapshot.docs[0];
+    const role = userDoc.data().role || "student"; // Default to "student" if role is not set
+    res.status(200).json({ role });
+  } catch (error) {
+    console.error("Error fetching user role:", error);
+    res.status(500).json({ error: "Failed to fetch user role" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

@@ -6,7 +6,6 @@ import { MdOutlineDashboard, MdOutlineQuestionAnswer } from "react-icons/md";
 import { LuBookMarked } from "react-icons/lu";
 import { BiLogOut } from "react-icons/bi";
 import logo from '../assets/AIssistant.png';
-import DataTable from 'react-data-table-component';
 import {
   LineChart,
   Label,
@@ -41,25 +40,48 @@ const InstructorPage = () => {
   const [subjectToDelete, setSubjectToDelete] = useState(null);
   const [totalLearningMaterials, setTotalLearningMaterials] = useState(0);
   const [isGeneratingFAQ, setIsGeneratingFAQ] = useState(false);
+  const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
   const navigate = useNavigate();
   const isAuthenticated = localStorage.getItem("isAuthenticated");
   const userId = localStorage.getItem("userId");
   const userName = localStorage.getItem("userName");
-  const userRole = localStorage.getItem("userRole");
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
 
   useEffect(() => {
-    if (!userId || userRole !== 'admin') {
-      if (userRole === 'student') {
-        navigate("/student");
-      } else if (userRole === 'instructor'){
-        navigate("instructor");
-      } else{
+    const fetchUserRole = async () => {
+      if (userEmail) {
+        try {
+          const response = await axios.get(`${base_url}/api/getUserRole`, {
+            params: { email: userEmail }
+          });
+          const role = response.data.role;
+  
+          // Update both state and localStorage
+          setUserRole(role);
+          localStorage.setItem("userRole", role);
+  
+          // Navigate based on the fetched role
+          if (role === "student") {
+            navigate("/student");
+          } else if (role === "admin") {
+            navigate("/admin");
+          } else if (role === "instructor") {
+            return;
+          } else {
+            navigate("/user-type");
+          }
+        } catch (error) {
+          console.error("Failed to fetch user role:", error);
+          navigate("/user-type");
+        }
+      } else {
         navigate("/user-type");
       }
-    }
-  }, [userId, navigate]);
+    };
+  
+    fetchUserRole();
+  }, [userId, userEmail, navigate]);
   
   useEffect(() => {
     const fetchTotalQueries = async () => {

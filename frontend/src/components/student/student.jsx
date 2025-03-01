@@ -25,6 +25,7 @@ const StudentPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreatingNewChat, setIsCreatingNewChat] = useState(false);
+  const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
   const navigate = useNavigate();
   const textareaRef = useRef(null);
   const chatBodyRef = useRef(null);
@@ -32,15 +33,43 @@ const StudentPage = () => {
   const isAuthenticated = localStorage.getItem("isAuthenticated");
   const userId = localStorage.getItem("userId");
   const userName = localStorage.getItem("userName");
-  const userRole = localStorage.getItem("userRole");
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
 
   useEffect(() => {
-    if (!userId || userRole !== 'student') {
-      navigate("/user-type");
-    }
-  }, [userId, navigate]);
+    const fetchUserRole = async () => {
+      if (userEmail) {
+        try {
+          const response = await axios.get(`${base_url}/api/getUserRole`, {
+            params: { email: userEmail }
+          });
+          const role = response.data.role;
+  
+          // Update both state and localStorage
+          setUserRole(role);
+          localStorage.setItem("userRole", role);
+  
+          // Navigate based on the fetched role
+          if (role === "student") {
+            return
+          } else if (role === "admin") {
+            navigate("/admin");
+          } else if (role === "instructor") {
+            navigate("/instructor");
+          } else {
+            navigate("/user-type");
+          }
+        } catch (error) {
+          console.error("Failed to fetch user role:", error);
+          navigate("/user-type");
+        }
+      } else {
+        navigate("/user-type");
+      }
+    };
+  
+    fetchUserRole();
+  }, [userId, userEmail, navigate]);
 
   useEffect(() => {
     const fetchChats = async () => {

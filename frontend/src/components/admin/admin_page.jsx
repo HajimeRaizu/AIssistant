@@ -58,26 +58,49 @@ const AdminPage = () => {
   const [isAddingUser, setIsAddingUser] = useState(false);
   const [isAddingInstructor, setIsAddingInstructor] = useState(false);
   const [isGeneratingFAQ, setIsGeneratingFAQ] = useState(false);
+  const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
   const navigate = useNavigate();
   const isAuthenticated = localStorage.getItem("isAuthenticated");
   const userId = localStorage.getItem("userId");
   const userName = localStorage.getItem("userName");
-  const userRole = localStorage.getItem("userRole");
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
   const [isUpdatingRole, setIsUpdatingRole] = useState(false);
   
   useEffect(() => {
-    if (!userId || userRole !== 'admin') {
-      if (userRole === 'student') {
-        navigate("/student");
-      } else if (userRole === 'instructor'){
-        navigate("instructor");
+    const fetchUserRole = async () => {
+      if (userEmail) {
+        try {
+          const response = await axios.get(`${base_url}/api/getUserRole`, {
+            params: { email: userEmail }
+          });
+          const role = response.data.role;
+  
+          // Update both state and localStorage
+          setUserRole(role);
+          localStorage.setItem("userRole", role);
+  
+          // Navigate based on the fetched role
+          if (role === "student") {
+            navigate("/student");
+          } else if (role === "admin") {
+            return
+          } else if (role === "instructor") {
+            navigate("/instructor");
+          } else {
+            navigate("/user-type");
+          }
+        } catch (error) {
+          console.error("Failed to fetch user role:", error);
+          navigate("/user-type");
+        }
       } else {
         navigate("/user-type");
       }
-    }
-  }, [userId, navigate]);
+    };
+  
+    fetchUserRole();
+  }, [userId, userEmail, navigate]);
 
   useEffect(() => {
     const fetchTotalQueries = async () => {
@@ -591,6 +614,12 @@ const handleEditUser = async (user, newRole) => {
         </button>
       </div>
       <div className="admin-content">
+        <div className="admin-header">
+          <div className="admin-pf-border">
+            <img src={userPicture} className="admin-pfp" alt="" />
+            <p className="admin-user-name">{userName}</p>
+          </div>
+        </div>
         {activeTab === 'dashboard' ? (
           <div className="dashboard-tab">
             <h1><MdOutlineDashboard />Dashboard</h1>

@@ -9,6 +9,29 @@
     background: #4e73df;
 }
 
+.admin-header{
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    direction: rtl;
+}
+
+.admin-pf-border{
+    display: flex;
+    flex-direction: row;
+    direction: rtl;
+    align-items: center;
+    gap: 20px;
+}
+
+.admin-pfp{
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+}
+
 /* Sidebar */
 .admin-sidebar {
     width: 20dvw;
