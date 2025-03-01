@@ -104,7 +104,7 @@ const InstructorPage = () => {
 
     const fetchLearningMaterials = async () => {
       try {
-        const instructorEmail = localStorage.getItem("instructorEmail"); // Get the instructor's email from localStorage
+        const instructorEmail = localStorage.getItem("userEmail"); // Get the instructor's email from localStorage
         const response = await axios.get(`${base_url}/api/getLearningMaterials`, {
           params: { instructorEmail }, // Pass the instructorEmail as a query parameter
         });
@@ -261,7 +261,7 @@ const InstructorPage = () => {
   const handleDeleteSubject = async (subject) => {
     try {
       const encodedSubject = encodeURIComponent(subject);
-      const instructorEmail = localStorage.getItem("instructorEmail"); // Get the instructor's email
+      const instructorEmail = localStorage.getItem("userEmail"); // Get the instructor's email
       await axios.delete(`${base_url}/api/deleteSubject/${encodedSubject}`, {
         params: { instructorEmail }, // Pass the instructorEmail when deleting
       });
@@ -285,32 +285,44 @@ const InstructorPage = () => {
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
-
+  
       // Get the instructor's email from localStorage
-      const instructorEmail = localStorage.getItem("instructorEmail");
+      const instructorEmail = localStorage.getItem("userEmail");
       formData.append("instructorEmail", instructorEmail);
-
+  
       try {
-        await axios.post(`${base_url}/api/uploadLearningMaterials`, formData, {
+        // Upload the file
+        const uploadResponse = await axios.post(`${base_url}/api/uploadLearningMaterials`, formData, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "multipart/form-data", // Ensure the correct content type
           },
         });
-        alert("Learning materials uploaded successfully!");
-        const response = await axios.get(`${base_url}/api/getLearningMaterials`, {
-          params: { instructorEmail }, // Pass the instructorEmail when fetching learning materials
-        });
-        setLearningMaterials(response.data);
-
-        // Update the count of learning materials
-        const uniqueSubjects = new Set(Object.keys(response.data));
-        setTotalLearningMaterials(uniqueSubjects.size);
+  
+        if (uploadResponse.status === 200) {
+          alert("Learning materials uploaded successfully!");
+  
+          // Fetch the updated learning materials
+          const response = await axios.get(`${base_url}/api/getLearningMaterials`, {
+            params: { instructorEmail },
+          });
+  
+          // Update state with the new learning materials
+          setLearningMaterials(response.data);
+  
+          // Update the count of unique subjects
+          const uniqueSubjects = new Set(Object.keys(response.data));
+          setTotalLearningMaterials(uniqueSubjects.size);
+        } else {
+          alert("Failed to upload learning materials.");
+        }
       } catch (error) {
         console.error("Error uploading learning materials:", error);
-        alert("Failed to upload learning materials.");
+        console.error("Error details:", error.response); // Log the full error response
+        alert("Failed to upload learning materials. Check the console for details.");
       }
     }
   };
+
 
   const handleBackToSubjects = () => {
     setSelectedSubject(null);
@@ -611,6 +623,12 @@ const InstructorPage = () => {
         </button>
       </div>
       <div className="instructor-content">
+        <div className="admin-header">
+          <div className="admin-pf-border">
+            <img src={userPicture} className="admin-pfp" alt="" />
+            <p className="admin-user-name">{userName}</p>
+          </div>
+        </div>
         {activeTab === 'dashboard' ? (
           <div className="instructor-dashboard-tab">
             <h1><MdOutlineDashboard />Dashboard</h1>

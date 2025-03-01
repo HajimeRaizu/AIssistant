@@ -2,14 +2,16 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import OpenAI from "openai";
-import multer from "multer";
 import XLSX from "xlsx";
 import { HfInference } from "@huggingface/inference";
 import admin from "firebase-admin";
 import path from "path";
 import { fileURLToPath } from "url";
+import multer from "multer";
 
-// Get __dirname equivalent in ES modules
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -67,17 +69,6 @@ app.use(cors({
   credentials: true,
   allowedHeaders: "Content-Type, Authorization"
 }));
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, __dirname); // Save the file in the server's root directory
-  },
-  filename: function (req, file, cb) {
-    cb(null, "users.xlsx"); // Save the file with a fixed name
-  },
-});
-
-const upload = multer({ storage: storage });
 
 // Helper function to handle Firestore operations
 const handleFirestoreError = (res, error) => {
@@ -606,15 +597,25 @@ app.get("/api/getTotalLearningMaterials", async (req, res) => {
 
 app.post("/api/uploadLearningMaterials", upload.single("file"), async (req, res) => {
   try {
-    const workbook = XLSX.readFile(req.file.path);
+    // Ensure the file is uploaded
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    // Access instructorEmail from req.body
+    const { instructorEmail } = req.body;
+
+    if (!instructorEmail) {
+      return res.status(400).json({ error: "Instructor email is required" });
+    }
+
+    // Read the file from memory
+    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheet_name_list = workbook.SheetNames;
     const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
 
     const batch = db.batch();
     const learningMaterialsRef = db.collection("learningMaterials");
-
-    // Get the instructor's email from the request body
-    const { instructorEmail } = req.body; // Assuming the instructor's email is sent in the request body
 
     // Fetch the instructor's name from the instructors collection using their email
     const instructorsRef = db.collection("users");
@@ -634,7 +635,7 @@ app.post("/api/uploadLearningMaterials", upload.single("file"), async (req, res)
     data.forEach((row) => {
       // Prepare the learning material data
       const learningMaterialData = {
-        subjectId, // Use the same subjectId for all rows
+        subjectId,
         subjectName: row.subject,
         lesson: row.lesson,
         subtopicCode: row["subtopic code"],
@@ -643,12 +644,12 @@ app.post("/api/uploadLearningMaterials", upload.single("file"), async (req, res)
         images: row.Images || null,
         questions: row.questions || null,
         answers: row.answers || null,
-        instructorEmail, // Save the instructor's email instead of ID
-        instructorName, // Add the instructor's name fetched from the database
+        instructorEmail,
+        instructorName,
       };
 
       // Store learning material data with a unique document ID
-      const learningMaterialDocRef = learningMaterialsRef.doc(generateUniqueId()); // Unique document ID
+      const learningMaterialDocRef = learningMaterialsRef.doc(generateUniqueId());
       batch.set(learningMaterialDocRef, learningMaterialData);
     });
 
