@@ -28,8 +28,8 @@ import {
 } from 'recharts';
 
 const AdminPage = () => {
-  const base_url = `https://aissistant-backend.vercel.app`;
-  //const base_url = `http://localhost:5000`;
+  //const base_url = `https://aissistant-backend.vercel.app`;
+  const base_url = `http://localhost:5000`;
   const [activeTab, setActiveTab] = useState('dashboard');
   const [totalQueries, setTotalQueries] = useState(0);
   const [totalStudents, setTotalStudents] = useState(0);
@@ -65,6 +65,7 @@ const AdminPage = () => {
   const userRole = localStorage.getItem("userRole");
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
+  const [isUpdatingRole, setIsUpdatingRole] = useState(false);
   
   useEffect(() => {
     if (!userId || userRole !== 'admin') {
@@ -86,7 +87,7 @@ const AdminPage = () => {
           chat.messages.filter(message => message.sender === "user")
         );
         setTotalQueries(allMessages.length);
-
+  
         const queryData = allMessages.map(message => ({
           timestamp: new Date(message.timestamp),
           text: message.text
@@ -96,36 +97,32 @@ const AdminPage = () => {
         console.error("Failed to fetch total queries:", error);
       }
     };
-
-    // Update the fetchtotalStudents function to filter users by role
+  
     const fetchtotalStudents = async () => {
       try {
-        const response = await axios.get(`${base_url}/api/getUsers`);
-        const students = response.data.filter(user => user.role === 'student'); // Filter users with role 'student'
-        setTotalStudents(students.length); // Set the total number of students
-        setUsers(response.data); // Set the full list of users
+        const response = await axios.get(`${base_url}/api/getStudents`);
+        setTotalStudents(response.data.length);
+        setUsers(response.data);
       } catch (error) {
-        console.error("Failed to fetch total users:", error);
+        console.error("Failed to fetch total students:", error);
       }
     };
-
-    // Update the fetchInstructors function to filter users by role
+  
     const fetchInstructors = async () => {
       try {
-        const response = await axios.get(`${base_url}/api/getUsers`);
-        const instructors = response.data.filter(user => user.role === 'instructor'); // Filter users with role 'instructor'
-        setTotalInstructors(instructors.length); // Set the total number of instructors
-        setInstructors(instructors); // Set the list of instructors
+        const response = await axios.get(`${base_url}/api/getInstructors`);
+        setTotalInstructors(response.data.length);
+        setInstructors(response.data);
       } catch (error) {
         console.error("Failed to fetch instructors:", error);
       }
     };
-
+  
     const fetchTotalLearningMaterials = async () => {
       try {
         const response = await axios.get(`${base_url}/api/getLearningMaterials`);
         const learningMaterials = response.data;
-
+  
         // Count unique subject codes across all learning materials
         const uniqueSubjects = new Set();
         Object.keys(learningMaterials).forEach(subjectName => {
@@ -136,13 +133,13 @@ const AdminPage = () => {
             });
           });
         });
-
+  
         setTotalLearningMaterials(uniqueSubjects.size);
       } catch (error) {
         console.error("Failed to fetch total learning materials:", error);
       }
     };
-
+  
     fetchTotalQueries();
     fetchtotalStudents();
     fetchInstructors();
@@ -285,24 +282,38 @@ const AdminPage = () => {
     }));
 };
 
-  const handleEditUser = (user) => {
-    setEditingUser(user);
-  };
+const handleEditUser = async (user, newRole) => {
+  if (isUpdatingRole) return; // Prevent multiple simultaneous updates
+  setIsUpdatingRole(true);
 
-  const handleSaveUser = async (user) => {
-    try {
-      if (activeTab === 'students') {
-        await axios.put(`${base_url}/api/updateUser/${user.id}`, user);
-        setUsers(users.map(u => u.id === user.id ? user : u));
-      } else if (activeTab === 'instructors') {
-        await axios.put(`${base_url}/api/updateInstructor/${user.id}`, user);
-        setInstructors(instructors.map(i => i.id === user.id ? user : i));
+  try {
+    await axios.put(`${base_url}/api/updateUserRole/${user.id}`, { role: newRole });
+
+    if (activeTab === 'students') {
+      if (newRole === 'instructor') {
+        setUsers(prevUsers => prevUsers.filter(u => u.id !== user.id));
+        setInstructors(prevInstructors => [...prevInstructors, { ...user, role: newRole }]);
+      } else {
+        setUsers(prevUsers => 
+          prevUsers.map(u => u.id === user.id ? { ...u, role: newRole } : u)
+        );
       }
-      setEditingUser(null);
-    } catch (error) {
-      console.error("Failed to update user/instructor:", error);
+    } else if (activeTab === 'instructors') {
+      if (newRole === 'student') {
+        setInstructors(prevInstructors => prevInstructors.filter(i => i.id !== user.id));
+        setUsers(prevUsers => [...prevUsers, { ...user, role: newRole }]);
+      } else {
+        setInstructors(prevInstructors => 
+          prevInstructors.map(i => i.id === user.id ? { ...i, role: newRole } : i)
+        );
+      }
     }
-  };
+  } catch (error) {
+    console.error("Failed to update user role:", error);
+  } finally {
+    setIsUpdatingRole(false); // Reset the updating state
+  }
+};
 
   const handleDeleteUser = async (userId) => {
     try {
@@ -438,30 +449,23 @@ const AdminPage = () => {
     setShowConfirmInstructorModal(true);
   };
 
-  // Update the filteredUsers and filteredInstructors arrays to filter by role
-const filteredUsers = users.filter(user => {
-  const searchLower = searchTerm.toLowerCase();
-  return (
-    (user.role === 'student') && // Only include users with the role 'student'
-    (
+  const filteredUsers = users.filter(user => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
       user.id.toLowerCase().includes(searchLower) ||
       user.name.toLowerCase().includes(searchLower) ||
       user.email.toLowerCase().includes(searchLower)
-    )
-  );
-});
-
-const filteredInstructors = users.filter(user => {
-  const searchLower = instructorSearchTerm.toLowerCase();
-  return (
-    (user.role === 'instructor') && // Only include users with the role 'instructor'
-    (
-      user.id.toLowerCase().includes(searchLower) ||
-      user.name.toLowerCase().includes(searchLower) ||
-      user.email.toLowerCase().includes(searchLower)
-    )
-  );
-});
+    );
+  });
+  
+  const filteredInstructors = instructors.filter(instructor => {
+    const searchLower = instructorSearchTerm.toLowerCase();
+    return (
+      instructor.id.toLowerCase().includes(searchLower) ||
+      instructor.name.toLowerCase().includes(searchLower) ||
+      instructor.email.toLowerCase().includes(searchLower)
+    );
+  });
 
   const pieChartData = [
     { name: 'Students', value: totalStudents },
@@ -471,11 +475,6 @@ const filteredInstructors = users.filter(user => {
   const COLORS = ['#F8E9A1', '#6DE88B'];
 
   const userColumns = [
-    {
-      name: 'ID',
-      selector: row => row.id,
-      sortable: true,
-    },
     {
       name: 'Name',
       selector: row => row.name,
@@ -487,12 +486,16 @@ const filteredInstructors = users.filter(user => {
       sortable: true,
     },
     {
-      name: 'Actions',
+      name: 'Role',
       cell: row => (
-        <div>
-          <button className="edit-button" onClick={() => handleEditUser(row)}>Edit</button>
-          <button className="delete-button" onClick={() => handleConfirmDelete(row.id)}>Delete</button>
-        </div>
+        <select
+          value={row.role || 'student'}
+          onChange={(e) => handleEditUser(row, e.target.value)}
+          disabled={isUpdatingRole}
+        >
+          <option value="student">Student</option>
+          <option value="instructor">Instructor</option>
+        </select>
       ),
     },
   ];
@@ -509,12 +512,16 @@ const filteredInstructors = users.filter(user => {
       sortable: true,
     },
     {
-      name: 'Actions',
+      name: 'Role',
       cell: row => (
-        <div>
-          <button className="edit-button" onClick={() => handleEditUser(row)}>Edit</button>
-          <button className="delete-button" onClick={() => handleConfirmDeleteInstructor(row.email)}>Delete</button>
-        </div>
+        <select
+          value={row.role || 'instructor'}
+          onChange={(e) => handleEditUser(row, e.target.value)}
+          disabled={isUpdatingRole}
+        >
+          <option value="student">Student</option>
+          <option value="instructor">Instructor</option>
+        </select>
       ),
     },
   ];

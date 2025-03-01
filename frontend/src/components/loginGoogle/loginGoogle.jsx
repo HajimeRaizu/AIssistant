@@ -60,7 +60,7 @@ const LoginGoogle = () => {
       } else if (userData.role === "admin") {
         navigate("/admin");
       } else {
-        navigate("/student"); // Redirect to the student page
+        navigate("/student-landing"); // Redirect to the student page
       }
     } catch (error) {
       console.error("Error during Google login:", error);

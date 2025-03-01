@@ -448,12 +448,12 @@ app.put("/api/updateUserRole/:userId", async (req, res) => {
 // Get all instructors
 app.get("/api/getInstructors", async (req, res) => {
   try {
-    const instructorsSnapshot = await db.collection("instructors").get();
-    const instructors = instructorsSnapshot.docs.map((doc) => ({
-      id: doc.id, // Use the document ID as the instructor ID
+    const usersSnapshot = await db.collection("users").where("role", "==", "instructor").get();
+    const instructors = usersSnapshot.docs.map((doc) => ({
+      id: doc.id,
       email: doc.data().email,
       name: doc.data().name,
-      instructorId: doc.data().instructorId, // Optionally include the instructorId if it exists
+      role: doc.data().role || "instructor", // Default to "instructor" if role is not set
     }));
     res.status(200).json(instructors);
   } catch (error) {
@@ -462,16 +462,17 @@ app.get("/api/getInstructors", async (req, res) => {
 });
 
 // Update instructor information
-app.put("/api/updateInstructor/:instructorId", async (req, res) => {
-  const { instructorId } = req.params; // This should be the Firestore document ID, not the email
-  const { name, email } = req.body;
+app.put("/api/updateUserRole/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const { role } = req.body;
 
   try {
-    const instructorRef = db.collection("instructors").doc(instructorId); // Use the correct document ID
-    await instructorRef.update({ name, email });
-    res.status(200).json({ message: "Instructor updated successfully" });
+    const userRef = db.collection("users").doc(userId);
+    await userRef.update({ role });
+    res.status(200).json({ message: "User role updated successfully" });
   } catch (error) {
-    handleFirestoreError(res, error);
+    console.error("Error updating user role:", error);
+    res.status(500).json({ error: "Failed to update user role" });
   }
 });
 
@@ -892,16 +893,16 @@ app.post("/api/googleLogin", async (req, res) => {
   }
 });
 
-app.get("/api/getUsers", async (req, res) => {
+app.get("/api/getStudents", async (req, res) => {
   try {
-    const usersSnapshot = await db.collection("users").get();
-    const users = usersSnapshot.docs.map((doc) => ({
+    const usersSnapshot = await db.collection("users").where("role", "==", "student").get();
+    const students = usersSnapshot.docs.map((doc) => ({
       id: doc.id,
       email: doc.data().email,
       name: doc.data().name,
       role: doc.data().role || "student", // Default to "student" if role is not set
     }));
-    res.status(200).json(users);
+    res.status(200).json(students);
   } catch (error) {
     handleFirestoreError(res, error);
   }
