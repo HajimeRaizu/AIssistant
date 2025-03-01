@@ -73,7 +73,7 @@ const LoginGoogle = () => {
   };
 
   return (
-    <GoogleOAuthProvider clientId="792236607213-gt12gkp3eqkttq68f0gtvfivhfvcjdih.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="966546103505-am2u7fu5r31t4g0bq3n1ecp4chg7ji8j.apps.googleusercontent.com">
       <div className="centered">
         <div className="welcome">
           <h1>Welcome to AIssistant</h1>
