@@ -342,7 +342,7 @@
 
 .student-message.bot {
     user-select: none;
-    max-width: 85%;
+    width: fit-content;
     padding: 8px 12px;
     border-radius: 8px;
     position: relative;
@@ -417,9 +417,10 @@
 .student-bot-response {
     padding: 8px 12px;
     border-radius: 8px;
-    width: 100%;
+    width: fit-content;
     align-self: flex-start;
     overflow: hidden;
+    width: 100%;
 }
 
 .student-bot-response.dark {

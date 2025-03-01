@@ -465,9 +465,7 @@ const StudentPage = () => {
                 </div>
               ))}
               {isTyping && (
-                <div className="student-message bot">
                   <p className="student-typing-indicator">Typing...</p>
-                </div>
               )}
             </div>
             <div className={`student-chat-input ${theme}`}>
