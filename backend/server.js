@@ -328,7 +328,7 @@ app.post("/api/generateFAQ", async (req, res) => {
 app.get("/api/getUsers", async (req, res) => {
   try {
     // Query the 'students' collection instead of 'users'
-    const usersSnapshot = await db.collection("students").get();
+    const usersSnapshot = await db.collection("users").get();
     const users = usersSnapshot.docs.map((doc) => ({
       id: doc.id, // Use the document ID as the user ID
       email: doc.data().email,
@@ -350,7 +350,7 @@ app.post("/api/uploadUsers", upload.single("file"), async (req, res) => {
     const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]); // Convert the first sheet to JSON
 
     const batch = db.batch();
-    const studentsRef = db.collection("students");
+    const studentsRef = db.collection("users");
 
     data.forEach((row) => {
       const newStudentRef = studentsRef.doc(); // Auto-generate document ID
@@ -398,7 +398,7 @@ app.post("/api/addSingleUser", async (req, res) => {
   const { name, email } = req.body;
 
   try {
-    const studentsRef = db.collection("students");
+    const studentsRef = db.collection("users");
     const newStudentRef = studentsRef.doc(); // Auto-generate document ID
     const studentId = newStudentRef.id; // Use the auto-generated ID as studentId
     const defaultPassword = "N3msuP4zzword"; // Default password
@@ -423,11 +423,25 @@ app.put("/api/updateUser/:userId", async (req, res) => {
   const { name, email } = req.body;
 
   try {
-    const userRef = db.collection("students").doc(userId);
+    const userRef = db.collection("users").doc(userId);
     await userRef.update({ name, email });
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
     handleFirestoreError(res, error);
+  }
+});
+
+app.put("/api/updateUserRole/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const { role } = req.body;
+
+  try {
+    const userRef = db.collection("users").doc(userId);
+    await userRef.update({ role });
+    res.status(200).json({ message: "User role updated successfully" });
+  } catch (error) {
+    console.error("Error updating user role:", error);
+    res.status(500).json({ error: "Failed to update user role" });
   }
 });
 
@@ -493,7 +507,7 @@ app.delete("/api/deleteUser/:userId", async (req, res) => {
   const { userId } = req.params;
 
   try {
-    await db.collection("students").doc(userId).delete();
+    await db.collection("users").doc(userId).delete();
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     handleFirestoreError(res, error);
@@ -506,7 +520,7 @@ app.post("/api/login", async (req, res) => {
 
   try {
     // Query the 'students' collection for the provided studentId
-    const usersSnapshot = await db.collection("students").where("studentId", "==", studentId).get();
+    const usersSnapshot = await db.collection("users").where("studentId", "==", studentId).get();
 
     if (usersSnapshot.empty) {
       return res.status(401).json({ error: "Invalid credentials" });
@@ -602,7 +616,7 @@ app.post("/api/uploadLearningMaterials", upload.single("file"), async (req, res)
     const { instructorEmail } = req.body; // Assuming the instructor's email is sent in the request body
 
     // Fetch the instructor's name from the instructors collection using their email
-    const instructorsRef = db.collection("instructors");
+    const instructorsRef = db.collection("users");
     const instructorQuery = await instructorsRef.where("email", "==", instructorEmail).get();
 
     if (instructorQuery.empty) {
@@ -850,12 +864,12 @@ app.post("/api/googleLogin", async (req, res) => {
     }
 
     // Check if the user exists in the database
-    const usersSnapshot = await db.collection("students").where("email", "==", email).get();
+    const usersSnapshot = await db.collection("users").where("email", "==", email).get();
 
     let userData;
     if (usersSnapshot.empty) {
       // If the user does not exist, create a new user with the default role as "student"
-      const newUserRef = db.collection("students").doc();
+      const newUserRef = db.collection("users").doc();
       userData = {
         id: newUserRef.id,
         email,
@@ -875,6 +889,21 @@ app.post("/api/googleLogin", async (req, res) => {
   } catch (error) {
     console.error("Error during Google login:", error);
     res.status(500).json({ error: "Failed to process Google login" });
+  }
+});
+
+app.get("/api/getUsers", async (req, res) => {
+  try {
+    const usersSnapshot = await db.collection("users").get();
+    const users = usersSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      email: doc.data().email,
+      name: doc.data().name,
+      role: doc.data().role || "student", // Default to "student" if role is not set
+    }));
+    res.status(200).json(users);
+  } catch (error) {
+    handleFirestoreError(res, error);
   }
 });
 

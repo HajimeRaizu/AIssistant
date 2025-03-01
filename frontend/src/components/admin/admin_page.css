@@ -660,6 +660,13 @@ input {
   transform: scale(1.03);
 }
 
+select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
 @media (max-aspect-ratio: 1/1){
     .admin-container *{
         visibility: hidden;

@@ -6,8 +6,8 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 const LoginGoogle = () => {
-  const base_url = `https://aissistant-backend.vercel.app`;
-  //const base_url = `http://localhost:5000`;
+  //const base_url = `https://aissistant-backend.vercel.app`;
+  const base_url = `http://localhost:5000`;
   const navigate = useNavigate();
   const isAuthenticated = localStorage.getItem("isAuthenticated") || null;
   const userId = localStorage.getItem("userId") || null;
@@ -79,7 +79,7 @@ const LoginGoogle = () => {
           <h1>Welcome to AIssistant</h1>
         </div>
 
-        <h4 className="companion">Instructor Login</h4>
+        <h4 className="companion">Login with NEMSU email</h4>
 
         <div className="wrapper">
           <GoogleLogin

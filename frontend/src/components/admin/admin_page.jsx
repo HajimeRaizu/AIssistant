@@ -28,8 +28,8 @@ import {
 } from 'recharts';
 
 const AdminPage = () => {
-  const base_url = `https://aissistant-backend.vercel.app`;
-  //const base_url = `http://localhost:5000`;
+  //const base_url = `https://aissistant-backend.vercel.app`;
+  const base_url = `http://localhost:5000`;
   const [activeTab, setActiveTab] = useState('dashboard');
   const [totalQueries, setTotalQueries] = useState(0);
   const [totalStudents, setTotalStudents] = useState(0);
@@ -72,7 +72,7 @@ const AdminPage = () => {
         navigate("/student");
       } else if (userRole === 'instructor'){
         navigate("instructor");
-      } else{
+      } else {
         navigate("/user-type");
       }
     }
@@ -297,7 +297,7 @@ const AdminPage = () => {
 
   const handleSaveUser = async (user) => {
     try {
-      if (activeTab === 'settings') {
+      if (activeTab === 'students') {
         await axios.put(`${base_url}/api/updateUser/${user.id}`, user);
         setUsers(users.map(u => u.id === user.id ? user : u));
       } else if (activeTab === 'instructors') {
@@ -444,19 +444,30 @@ const AdminPage = () => {
     setShowConfirmInstructorModal(true);
   };
 
-  const filteredUsers = users.filter(user => {
-    const searchLower = searchTerm.toLowerCase();
-    return (
+  // Update the filteredUsers and filteredInstructors arrays to filter by role
+const filteredUsers = users.filter(user => {
+  const searchLower = searchTerm.toLowerCase();
+  return (
+    (user.role === 'student') && // Only include users with the role 'student'
+    (
       user.id.toLowerCase().includes(searchLower) ||
       user.name.toLowerCase().includes(searchLower) ||
       user.email.toLowerCase().includes(searchLower)
-    );
-  });
+    )
+  );
+});
 
-  const filteredInstructors = instructors.filter(instructor => {
-    const searchLower = instructorSearchTerm.toLowerCase();
-    return instructor.email.toLowerCase().includes(searchLower);
-  });
+const filteredInstructors = users.filter(user => {
+  const searchLower = instructorSearchTerm.toLowerCase();
+  return (
+    (user.role === 'instructor') && // Only include users with the role 'instructor'
+    (
+      user.id.toLowerCase().includes(searchLower) ||
+      user.name.toLowerCase().includes(searchLower) ||
+      user.email.toLowerCase().includes(searchLower)
+    )
+  );
+});
 
   const pieChartData = [
     { name: 'Students', value: totalStudents },
@@ -491,7 +502,7 @@ const AdminPage = () => {
       ),
     },
   ];
-
+  
   const instructorColumns = [
     {
       name: 'Name',
@@ -557,8 +568,8 @@ const AdminPage = () => {
           Dashboard
         </button>
         <button 
-          className={`admin-tab ${activeTab === 'settings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('settings')}
+          className={`admin-tab ${activeTab === 'students' ? 'active' : ''}`}
+          onClick={() => setActiveTab('students')}
         >
           <FaRegUser />
           Students
@@ -680,7 +691,7 @@ const AdminPage = () => {
               <pre className="faq-box">{faq}</pre>
             </div>
           </div>
-        ) : activeTab === 'settings' ? (
+        ) : activeTab === 'students' ? (
           <div className="manage-users-tab">
             <h1><FaRegUser />Manage Students</h1>
             <div className="search-bar">
