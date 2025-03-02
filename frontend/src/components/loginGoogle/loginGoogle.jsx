@@ -59,7 +59,7 @@ const LoginGoogle = () => {
         navigate("/instructor");
       } else if (userData.role === "admin") {
         navigate("/admin");
-      } else {
+      } else if (userData.role === "student"){
         navigate("/student-landing"); // Redirect to the student page
       }
     } catch (error) {
