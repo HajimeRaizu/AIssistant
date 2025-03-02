@@ -530,7 +530,10 @@ const StudentPage = () => {
         <div className={`student-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
           <div className="student-chat-container">
             <div className={`student-chat-header ${theme}`}>
-              <h2>AIssistant Chat</h2>
+              <div className="student-aissistant">
+                <h2 style={{color: 'rgb(86, 86, 255)'}}>AI</h2>
+                <h2>ssistant Chat</h2>
+              </div>
               <p className="student-disclaimer">This chat will respond to any programming language.</p>
             </div>
             <div className={`student-chat-body ${theme}`} ref={chatBodyRef}>
@@ -584,7 +587,11 @@ const StudentPage = () => {
           <div className={`student-no-chat-box ${theme}`}>
             <div className={`student-newchat-container ${theme}`}>
               <div className={`student-newchat-header ${theme}`}>
-                <h1>Hello World! I am AIssistant.</h1>
+                <div className="student-aissistant">
+                  <h1>Hello World! I am </h1>
+                  <h2 style={{color: 'rgb(86, 86, 255)', fontSize: '24px', paddingLeft: '7px'}}>AI</h2>
+                  <h2 style={{fontSize: '24px'}}>ssistant.</h2>
+                </div>
                 <p>Your personal academia companion.</p>
               </div>
               <div className={`student-newchat-message ${theme}`}>

@@ -1310,3 +1310,15 @@ textarea:focus {
 .student-delete-chat.light {
     color: var(--text-light);
 }
+
+.student-aissistant{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.student-aissistant.ai{
+    color: rgb(86, 86, 255);
+    padding: 0;
+}

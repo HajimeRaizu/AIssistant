@@ -548,13 +548,13 @@ button {
 }
 
 .exercises-logout-button.dark {
-    background: var(--button-dark);
+    background: #b43e3e;
     color: var(--text-dark);
 }
 
 .exercises-logout-button.light {
-    background: var(--tab-light);
-    color: var(--text-light);
+    background: #9e4d4d;
+    color: var(--text-dark);
 }
 
 .exercises-logout-button:hover.dark {
@@ -649,6 +649,6 @@ button {
     display: none;
 }
 
-.student-profile{
+.exercises-profile{
     display: none;
 }
