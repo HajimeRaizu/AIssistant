@@ -293,7 +293,7 @@ const ExercisesPage = () => {
     }, [showOptions]);
   
     return (
-      <div className={`subject-box ${theme}`}>
+      <div className={`subject-box ${theme}`} onClick={() => handleSubjectClick(subject)}>
         <div className="subject-box-header">
           <h3>{subject}</h3>
           <div
@@ -401,6 +401,9 @@ const ExercisesPage = () => {
         {hasSubjectCode && selectedSubject && !selectedLesson && (
           <div className="lessons">
             <h2 className={theme}>Lessons</h2>
+            <button className={`back-button ${theme}`} onClick={() => setSelectedSubject(null)}>
+              Back to Subjects
+            </button>
             <ul>
               {Object.keys(learningMaterials[selectedSubject]).map((lesson) => (
                 <li
