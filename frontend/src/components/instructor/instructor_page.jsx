@@ -416,6 +416,13 @@ const InstructorPage = () => {
       const firstSubtopic = Object.keys(subjectData[firstLesson])[0]; // Get the first subtopic
       const subjectId = subjectData[firstLesson][firstSubtopic].subjectId; // Access the subjectId from the first subtopic
   
+      // Sort lessons numerically
+      const sortedLessons = Object.keys(subjectData).sort((a, b) => {
+        const aNumber = parseInt(a.replace('Lesson ', ''), 10);
+        const bNumber = parseInt(b.replace('Lesson ', ''), 10);
+        return aNumber - bNumber;
+      });
+  
       return (
         <div>
           {/* Display the subjectId and copy button */}
@@ -431,7 +438,7 @@ const InstructorPage = () => {
               {copyButtonText}
             </button>
           </div>
-          {Object.keys(subjectData).map((lesson) => (
+          {sortedLessons.map((lesson) => (
             <div
               key={lesson}
               className="instructor-exercise-lesson"

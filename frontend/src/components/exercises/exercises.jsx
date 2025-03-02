@@ -400,15 +400,22 @@ const ExercisesPage = () => {
               Back to Subjects
             </button>
             <ul>
-              {Object.keys(learningMaterials[selectedSubject]).map((lesson) => (
-                <li
-                  key={lesson}
-                  className={`${theme}`}
-                  onClick={() => handleLessonClick(lesson)}
-                >
-                  {`${lesson}`}
-                </li>
-              ))}
+              {Object.keys(learningMaterials[selectedSubject])
+                .sort((a, b) => {
+                  // Extract the lesson numbers from the strings
+                  const lessonNumberA = parseInt(a.replace('Lesson ', ''), 10);
+                  const lessonNumberB = parseInt(b.replace('Lesson ', ''), 10);
+                  return lessonNumberA - lessonNumberB;
+                })
+                .map((lesson) => (
+                  <li
+                    key={lesson}
+                    className={`${theme}`}
+                    onClick={() => handleLessonClick(lesson)}
+                  >
+                    {`${lesson}`}
+                  </li>
+                ))}
             </ul>
           </div>
         )}
