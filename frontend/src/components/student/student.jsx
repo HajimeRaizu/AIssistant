@@ -19,7 +19,7 @@ const StudentPage = () => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [exercises, setExercises] = useState([]);
+  const [student, setExercises] = useState([]);
   const [chats, setChats] = useState([]);
   const [currentChatId, setCurrentChatId] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -416,14 +416,17 @@ const StudentPage = () => {
 
   return (
     <div className={`student-container ${theme}`}>
-      <div className={`student-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar}/>
-      <button className={`student-theme-toggle ${theme}`} onClick={toggleTheme}>
+      <div className="student-header-buttons">
+        <div className="userName" style={{paddingLeft: '10px'}}>{userName}</div>
+        <img src={userPicture} className='userPicture' alt="" />
+        <button className={`student-theme-toggle ${theme}`} onClick={toggleTheme}>
           {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
         </button>
-
         <button className={`student-exercises-button ${theme}`} onClick={() => navigate('/exercises')}>
           <LuBookMarked/>
         </button>
+      </div>
+      <div className={`student-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar}/>
       <div className={`student-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
         <div className="student-profile">
           <img src={`${userPicture}`} alt={`${userName}.jpg`} />

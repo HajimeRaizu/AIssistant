@@ -237,6 +237,9 @@
 }
 
 .student-chat-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 10px;
     text-align: center;
     border-bottom: 1px solid var(--tab-dark);
@@ -252,15 +255,15 @@
     color: var(--text-light);
 }
 
-.student-chat-header .student-disclaimer {
+.student-disclaimer {
     font-size: 12px;
 }
 
-.student-chat-header .student-disclaimer.dark {
+.student-disclaimer.dark {
     color: #ccc;
 }
 
-.student-chat-header .student-disclaimer.light {
+.student-disclaimer.light {
     color: #888;
 }
 
@@ -764,18 +767,15 @@ textarea:focus {
 }
 
 .student-theme-toggle {
+    align-self: center;
     display: flex;
-    justify-content: center;
     align-items: center;
-    position: absolute;
+    justify-content: center;
+    border-radius: 50%;
     top: 2dvh;
-    right: 2dvw;
-    padding: 11px 11px; /* Increased padding */
-    border-radius: 10dvh;
+    padding: 12px; /* Increased padding */
     border: none;
-    border-radius: 100%;
     cursor: pointer;
-    font-family: "Host Grotesk", sans-serif;
     font-size: large;
 }
 
@@ -795,6 +795,17 @@ textarea:focus {
 
 .student-theme-toggle:hover.light {
     background: var(--button-hover-light);
+}
+
+.student-header-buttons{
+    top: 20px;
+    right: 20px;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    direction: rtl;
+    padding: 0;
 }
 
 .student-submit-query.dark {
@@ -842,18 +853,19 @@ textarea:focus {
 }
 
 .student-exercises-button {
+    align-self: center;
     display: flex;
-    justify-content: center;
     align-items: center;
-    position: absolute;
+    justify-content: center;
+    border-radius: 50%;
     top: 2dvh;
-    right: 6dvw; /* Adjust the position to avoid overlapping with the theme toggle button */
-    padding: 10px 10px;
+    right: 2dvw;
+    padding: 12px; /* Increased padding */
+    border-radius: 10dvh;
     border: none;
-    border-radius: 100%;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    font-size: larger;
+    font-size: large;
 }
 
 .student-exercises-button.dark {
@@ -1297,4 +1309,12 @@ textarea:focus {
 .student-edit-chat.light,
 .student-delete-chat.light {
     color: var(--text-light);
+}
+
+.students-header-buttons{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    direction: rtl;
+    padding: 0;
 }

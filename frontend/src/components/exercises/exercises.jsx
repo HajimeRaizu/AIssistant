@@ -231,6 +231,10 @@ const ExercisesPage = () => {
       </div>
       <div className={`exercises-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar}/>
       <div className={`exercises-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
+      <div className="student-profile">
+          <img src={`${userPicture}`} alt={`${userName}.jpg`} />
+          <p>{userName}</p>
+        </div>
         <h2>Subjects</h2>
         <div className={`subject-code-input ${theme}`}>
           <input
@@ -276,8 +280,9 @@ const ExercisesPage = () => {
             {hasSubjectCode && selectedSubject && <h1 className={theme}>{selectedSubject}</h1>}
           </div>
           <div className="exercises-header-buttons">
+            <div className='userName' style={{paddingLeft: '10px'}}>{userName}</div>
             <img src={userPicture} className='userPicture' alt="" />
-            <button className={`theme-toggle ${theme}`} onClick={toggleTheme}>
+            <button className={`exercises-theme-toggle ${theme}`} onClick={toggleTheme}>
               {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
             </button>
             <button className={`exercises-chat-button ${theme}`} onClick={() => navigate('/student')}>

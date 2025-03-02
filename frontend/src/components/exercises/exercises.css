@@ -201,28 +201,25 @@
 }
 
 /* Theme Toggle Button */
-.theme-toggle {
+.exercises-theme-toggle {
     align-self: center;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     top: 2dvh;
-    right: 2dvw;
     padding: 12px; /* Increased padding */
-    border-radius: 10dvh;
     border: none;
     cursor: pointer;
-    font-family: "Host Grotesk", sans-serif;
     font-size: large;
 }
 
-.theme-toggle.dark {
+.exercises-theme-toggle.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.theme-toggle.light {
+.exercises-theme-toggle.light {
     background: var(--button-light);
     color: var(--text-light); /* Font color in light mode */
 }
@@ -498,6 +495,7 @@ button {
 .exercises-header-buttons{
     display: flex;
     flex-direction: row;
+    align-items: center;
     direction: rtl;
     padding: 0;
 }
@@ -648,5 +646,9 @@ button {
 }
 
 .exercise-tutorial-highlight{
+    display: none;
+}
+
+.student-profile{
     display: none;
 }

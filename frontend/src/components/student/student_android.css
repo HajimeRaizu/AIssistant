@@ -4,9 +4,9 @@
     }
 
     .student-chat-header{
-        direction: ltr;
-        padding-right: 30%;
-        padding-top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .student-sidebar {
@@ -63,7 +63,7 @@
         right: 10px;
     }
     
-    .student-exercises-button {
+    .student-student-button {
         right: 70px; /* Adjust the position to avoid overlapping with the theme toggle button */
     }
 
@@ -104,5 +104,14 @@
 
     .student-typing-indicator{
         display: flex;
+    }
+
+    .student-theme-toggle, .student-exercises-button{
+        height: 35px;
+        width: 35px;
+    }
+
+    .userPicture, .userName{
+        display: none;
     }
 }
