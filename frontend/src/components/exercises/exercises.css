@@ -639,6 +639,24 @@ button {
     background: var(--button-hover-light);
 }
 
+.exercises-sidebar-toggle2.dark {
+    background: var(--sidebar-dark);
+    color: var(--text-dark);
+}
+
+.exercises-sidebar-toggle2.light {
+    background: var(--sidebar-light);
+    color: var(--text-light);
+}
+
+.exercises-sidebar-toggle2:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.exercises-sidebar-toggle2:hover.light {
+    background: var(--button-hover-light);
+}
+
 .userPicture{
     width: 42px;
     height: 42px;
@@ -656,3 +674,65 @@ button {
 .exercises-profile{
     display: none;
 }
+.subject-boxes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+    gap: 10px; /* Adjust the spacing between items */
+}
+  
+.subject-box {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    height: 150px;
+}
+  
+.subject-box:nth-child(3n + 1) {
+    background: #ff4d4d; /* Red */
+}
+  
+.subject-box:nth-child(3n + 2) {
+    background: #4d79ff; /* Blue */
+}
+  
+.subject-box:nth-child(3n + 3) {
+    background: #ffcc00; /* Yellow */
+}
+  
+.subject-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+  
+.subject-box-options {
+    cursor: pointer;
+    padding: 5px;
+}
+  
+.subject-box-options-menu {
+    position: absolute;
+    right: 0;
+    top: 30px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    z-index: 1;
+}
+  
+.subject-box-options-menu button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    width: 100%;
+    text-align: left;
+}
+  
+.subject-box-options-menu button:hover {
+    background: #f0f0f0;
+}  

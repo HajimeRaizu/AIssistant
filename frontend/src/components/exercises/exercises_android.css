@@ -141,4 +141,14 @@
     .student-profile{
         display: flex;
     }
+
+    .subject-box{
+        height: fit-content;
+    }
+
+    .subject-boxes {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr); /* 4 columns per row */
+        gap: 10px; /* Adjust the spacing between items */
+      }
 }

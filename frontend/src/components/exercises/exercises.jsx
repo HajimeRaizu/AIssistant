@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./exercises.css";
 import "./exercises_android.css";
-import { MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight, MdMoreVert } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { IoIosChatboxes } from "react-icons/io";
@@ -10,7 +10,7 @@ const ExercisesPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
   //const base_url = `http://localhost:5000`;
   const [selectedSubject, setSelectedSubject] = useState(null);
-  const [tutorial, setTutorial] = useState(true);
+  const [tutorial, setTutorial] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState(null);
   const [theme, setTheme] = useState("light");
@@ -18,18 +18,18 @@ const ExercisesPage = () => {
   const [userAnswers, setUserAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [subjectId, setSubjectId] = useState("");
-  const [studentId, setStudentId] = useState("");
+  const [studentId, setStudentId] = useState(localStorage.getItem("userId")||"");
   const [hasSubjectCode, setHasSubjectCode] = useState(false);
   const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Add this line
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [showOptions, setShowOptions] = useState(null); // State to manage the visibility of the three-dot menu
   const navigate = useNavigate();
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
-  const userId = localStorage.getItem("userId");
   const userName = localStorage.getItem("userName");
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
-  
+
   useEffect(() => {
     const fetchUserRole = async () => {
       if (userEmail) {
@@ -38,10 +38,10 @@ const ExercisesPage = () => {
             params: { email: userEmail }
           });
           const role = response.data.role;
-  
+
           setUserRole(role);
           localStorage.setItem("userRole", role);
-  
+
           if (role === "student") {
             return
           } else if (role === "admin") {
@@ -61,9 +61,9 @@ const ExercisesPage = () => {
         navigate("/user-type");
       }
     };
-  
+
     fetchUserRole();
-  }, [userId, userEmail, navigate]);
+  }, [studentId, userEmail, navigate]);
 
   useEffect(() => {
     if (studentId) {
@@ -72,11 +72,11 @@ const ExercisesPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentId]);
 
-  useEffect(() =>{
-    if(hasSubjectCode){
-      setTutorial(false);
+  useEffect(() => {
+    if (!hasSubjectCode) {
+      setTutorial(true);
     }
-  });
+  }, [hasSubjectCode]);
 
   const fetchLearningMaterials = async () => {
     try {
@@ -84,7 +84,7 @@ const ExercisesPage = () => {
         params: { studentId },
       });
       const subjectIds = accessResponse.data.subjectIds;
-
+  
       if (subjectIds.length > 0) {
         setHasSubjectCode(true);
         const materialsResponse = await axios.get(`${base_url}/api/getLearningMaterials`, {
@@ -102,13 +102,13 @@ const ExercisesPage = () => {
     }
   };
 
-  const handleTutorial = () =>{
-    if (hasSubjectCode){
+  const handleTutorial = () => {
+    if (hasSubjectCode) {
       setTutorial(false);
     } else {
       setTutorial(false);
     }
-  }
+  };
 
   const handleSubjectClick = (subject) => {
     setSelectedSubject(subject);
@@ -237,9 +237,84 @@ const ExercisesPage = () => {
     } catch (error) {
       console.error("Failed to add subject ID:", error);
       alert(`Failed to add subject ID: ${error.response?.data?.error || error.message}`);
-    } finally{
+    } finally {
       setSubjectId("");
     }
+  };
+
+  const handleRemoveAccess = async (subjectId) => {
+    try {
+      const response = await axios.delete(`${base_url}/api/removeAccessLearningMaterial`, {
+        data: { studentId, subjectId },
+      });
+  
+      if (response.status === 200) {
+        alert("Access removed successfully!");
+  
+        // Update the learningMaterials state to remove the subject
+        const updatedLearningMaterials = { ...learningMaterials };
+        for (const subject in updatedLearningMaterials) {
+          if (updatedLearningMaterials[subject][Object.keys(updatedLearningMaterials[subject])[0]][Object.keys(updatedLearningMaterials[subject][Object.keys(updatedLearningMaterials[subject])[0]])[0]].subjectId === subjectId) {
+            delete updatedLearningMaterials[subject];
+            break;
+          }
+        }
+  
+        setLearningMaterials(updatedLearningMaterials); // Update the state to reflect the changes
+        setSelectedSubject(null); // Deselect the subject if it was selected
+      } else {
+        alert("Failed to remove access. Please try again.");
+      }
+    } catch (error) {
+      console.error("Failed to remove access:", error);
+      alert(`Failed to remove access: ${error.response?.data?.error || error.message}`);
+    }
+  };
+
+  const SubjectBox = ({ subject, instructorEmail, instructorName, subjectId }) => {
+    const [showOptions, setShowOptions] = useState(null);
+  
+    // Add a click event listener to the document to detect clicks outside the menu
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        // Check if the click is outside the options menu
+        if (showOptions && !event.target.closest(".subject-box-options-menu")) {
+          setShowOptions(null); // Hide the menu
+        }
+      };
+  
+      // Attach the event listener
+      document.addEventListener("click", handleClickOutside);
+  
+      // Clean up the event listener on component unmount
+      return () => {
+        document.removeEventListener("click", handleClickOutside);
+      };
+    }, [showOptions]);
+  
+    return (
+      <div className={`subject-box ${theme}`}>
+        <div className="subject-box-header">
+          <h3>{subject}</h3>
+          <div
+            className="subject-box-options"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent the click from bubbling up to the document
+              setShowOptions(showOptions === subjectId ? null : subjectId); // Toggle the menu
+            }}
+          >
+            <MdMoreVert />
+          </div>
+          {showOptions === subjectId && (
+            <div className="subject-box-options-menu">
+              <button onClick={() => handleRemoveAccess(subjectId)}>Remove Access</button>
+            </div>
+          )}
+        </div>
+        <p>{instructorEmail}</p>
+        <p>{instructorName}</p>
+      </div>
+    );
   };
 
   if (isLoading) {
@@ -256,9 +331,9 @@ const ExercisesPage = () => {
           <p>subject code</p>
         </span>
       </div>
-      <div className={`exercises-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar}/>
+      <div className={`exercises-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar} />
       <div className={`exercises-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
-      <div className="student-profile">
+        <div className="student-profile">
           <img src={`${userPicture}`} alt={`${userName}.jpg`} />
           <p>{userName}</p>
         </div>
@@ -287,21 +362,21 @@ const ExercisesPage = () => {
             ))}
           </ul>
         ) : (
-          <p style={{paddingTop: '10px'}}>No subject IDs added yet. Please add a subject ID to view learning materials.</p>
+          <p style={{ paddingTop: '10px' }}>No subject IDs added yet. Please add a subject ID to view learning materials.</p>
         )}
         <button className={`exercises-logout-button ${theme}`} onClick={handleLogout}>
           Logout
         </button>
       </div>
 
-      <button 
-        className={`exercises-sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} 
+      <button
+        className={`exercises-sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}
         onClick={toggleSidebar}
       >
         {isSidebarVisible ? <MdChevronLeft /> : <MdChevronRight />}
       </button>
-      <button 
-        className={`exercises-sidebar-toggle2 ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} 
+      <button
+        className={`exercises-sidebar-toggle2 ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}
         onClick={toggleSidebar}
       >
         {isSidebarVisible ? <MdChevronRight /> : <MdChevronLeft />}
@@ -313,13 +388,13 @@ const ExercisesPage = () => {
             {hasSubjectCode && selectedSubject && <h1 className={theme}>{selectedSubject}</h1>}
           </div>
           <div className="exercises-header-buttons">
-            <div className='userName' style={{paddingLeft: '10px'}}>{userName}</div>
+            <div className='userName' style={{ paddingLeft: '10px' }}>{userName}</div>
             <img src={userPicture} className='userPicture' alt="" />
             <button className={`exercises-theme-toggle ${theme}`} onClick={toggleTheme}>
               {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
             </button>
             <button className={`exercises-chat-button ${theme}`} onClick={() => navigate('/student')}>
-              <IoIosChatboxes/>
+              <IoIosChatboxes />
             </button>
           </div>
         </div>
@@ -377,6 +452,28 @@ const ExercisesPage = () => {
                 Check Answers
               </button>
             </div>
+          </div>
+        )}
+
+        {!selectedSubject && hasSubjectCode && (
+          <div className="subject-boxes">
+            {Object.keys(learningMaterials).map((subject) => {
+              const firstLesson = Object.keys(learningMaterials[subject])[0];
+              const firstSubtopic = Object.keys(learningMaterials[subject][firstLesson])[0];
+              const instructorEmail = learningMaterials[subject][firstLesson][firstSubtopic].instructorEmail;
+              const instructorName = learningMaterials[subject][firstLesson][firstSubtopic].instructorName;
+              const subjectId = learningMaterials[subject][firstLesson][firstSubtopic].subjectId;
+
+              return (
+                <SubjectBox
+                  key={subject}
+                  subject={subject}
+                  instructorEmail={instructorEmail}
+                  instructorName={instructorName}
+                  subjectId={subjectId}
+                />
+              );
+            })}
           </div>
         )}
       </div>

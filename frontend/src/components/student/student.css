@@ -204,6 +204,24 @@
     background: var(--button-hover-light);
 }
 
+.student-sidebar-toggle2.dark {
+    background: var(--sidebar-dark);
+    color: var(--text-dark);
+}
+
+.student-sidebar-toggle2.light {
+    background: var(--sidebar-light);
+    color: var(--text-light);
+}
+
+.student-sidebar-toggle2:hover.dark {
+    background: var(--button-hover-dark);
+}
+
+.student-sidebar-toggle2:hover.light {
+    background: var(--button-hover-light);
+}
+
 .student-content {
     width: 100%;
     flex: 1;

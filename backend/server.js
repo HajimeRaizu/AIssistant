@@ -591,40 +591,37 @@ app.post("/api/login", async (req, res) => {
 // 5. Learning materials and exercises functions
 // Get learning materials for the logged-in instructor
 app.get("/api/getLearningMaterials", async (req, res) => {
-  const instructorEmail = req.query.instructorEmail;
+  const { subjectIds } = req.query;
 
   try {
-    let query = db.collection("learningMaterials");
-    if (instructorEmail) {
-      query = query.where("instructorEmail", "==", instructorEmail);
+    if (!subjectIds || !Array.isArray(subjectIds)) {
+      return res.status(400).json({ error: "Invalid subject IDs" });
     }
 
-    const exercisesSnapshot = await query.get();
-    const exercises = exercisesSnapshot.docs.map((doc) => ({
-      docId: doc.id, // Include the document ID
-      ...doc.data(),
-    }));
+    const learningMaterialsRef = db.collection("learningMaterials");
+    const querySnapshot = await learningMaterialsRef.where("subjectId", "in", subjectIds).get();
 
-    // Organize the learning materials by subjectName, lesson, and subtopicCode
-    const organizedLearningMaterials = exercises.reduce((acc, material) => {
+    if (querySnapshot.empty) {
+      return res.status(200).json({});
+    }
+
+    const learningMaterials = {};
+    querySnapshot.forEach((doc) => {
+      const material = doc.data();
       const { subjectName, lesson, subtopicCode } = material;
 
-      if (!acc[subjectName]) {
-        acc[subjectName] = {};
+      if (!learningMaterials[subjectName]) {
+        learningMaterials[subjectName] = {};
       }
 
-      if (!acc[subjectName][lesson]) {
-        acc[subjectName][lesson] = {};
+      if (!learningMaterials[subjectName][lesson]) {
+        learningMaterials[subjectName][lesson] = {};
       }
 
-      if (!acc[subjectName][lesson][subtopicCode]) {
-        acc[subjectName][lesson][subtopicCode] = material;
-      }
+      learningMaterials[subjectName][lesson][subtopicCode] = material;
+    });
 
-      return acc;
-    }, {});
-
-    res.status(200).json(organizedLearningMaterials);
+    res.status(200).json(learningMaterials);
   } catch (error) {
     console.error("Error fetching learning materials:", error);
     res.status(500).json({ error: "Failed to fetch learning materials" });
@@ -860,6 +857,14 @@ app.post("/api/addAccessLearningMaterial", async (req, res) => {
   const { studentId, subjectId } = req.body;
 
   try {
+    // Check if the subjectId exists in the learningMaterials collection
+    const learningMaterialsRef = db.collection("learningMaterials");
+    const querySnapshot = await learningMaterialsRef.where("subjectId", "==", subjectId).get();
+
+    if (querySnapshot.empty) {
+      return res.status(404).json({ error: "Invalid subject code. Please check the code and try again." });
+    }
+
     const accessRef = db.collection("accessLearningMaterials").doc(studentId);
     const accessDoc = await accessRef.get();
 
@@ -972,6 +977,30 @@ app.get("/api/getUserRole", async (req, res) => {
   } catch (error) {
     console.error("Error fetching user role:", error);
     res.status(500).json({ error: "Failed to fetch user role" });
+  }
+});
+
+// Endpoint to remove access to a subject for a student
+app.delete("/api/removeAccessLearningMaterial", async (req, res) => {
+  const { studentId, subjectId } = req.body;
+
+  try {
+    const accessRef = db.collection("accessLearningMaterials").doc(studentId);
+    const accessDoc = await accessRef.get();
+
+    if (!accessDoc.exists) {
+      return res.status(404).json({ error: "Access record not found" });
+    }
+
+    const existingIds = accessDoc.data().subjectIds || [];
+    const updatedIds = existingIds.filter(id => id !== subjectId);
+
+    await accessRef.update({ subjectIds: updatedIds });
+
+    res.status(200).json({ message: "Access removed successfully" });
+  } catch (error) {
+    console.error("Error removing access:", error);
+    res.status(500).json({ error: "Failed to remove access" });
   }
 });
 

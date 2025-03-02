@@ -205,8 +205,9 @@
 }
 
 .instructor-faq-box {
-  height: 250px;
-  font-size: larger;
+    min-height: 280px;
+    max-height: fit-content;
+    font-size: 19px;
 }
 
 .instructor-generate-faq-button {
