@@ -94,6 +94,7 @@ const ExercisesPage = () => {
       } else {
         setHasSubjectCode(false);
         setLearningMaterials({});
+        setTutorial(true);
       }
     } catch (error) {
       console.error("Failed to fetch learning materials:", error);
