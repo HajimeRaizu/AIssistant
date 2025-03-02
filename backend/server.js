@@ -412,50 +412,6 @@ app.post("/api/uploadUsers", upload.single("file"), async (req, res) => {
   }
 });
 
-app.post("/api/addSingleInstructor", async (req, res) => {
-  const { email, name } = req.body;
-
-  try {
-    const instructorsRef = db.collection("instructors");
-    const newInstructorRef = instructorsRef.doc(); // Auto-generate document ID
-    const instructorId = newInstructorRef.id; // Use the auto-generated ID as instructorId
-
-    await newInstructorRef.set({
-      email: email,
-      name: name,
-      instructorId: instructorId, // Optionally store the instructorId
-    });
-
-    res.status(200).json({ message: "Instructor added successfully", instructorId });
-  } catch (error) {
-    console.error("Error adding instructor:", error);
-    res.status(500).json({ error: "Failed to add instructor" });
-  }
-});
-
-app.post("/api/addSingleUser", async (req, res) => {
-  const { name, email } = req.body;
-
-  try {
-    const studentsRef = db.collection("users");
-    const newStudentRef = studentsRef.doc(); // Auto-generate document ID
-    const studentId = newStudentRef.id; // Use the auto-generated ID as studentId
-    const defaultPassword = "N3msuP4zzword"; // Default password
-
-    await newStudentRef.set({
-      email: email,
-      name: name,
-      studentId: studentId,
-      password: defaultPassword,
-    });
-
-    res.status(200).json({ message: "User added successfully", studentId });
-  } catch (error) {
-    console.error("Error adding user:", error);
-    res.status(500).json({ error: "Failed to add user" });
-  }
-});
-
 // Update user information
 app.put("/api/updateUser/:userId", async (req, res) => {
   const { userId } = req.params;
@@ -605,6 +561,47 @@ app.get("/api/getLearningMaterials", async (req, res) => {
       return res.status(200).json({});
     }
 
+    const learningMaterials = {};
+    querySnapshot.forEach((doc) => {
+      const material = doc.data();
+      const { subjectName, lesson, subtopicCode } = material;
+
+      if (!learningMaterials[subjectName]) {
+        learningMaterials[subjectName] = {};
+      }
+
+      if (!learningMaterials[subjectName][lesson]) {
+        learningMaterials[subjectName][lesson] = {};
+      }
+
+      learningMaterials[subjectName][lesson][subtopicCode] = material;
+    });
+
+    res.status(200).json(learningMaterials);
+  } catch (error) {
+    console.error("Error fetching learning materials:", error);
+    res.status(500).json({ error: "Failed to fetch learning materials" });
+  }
+});
+
+// Endpoint to get learning materials for a specific instructor
+app.get("/api/getInstructorLearningMaterials", async (req, res) => {
+  const { instructorEmail } = req.query;
+
+  try {
+    if (!instructorEmail) {
+      return res.status(400).json({ error: "Instructor email is required" });
+    }
+
+    // Query the learningMaterials collection for the instructor's email
+    const learningMaterialsRef = db.collection("learningMaterials");
+    const querySnapshot = await learningMaterialsRef.where("instructorEmail", "==", instructorEmail).get();
+
+    if (querySnapshot.empty) {
+      return res.status(200).json({});
+    }
+
+    // Organize the learning materials by subject, lesson, and subtopic
     const learningMaterials = {};
     querySnapshot.forEach((doc) => {
       const material = doc.data();

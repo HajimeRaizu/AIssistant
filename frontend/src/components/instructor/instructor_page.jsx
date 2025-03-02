@@ -24,8 +24,8 @@ import {
 } from 'recharts';
 
 const InstructorPage = () => {
-  const base_url = `https://aissistant-backend.vercel.app`;
-  //const base_url = `http://localhost:5000`;
+  //const base_url = `https://aissistant-backend.vercel.app`;
+  const base_url = `http://localhost:5000`;
   const fileInputRef = useRef(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [totalQueries, setTotalQueries] = useState(0);
@@ -107,11 +107,11 @@ const InstructorPage = () => {
     const fetchLearningMaterials = async () => {
       try {
         const instructorEmail = localStorage.getItem("userEmail"); // Get the instructor's email from localStorage
-        const response = await axios.get(`${base_url}/api/getLearningMaterials`, {
+        const response = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
           params: { instructorEmail }, // Pass the instructorEmail as a query parameter
         });
         setLearningMaterials(response.data);
-
+    
         // Calculate the number of unique subjects uploaded by the instructor
         const uniqueSubjects = new Set(Object.keys(response.data));
         setTotalLearningMaterials(uniqueSubjects.size);
@@ -304,7 +304,7 @@ const InstructorPage = () => {
           alert("Learning materials uploaded successfully!");
   
           // Fetch the updated learning materials
-          const response = await axios.get(`${base_url}/api/getLearningMaterials`, {
+          const response = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
             params: { instructorEmail },
           });
   
@@ -314,6 +314,7 @@ const InstructorPage = () => {
           // Update the count of unique subjects
           const uniqueSubjects = new Set(Object.keys(response.data));
           setTotalLearningMaterials(uniqueSubjects.size);
+          
   
           // Clear the file input
           if (fileInputRef.current) {

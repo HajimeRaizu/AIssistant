@@ -72,12 +72,6 @@ const ExercisesPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentId]);
 
-  useEffect(() => {
-    if (!hasSubjectCode) {
-      setTutorial(true);
-    }
-  }, [hasSubjectCode]);
-
   const fetchLearningMaterials = async () => {
     try {
       const accessResponse = await axios.get(`${base_url}/api/getAccessLearningMaterials`, {
