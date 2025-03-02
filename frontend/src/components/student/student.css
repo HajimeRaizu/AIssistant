@@ -67,8 +67,8 @@
 }
 
 .student-logout-button.light {
-    background: #e74141;
-    color: var(--text-light);
+    background: #9e4d4d;
+    color: var(--text-dark);
 }
 
 .student-logout-button:hover.dark {
