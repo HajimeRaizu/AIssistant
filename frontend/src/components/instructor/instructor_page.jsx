@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import './instructor_page.css';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -26,11 +26,13 @@ import {
 const InstructorPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
   //const base_url = `http://localhost:5000`;
+  const fileInputRef = useRef(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [totalQueries, setTotalQueries] = useState(0);
   const [queryData, setQueryData] = useState([]);
   const [graphFilter, setGraphFilter] = useState('weekly');
   const [faq, setFaq] = useState("");
+  const [copyButtonText, setCopyButtonText] = useState("Copy");
   const [learningMaterials, setLearningMaterials] = useState({});
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState(null);
@@ -312,6 +314,11 @@ const InstructorPage = () => {
           // Update the count of unique subjects
           const uniqueSubjects = new Set(Object.keys(response.data));
           setTotalLearningMaterials(uniqueSubjects.size);
+  
+          // Clear the file input
+          if (fileInputRef.current) {
+            fileInputRef.current.value = ""; // Reset the file input
+          }
         } else {
           alert("Failed to upload learning materials.");
         }
@@ -403,15 +410,27 @@ const InstructorPage = () => {
       ));
     } else if (!selectedLesson) {
       // Render the list of lessons for the selected subject
+      const subjectData = learningMaterials[selectedSubject];
+      const firstLesson = Object.keys(subjectData)[0]; // Get the first lesson
+      const firstSubtopic = Object.keys(subjectData[firstLesson])[0]; // Get the first subtopic
+      const subjectId = subjectData[firstLesson][firstSubtopic].subjectId; // Access the subjectId from the first subtopic
+  
       return (
         <div>
-          <button
-            className="instructor-back-to-subjects-button"
-            onClick={handleBackToSubjects}
-          >
-            Back to Subjects
-          </button>
-          {Object.keys(learningMaterials[selectedSubject]).map((lesson) => (
+          {/* Display the subjectId and copy button */}
+          <div className="subject-id-container">
+            <p>Subject ID: {subjectId}</p>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(subjectId);
+                setCopyButtonText("Copied");
+                setTimeout(() => setCopyButtonText("Copy"), 2000);
+              }}
+            >
+              {copyButtonText}
+            </button>
+          </div>
+          {Object.keys(subjectData).map((lesson) => (
             <div
               key={lesson}
               className="instructor-exercise-lesson"
@@ -420,12 +439,18 @@ const InstructorPage = () => {
               {`${lesson}`}
             </div>
           ))}
+          <button
+            className="instructor-back-to-subjects-button"
+            onClick={handleBackToSubjects}
+          >
+            Back to Subjects
+          </button>
         </div>
       );
     } else if (!selectedSubtopic) {
       // Render the list of subtopics for the selected lesson
       const subtopics = Object.keys(learningMaterials[selectedSubject][selectedLesson]);
-
+  
       // Sort subtopics numerically
       const sortedSubtopics = subtopics.sort((a, b) => {
         const aParts = a.split('.').map(Number);
@@ -437,15 +462,9 @@ const InstructorPage = () => {
         }
         return aParts.length - bParts.length;
       });
-
+  
       return (
         <div>
-          <button
-            className="instructor-back-to-lessons-button"
-            onClick={handleBackToLessons}
-          >
-            Back to Lessons
-          </button>
           {sortedSubtopics.map((subtopicCode) => {
             const subtopic = learningMaterials[selectedSubject][selectedLesson][subtopicCode];
             return (
@@ -458,16 +477,22 @@ const InstructorPage = () => {
               </div>
             );
           })}
+          <button
+            className="instructor-back-to-lessons-button"
+            onClick={handleBackToLessons}
+          >
+            Back to Lessons
+          </button>
         </div>
       );
     } else {
       // Render the content of the selected subtopic
       const subtopic = learningMaterials[selectedSubject][selectedLesson][selectedSubtopic];
-
+  
       return (
         <div className="instructor-exercise-content">
           <h2>{subtopic.subtopicTitle}</h2>
-
+  
           {/* Content Section */}
           {editingExercise ? (
             <textarea
@@ -480,10 +505,10 @@ const InstructorPage = () => {
           ) : (
             <span>{subtopic.content}</span>
           )}
-
+  
           {/* Images Section */}
           {subtopic.images && <img src={subtopic.images} alt="Subtopic" />}
-
+  
           {/* Exercises Section */}
           <h3>Exercises</h3>
           {editingExercise ? (
@@ -497,7 +522,7 @@ const InstructorPage = () => {
           ) : (
             <span>{subtopic.questions}</span>
           )}
-
+  
           {/* Answers Section */}
           <h3>Answers</h3>
           {editingExercise ? (
@@ -511,37 +536,37 @@ const InstructorPage = () => {
           ) : (
             <span>{subtopic.answers}</span>
           )}
-
+  
           <div className='instructor-content-buttons'>
-          {editingExercise ? (
-            <div className="instructor-e-buttons">
+            {editingExercise ? (
+              <div className="instructor-e-buttons">
+                <button
+                  className="instructor-editing-button"
+                  onClick={handleSaveExercise}
+                >
+                  Save
+                </button>
+                <button
+                  className="instructor-editing-button"
+                  onClick={() => setEditingExercise(null)}
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
               <button
-                className="instructor-editing-button"
-                onClick={handleSaveExercise}
+                onClick={() => {
+                  handleEditExercise({
+                    docId: subtopic.docId, // Pass the document ID
+                    content: subtopic.content,
+                    questions: subtopic.questions,
+                    answers: subtopic.answers,
+                  });
+                }}
               >
-                Save
+                Edit
               </button>
-              <button
-                className="instructor-editing-button"
-                onClick={() => setEditingExercise(null)}
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => {
-                handleEditExercise({
-                  docId: subtopic.docId, // Pass the document ID
-                  content: subtopic.content,
-                  questions: subtopic.questions,
-                  answers: subtopic.answers,
-                });
-              }}
-            >
-              Edit
-            </button>
-          )}
+            )}
             <button onClick={handleBackToSubtopics}>Back to Subtopics</button>
             <button onClick={handleBackToLessons}>Back to Lessons</button>
             <button onClick={handleBackToSubjects}>Back to Subjects</button>
@@ -709,6 +734,7 @@ const InstructorPage = () => {
               type="file" 
               accept=".xlsx" 
               onChange={handleUploadLearningMaterials} 
+              ref={fileInputRef}
             />
             <p>Upload an Excel file to update learning materials.</p>
             <div className="instructor-exercises-container">

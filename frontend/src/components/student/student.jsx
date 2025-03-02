@@ -6,6 +6,9 @@ import axios from "axios";
 import { LuBookMarked } from "react-icons/lu";
 import { MdOutlineDelete, MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import logo from '../assets/AIssistant.png';
+import { FaEdit } from "react-icons/fa";
+import { IoMdCloseCircleOutline } from "react-icons/io";
+import { LuSave } from "react-icons/lu";
 
 const StudentPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -26,6 +29,8 @@ const StudentPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreatingNewChat, setIsCreatingNewChat] = useState(false);
   const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
+  const [editingChatId, setEditingChatId] = useState(null);
+  const [newChatName, setNewChatName] = useState("");
   const navigate = useNavigate();
   const textareaRef = useRef(null);
   const chatBodyRef = useRef(null);
@@ -45,11 +50,9 @@ const StudentPage = () => {
           });
           const role = response.data.role;
   
-          // Update both state and localStorage
           setUserRole(role);
           localStorage.setItem("userRole", role);
   
-          // Navigate based on the fetched role
           if (role === "student") {
             return
           } else if (role === "admin") {
@@ -118,53 +121,53 @@ const StudentPage = () => {
     if (input.trim() === "") return;
     const textarea = document.querySelector(".student-chat-input textarea");
     if (textarea) {
-      textarea.style.height = "auto"; // Reset height to initial
+      textarea.style.height = "auto";
     }
 
     if (isCreatingNewChat) {
       await createNewChat();
       return;
     }
-
+  
     const newMessages = [
       ...messages,
       { text: input, sender: "user", timestamp: new Date().toLocaleString() },
     ];
     setMessages(newMessages);
-
+  
     setInput("");
-    setIsDisabled(true); // Disable the submit button
+    setIsDisabled(true);
     setIsTyping(true);
-
+  
     try {
       const response = await fetch(`${base_url}/api/llama`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ input, userId }),
+        body: JSON.stringify({ input, userId, chatId: currentChatId }),
       });
-
+  
       const reader = response.body.getReader();
       let botText = "";
-
+  
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
+  
         const chunk = new TextDecoder().decode(value);
         botText += chunk;
-
+  
         const updatedMessages = [
           ...newMessages,
           { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
         ];
         setMessages(updatedMessages);
       }
-
+  
       const currentChat = chats.find(chat => chat.id === currentChatId);
       const chatNameToStore = currentChat?.chatName || "Unnamed Chat";
-
+  
       await axios.post(`${base_url}/api/storeChat`, {
         chatId: currentChatId,
         messages: [
@@ -183,7 +186,7 @@ const StudentPage = () => {
       setMessages(updatedMessages);
     } finally {
       setIsTyping(false);
-      setIsDisabled(false); // Re-enable the submit button
+      setIsDisabled(false);
     }
   };
 
@@ -193,7 +196,7 @@ const StudentPage = () => {
       setInput((prevInput) => prevInput + "\n");
     } else if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      if (!isDisabled) { // Check if the submit button is disabled
+      if (!isDisabled) {
         handleSend();
       }
       setInput("");
@@ -211,7 +214,7 @@ const StudentPage = () => {
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isAuthenticated");
-    navigate("/"); // Redirect to the login page
+    navigate("/");
   };
 
   const formatMessageText = (text, sender) => {
@@ -265,57 +268,59 @@ const StudentPage = () => {
 
   const createNewChat = async () => {
     if (input.trim() === "") return;
-
+  
     setIsSubmitting(true);
     setIsCreatingNewChat(true);
-
+  
     try {
       const response = await axios.post(`${base_url}/api/createChat`, {
         userId,
         firstMessage: input,
       });
-
+  
       const newChat = response.data;
+      const newChatId = newChat.id;
+  
       setChats([newChat, ...chats]);
-      setCurrentChatId(newChat.id);
+      setCurrentChatId(newChatId);
       setMessages([]);
-
+  
       const newMessages = [
         { text: input, sender: "user", timestamp: new Date().toLocaleString() },
       ];
       setMessages(newMessages);
       setInput("");
-
+  
       setIsDisabled(true);
       setIsTyping(true);
-
+  
       const aiResponse = await fetch(`${base_url}/api/llama`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ input, userId }),
+        body: JSON.stringify({ input, userId, chatId: newChatId }),
       });
-
+  
       const reader = aiResponse.body.getReader();
       let botText = "";
-
+  
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
+  
         const chunk = new TextDecoder().decode(value);
         botText += chunk;
-
+  
         const updatedMessages = [
           ...newMessages,
           { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
         ];
         setMessages(updatedMessages);
       }
-
+  
       await axios.post(`${base_url}/api/storeChat`, {
-        chatId: newChat.id,
+        chatId: newChatId,
         messages: [
           ...newMessages,
           { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
@@ -375,6 +380,36 @@ const StudentPage = () => {
     setCurrentChatId(null);
   };
 
+  const handleEditChat = (chatId, currentChatName) => {
+    setEditingChatId(chatId);
+    setNewChatName(currentChatName);
+  };
+
+  const handleSaveChatName = async (chatId) => {
+    if (newChatName.trim() === "") return;
+
+    try {
+      await axios.put(`${base_url}/api/updateChatName`, {
+        chatId,
+        chatName: newChatName,
+      });
+
+      setChats(chats.map(chat => 
+        chat.id === chatId ? { ...chat, chatName: newChatName } : chat
+      ));
+
+      setEditingChatId(null);
+      setNewChatName("");
+    } catch (error) {
+      console.error("Failed to update chat name:", error);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingChatId(null);
+    setNewChatName("");
+  };
+
   if (isLoading) {
     return <div className={`student-loading-container ${theme}`}>Loading...</div>;
   }
@@ -397,7 +432,7 @@ const StudentPage = () => {
         <button 
           className="student-new-chat" 
           onClick={handleNewChatClick} 
-          disabled={isDisabled} // Disable the button when isDisabled is true
+          disabled={isDisabled}
         >
           New Chat
         </button>
@@ -405,28 +440,77 @@ const StudentPage = () => {
           {chats.map(chat => (
             <div
               key={chat.id}
-              className={`student-chat-item ${chat.id === currentChatId ? 'active' : ''} ${theme} ${isDisabled ? 'disabled' : ''}`} // Add 'disabled' class when isDisabled is true
+              className={`student-chat-item ${chat.id === currentChatId ? 'active' : ''} ${theme} ${isDisabled ? 'disabled' : ''}`}
               onClick={() => {
-                if (!isDisabled) { // Only allow navigation if not disabled
+                if (!isDisabled && editingChatId !== chat.id) {
                   setCurrentChatId(chat.id);
                   fetchChatHistory(chat.id);
                   setSelectedTab("chat");
                 }
               }}
             >
-              {chat.chatName || `Chat ${chat.id}`}
-              <button 
-                className="student-delete-chat" 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!isDisabled) { // Only allow deletion if not disabled
-                    handleDeleteChat(chat.id);
-                  }
-                }}
-                disabled={isDisabled} // Disable the delete button when isDisabled is true
-              >
-                <MdOutlineDelete className={`student-delete-icon ${theme}`} />
-              </button>
+              {editingChatId === chat.id ? (
+                <input
+                  type="text"
+                  value={newChatName}
+                  onChange={(e) => setNewChatName(e.target.value)}
+                  className={`student-chat-name-input ${theme}`}
+                  autoFocus
+                />
+              ) : (
+                <span>{chat.chatName || `Chat ${chat.id}`}</span>
+              )}
+              <div className="student-chat-actions">
+                {editingChatId === chat.id ? (
+                  <>
+                    <button
+                      className={`student-save-chat ${theme}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSaveChatName(chat.id);
+                      }}
+                      disabled={isDisabled}
+                    >
+                      <LuSave />
+                    </button>
+                    <button
+                      className={`student-cancel-edit ${theme}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCancelEdit();
+                      }}
+                      disabled={isDisabled}
+                    >
+                      <IoMdCloseCircleOutline />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className={`student-edit-chat ${theme}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditChat(chat.id, chat.chatName);
+                      }}
+                      disabled={isDisabled}
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      className={`student-delete-chat ${theme}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!isDisabled) {
+                          handleDeleteChat(chat.id);
+                        }
+                      }}
+                      disabled={isDisabled}
+                    >
+                      <MdOutlineDelete className={`student-delete-icon ${theme}`} />
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -444,7 +528,7 @@ const StudentPage = () => {
           <div className="student-chat-container">
             <div className={`student-chat-header ${theme}`}>
               <h2>AIssistant Chat</h2>
-              <p className="student-disclaimer">This chat will respond to queries in any language.</p>
+              <p className="student-disclaimer">This chat will respond to any programming language.</p>
             </div>
             <div className={`student-chat-body ${theme}`} ref={chatBodyRef}>
               {messages.map((message, index) => (

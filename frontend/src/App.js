@@ -16,7 +16,11 @@ function App() {
       <Routes>
         <Route path='/' element={<AIssistant />} />
         <Route path='/user-type' element={<UserType />}/>
-        <Route path='/student-landing' element={<StudentLanding/>}/>
+        <Route path='/student-landing' element={
+          <ProtectedRoute>
+            <StudentLanding/>
+          </ProtectedRoute>
+          }/>
         <Route path='/admin' element={
           <ProtectedRoute>
             <AdminPage />

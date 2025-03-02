@@ -237,6 +237,10 @@
     color: black;
 }
 
+.instructor-manage-learning-materials-tab input{
+    border: none;
+}
+
 .instructor-search-bar {
     margin-bottom: 20px;
 }
@@ -523,7 +527,6 @@
 .instructor-instructors-table input {
     width: 100%;
     padding: 5px;
-    border: 1px solid #ccc;
     border-radius: 5px;
     font-family: "Host Grotesk", sans-serif;
 }
@@ -702,7 +705,7 @@
     margin-bottom: 10px;
 }
 
-.instructor-exercise-content button, .instructor-back-to-subjects-button {
+.instructor-exercise-content button, .instructor-back-to-subjects-button, .instructor-back-to-lessons-button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -743,3 +746,23 @@
         display: none;
     }
 }
+
+.subject-id-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .subject-id-container button {
+    padding: 5px 10px;
+    background-color: #005f9e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .subject-id-container button:hover {
+    background-color: #004080;
+  }

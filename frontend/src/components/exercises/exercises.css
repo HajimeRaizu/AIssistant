@@ -485,6 +485,7 @@ button {
     display: flex;
     align-items: center;
     flex-direction: row;
+    justify-content: space-between;
 }
 
 .exercises-header{
@@ -492,11 +493,9 @@ button {
     flex-direction: row;
     justify-content: center;
     right: 0;
-    width: 100%;
 }
 
 .exercises-header-buttons{
-    width: 100dvw;
     display: flex;
     flex-direction: row;
     direction: rtl;
@@ -642,4 +641,12 @@ button {
     width: 42px;
     height: 42px;
     border-radius: 20px;
+}
+
+.exercise-tutorial{
+    display: none;
+}
+
+.exercise-tutorial-highlight{
+    display: none;
 }

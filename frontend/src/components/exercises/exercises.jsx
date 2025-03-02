@@ -10,6 +10,7 @@ const ExercisesPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
   //const base_url = `http://localhost:5000`;
   const [selectedSubject, setSelectedSubject] = useState(null);
+  const [tutorial, setTutorial] = useState(true);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState(null);
   const [theme, setTheme] = useState("light");
@@ -44,6 +45,12 @@ const ExercisesPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentId]);
 
+  useEffect(() =>{
+    if(hasSubjectCode){
+      setTutorial(false);
+    }
+  });
+
   const fetchLearningMaterials = async () => {
     try {
       const accessResponse = await axios.get(`${base_url}/api/getAccessLearningMaterials`, {
@@ -67,6 +74,14 @@ const ExercisesPage = () => {
       setIsLoading(false);
     }
   };
+
+  const handleTutorial = () =>{
+    if (hasSubjectCode){
+      setTutorial(false);
+    } else {
+      setTutorial(false);
+    }
+  }
 
   const handleSubjectClick = (subject) => {
     setSelectedSubject(subject);
@@ -195,6 +210,8 @@ const ExercisesPage = () => {
     } catch (error) {
       console.error("Failed to add subject ID:", error);
       alert(`Failed to add subject ID: ${error.response?.data?.error || error.message}`);
+    } finally{
+      setSubjectId("");
     }
   };
 
@@ -204,6 +221,14 @@ const ExercisesPage = () => {
 
   return (
     <div className={`exercises-page ${theme}`}>
+      <div className={`exercise-tutorial-highlight ${tutorial}`} onClick={handleTutorial}></div>
+      <div className={`exercise-tutorial ${tutorial}`} onClick={handleTutorial}>
+        <span>
+          <p>click here to add</p>
+          <p>a subject using a</p>
+          <p>subject code</p>
+        </span>
+      </div>
       <div className={`exercises-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar}/>
       <div className={`exercises-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
         <h2>Subjects</h2>
@@ -231,7 +256,7 @@ const ExercisesPage = () => {
             ))}
           </ul>
         ) : (
-          <p>No subject IDs added yet. Please add a subject ID to view learning materials.</p>
+          <p style={{paddingTop: '10px'}}>No subject IDs added yet. Please add a subject ID to view learning materials.</p>
         )}
         <button className={`exercises-logout-button ${theme}`} onClick={handleLogout}>
           Logout
