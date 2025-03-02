@@ -524,6 +524,9 @@ const StudentPage = () => {
         <button className={`student-sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} onClick={toggleSidebar}>
           {isSidebarVisible ? <MdChevronLeft /> : <MdChevronRight />}
         </button>
+        <button className={`student-sidebar-toggle2 ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} onClick={toggleSidebar}>
+          {isSidebarVisible ? <MdChevronRight /> : <MdChevronLeft />}
+        </button>
       </div>
 
       {currentChatId && (

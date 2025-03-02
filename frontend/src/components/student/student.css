@@ -161,6 +161,10 @@
     transform: translateX(0);
 }
 
+.student-sidebar-toggle2{
+    display: none;
+}
+
 .student-sidebar-toggle {
     position: absolute;
     top: 0px;
@@ -381,6 +385,7 @@
     font-size: 10px;
     margin-top: 5px;
     align-self: last baseline;
+    direction: ltr;
 }
 
 .student-message .student-timestamp.dark {

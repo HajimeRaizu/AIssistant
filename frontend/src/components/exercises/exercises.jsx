@@ -20,23 +20,50 @@ const ExercisesPage = () => {
   const [subjectId, setSubjectId] = useState("");
   const [studentId, setStudentId] = useState("");
   const [hasSubjectCode, setHasSubjectCode] = useState(false);
+  const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
   const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Add this line
   const navigate = useNavigate();
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
   const userId = localStorage.getItem("userId");
   const userName = localStorage.getItem("userName");
-  const userRole = localStorage.getItem("userRole");
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
   
   useEffect(() => {
-    if (!userId || userRole !== 'student') {
-      navigate("/user-type");
-    } else {
-      setStudentId(userId);
-    }
-  }, [userId, navigate]);
+    const fetchUserRole = async () => {
+      if (userEmail) {
+        try {
+          const response = await axios.get(`${base_url}/api/getUserRole`, {
+            params: { email: userEmail }
+          });
+          const role = response.data.role;
+  
+          setUserRole(role);
+          localStorage.setItem("userRole", role);
+  
+          if (role === "student") {
+            return
+          } else if (role === "admin") {
+            navigate("/admin");
+          } else if (role === "instructor") {
+            navigate("/instructor");
+          } else {
+            navigate("/user-type");
+          }
+        } catch (error) {
+          console.error("Failed to fetch user role:", error);
+          navigate("/user-type");
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        navigate("/user-type");
+      }
+    };
+  
+    fetchUserRole();
+  }, [userId, userEmail, navigate]);
 
   useEffect(() => {
     if (studentId) {
@@ -272,6 +299,12 @@ const ExercisesPage = () => {
         onClick={toggleSidebar}
       >
         {isSidebarVisible ? <MdChevronLeft /> : <MdChevronRight />}
+      </button>
+      <button 
+        className={`exercises-sidebar-toggle2 ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} 
+        onClick={toggleSidebar}
+      >
+        {isSidebarVisible ? <MdChevronRight /> : <MdChevronLeft />}
       </button>
 
       <div className={`exercises-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>

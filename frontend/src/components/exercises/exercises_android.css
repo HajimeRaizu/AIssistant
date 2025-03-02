@@ -18,7 +18,18 @@
         transform: translateX(0);
     }
 
-    .exercises-sidebar-toggle {
+    .exercises-sidebar-toggle{
+        display: none;
+    }
+
+    .exercises-sidebar-toggle2 {
+        display: flex;
+        position: absolute;
+        padding: 10px;
+        border: none;
+        border-radius: 0px 5px 5px 0px;
+        cursor: pointer;
+        font-family: "Host Grotesk", sans-serif;
         position: fixed; /* Position the toggle button above the content */
         top: 10px;
         left: 70%;
@@ -26,11 +37,11 @@
         z-index: 1001; /* Ensure it's above the sidebar */
     }
 
-    .exercises-sidebar-toggle.sidebar-hidden {
+    .exercises-sidebar-toggle2.sidebar-hidden {
         transform: translateX(0); /* No translation when sidebar is hidden */
     }
 
-    .exercises-sidebar-toggle.sidebar-visible {
+    .exercises-sidebar-toggle2.sidebar-visible {
         left: 0; /* Move toggle button when sidebar is visible */
     }
 

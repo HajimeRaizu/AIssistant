@@ -44,18 +44,37 @@
         margin-left: 0;
     }
 
-    .student-sidebar-toggle {
+    .student-sidebar-toggle{
+        display: none;
+    }
+
+    .student-sidebar-toggle2 {
+        display: flex;
+        position: absolute;
+        padding: 10px;
+        border: none;
+        border-radius: 0px 5px 5px 0px;
+        cursor: pointer;
+        font-family: "Host Grotesk", sans-serif;
+        position: fixed; /* Position the toggle button above the content */
+        top: 10px;
+        left: 70%;
+        transition: left 0.3s ease-in-out;
+        z-index: 1001; /* Ensure it's above the sidebar */
+    }
+
+    .student-sidebar-toggle2 {
         position: fixed; /* Position the toggle button above the content */
         top: 10px;
         left: 100%;
         z-index: 1001; /* Ensure it's above the sidebar */
     }
 
-    .student-sidebar-toggle.hidden {
+    .student-sidebar-toggle2.hidden {
         transform: translateX(0); /* No translation when sidebar is hidden */
     }
 
-    .student-sidebar-toggle.visible {
+    .student-sidebar-toggle2.visible {
         transform: translateX(100%); /* Move toggle button when sidebar is visible */
     }
 

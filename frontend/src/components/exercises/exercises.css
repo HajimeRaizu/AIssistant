@@ -600,6 +600,10 @@ button {
     color: white;
 }
 
+.exercises-sidebar-toggle2{
+    display: none;
+}
+
 .exercises-sidebar-toggle {
     position: absolute;
     top: 0px;
