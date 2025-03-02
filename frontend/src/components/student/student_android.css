@@ -114,4 +114,9 @@
     .userPicture, .userName{
         display: none;
     }
+
+    .student-header-buttons{
+        top: 10px;
+        right: 10px;
+    }
 }
