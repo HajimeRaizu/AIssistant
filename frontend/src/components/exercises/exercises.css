@@ -691,15 +691,15 @@ button {
 }
   
 .subject-box:nth-child(3n + 1) {
-    background: #ff4d4d; /* Red */
+    background: linear-gradient(150deg, #ff4d4d, #ffc6c6); /* Red */
 }
   
 .subject-box:nth-child(3n + 2) {
-    background: #4d79ff; /* Blue */
+    background: linear-gradient(150deg, #4d79ff, #c0d0ff); /* Blue */
 }
   
 .subject-box:nth-child(3n + 3) {
-    background: #ffcc00; /* Yellow */
+    background: linear-gradient(150deg, #ffcc00, #fff2bd); /* Yellow */
 }
   
 .subject-box-header {
