@@ -302,7 +302,7 @@ const ExercisesPage = () => {
           </div>
           {showOptions === subjectId && (
             <div className="subject-box-options-menu">
-              <button onClick={() => handleRemoveAccess(subjectId)}>Remove Access</button>
+              <button onClick={() => handleRemoveAccess(subjectId)}>Remove</button>
             </div>
           )}
         </div>
