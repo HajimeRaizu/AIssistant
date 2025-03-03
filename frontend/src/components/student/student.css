@@ -341,7 +341,7 @@
 
 .student-message.bot {
     user-select: none;
-    width: fit-content;
+    width: 95%;
     padding: 8px 12px;
     border-radius: 8px;
     position: relative;
@@ -628,6 +628,9 @@ textarea:focus {
     border-radius: 8px;
     overflow-x: auto;
     transition: background 0.3s ease, color 0.3s ease;
+    max-width: 100%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
   
   /* Light mode styles */
