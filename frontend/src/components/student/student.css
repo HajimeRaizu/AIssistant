@@ -646,59 +646,59 @@ textarea:focus {
     border: 1px solid #444;
   }
 
-.student-exercises-section {
+.student-exercise-section {
     height: 215px;
 }
 
-.student-exercises-container {
+.student-exercise-container {
     width: 100%;
     height: 100%;
     overflow: auto;
     padding: 20px;
 }
 
-.student-exercises-container.dark {
+.student-exercise-container.dark {
     background: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.student-exercises-container.light {
+.student-exercise-container.light {
     background: var(--bg-light);
     color: var(--text-light);
 }
 
-.student-exercises-container h1 {
+.student-exercise-container h1 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-.student-exercises-list {
+.student-exercise-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
 }
 
-.student-exercise-item {
+.student-student-item {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.student-exercise-item.dark {
+.student-student-item.dark {
     background: var(--tab-dark);
     color: var(--text-dark);
 }
 
-.student-exercise-item.light {
+.student-student-item.light {
     background: var(--tab-light);
     color: var(--text-light);
 }
 
-.student-exercise-item h3 {
+.student-student-item h3 {
     margin: 10px 0px 10px 0px;
 }
 
-.student-exercise-item p {
+.student-student-item p {
     font-size: 14px;
 }
 
@@ -877,37 +877,37 @@ textarea:focus {
     color: var(--text-light);
 }
 
-.student-exercises-button {
+.student-exercise-button {
     align-self: center;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    top: 2dvh;
-    right: 2dvw;
+    top: 20px;
+    right: 20px;
     padding: 12px; /* Increased padding */
     border-radius: 10dvh;
     border: none;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    font-size: large;
+    font-size: smaller;
 }
 
-.student-exercises-button.dark {
+.student-exercise-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.student-exercises-button.light {
+.student-exercise-button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.student-exercises-button:hover.dark {
+.student-exercise-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.student-exercises-button:hover.light {
+.student-exercise-button:hover.light {
     background: var(--button-hover-light);
 }
 
@@ -1352,4 +1352,28 @@ textarea:focus {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.student-tutorial{
+    display: none;
+}
+
+.student-tutorial2{
+    display: none;
+}
+
+.student-tutorial3{
+    display: none;
+}
+
+.student-tutorial-highlight{
+    display: none;
+}
+
+.student-tutorial-highlight2{
+    display: none;
+}
+
+.student-tutorial-highlight3{
+    display: none;
 }

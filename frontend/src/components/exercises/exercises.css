@@ -207,7 +207,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    top: 2dvh;
+    top: 20px;
     padding: 12px; /* Increased padding */
     border: none;
     cursor: pointer;
@@ -506,8 +506,8 @@ button {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    top: 2dvh;
-    right: 2dvw;
+    top: 20px;
+    right: 20px;
     padding: 12px; /* Increased padding */
     border-radius: 10dvh;
     border: none;
@@ -667,13 +667,30 @@ button {
     display: none;
 }
 
+.exercise-tutorial2{
+    display: none;
+}
+
+.exercise-tutorial3{
+    display: none;
+}
+
 .exercise-tutorial-highlight{
+    display: none;
+}
+
+.exercise-tutorial-highlight2{
+    display: none;
+}
+
+.exercise-tutorial-highlight3{
     display: none;
 }
 
 .exercises-profile{
     display: none;
 }
+
 .subject-boxes {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3 columns per row */

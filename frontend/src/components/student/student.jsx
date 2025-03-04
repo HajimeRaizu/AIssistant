@@ -13,6 +13,9 @@ import { LuSave } from "react-icons/lu";
 const StudentPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
   //const base_url = `http://localhost:5000`;
+  const [tutorial, setTutorial] = useState(false);
+  const [tutorial2, setTutorial2] = useState(false);
+  const [tutorial3, setTutorial3] = useState(false);
   const [selectedTab, setSelectedTab] = useState("chat");
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [messages, setMessages] = useState([]);
@@ -88,6 +91,7 @@ const StudentPage = () => {
           setCurrentChatId(response.data[0].id);
           await fetchChatHistory(response.data[0].id);
         } else {
+          setTutorial(true);
           handleNewChatClick();
         }
       } catch (error) {
@@ -225,6 +229,18 @@ const StudentPage = () => {
         handleSend();
       }
       setInput("");
+    }
+  };
+
+  const handleTutorial = () => {
+    if (tutorial){
+      setTutorial(false);
+      setTutorial2(true);
+    } else if (!tutorial && tutorial2){
+      setTutorial2(false);
+      setTutorial3(true);
+    } else if (!tutorial && !tutorial2){
+      setTutorial3(false);
     }
   };
 
@@ -631,13 +647,36 @@ const StudentPage = () => {
 
   return (
     <div className={`student-container ${theme}`}>
+      <div className={`student-tutorial-highlight ${tutorial}`} onClick={handleTutorial}></div>
+      <div className={`student-tutorial ${tutorial}`} onClick={handleTutorial}>
+        <span>
+          <p>click here to add</p>
+          <p>a subject using a</p>
+          <p>subject code</p>
+        </span>
+      </div>
+      <div className={`student-tutorial-highlight2 ${tutorial2}`} onClick={handleTutorial}></div>
+      <div className={`student-tutorial2 ${tutorial2}`} onClick={handleTutorial}>
+        <span>
+          <p>click here to navigate</p>
+          <p>to AIssistant chat</p>
+        </span>
+      </div>
+      <div className={`student-tutorial-highlight3 ${tutorial3}`} onClick={handleTutorial}></div>
+      <div className={`student-tutorial3 ${tutorial3}`} onClick={handleTutorial}>
+        <span>
+          <p>click here to toggle</p>
+          <p>light mode and</p>
+          <p>dark mode</p>
+        </span>
+      </div>
       <div className="student-header-buttons">
         <div className="userName" style={{ paddingLeft: '10px' }}>{userName}</div>
         <img src={userPicture} className='userPicture' alt="" />
-        <button className={`student-theme-toggle ${theme}`} onClick={toggleTheme}>
+        <button className={`student-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
           {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
         </button>
-        <button className={`student-exercises-button ${theme}`} onClick={() => navigate('/exercises')}>
+        <button className={`student-exercise-button ${theme} ${tutorial2}`} onClick={() => navigate('/exercises')}>
           <LuBookMarked />
         </button>
       </div>

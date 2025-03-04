@@ -11,6 +11,8 @@ const ExercisesPage = () => {
   //const base_url = `http://localhost:5000`;
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [tutorial, setTutorial] = useState(false);
+  const [tutorial2, setTutorial2] = useState(false);
+  const [tutorial3, setTutorial3] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState(null);
   const [theme, setTheme] = useState("light");
@@ -98,10 +100,14 @@ const ExercisesPage = () => {
   };
 
   const handleTutorial = () => {
-    if (hasSubjectCode) {
+    if (tutorial){
       setTutorial(false);
-    } else {
-      setTutorial(false);
+      setTutorial2(true);
+    } else if (!tutorial && tutorial2){
+      setTutorial2(false);
+      setTutorial3(true);
+    } else if (!tutorial && !tutorial2){
+      setTutorial3(false);
     }
   };
 
@@ -326,6 +332,21 @@ const ExercisesPage = () => {
           <p>subject code</p>
         </span>
       </div>
+      <div className={`exercise-tutorial-highlight2 ${tutorial2}`} onClick={handleTutorial}></div>
+      <div className={`exercise-tutorial2 ${tutorial2}`} onClick={handleTutorial}>
+        <span>
+          <p>click here to navigate</p>
+          <p>to AIssistant chat</p>
+        </span>
+      </div>
+      <div className={`exercise-tutorial-highlight3 ${tutorial3}`} onClick={handleTutorial}></div>
+      <div className={`exercise-tutorial3 ${tutorial3}`} onClick={handleTutorial}>
+        <span>
+          <p>click here to toggle</p>
+          <p>light mode and</p>
+          <p>dark mode</p>
+        </span>
+      </div>
       <div className={`exercises-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar} />
       <div className={`exercises-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
         <div className="student-profile">
@@ -338,7 +359,7 @@ const ExercisesPage = () => {
             type="text"
             value={subjectId}
             onChange={(e) => setSubjectId(e.target.value)}
-            placeholder="Enter subject ID"
+            placeholder="Enter subject code"
           />
         </div>
         <button onClick={handleSubjectCodeSubmit} className={`submit-button ${theme}`}>
@@ -385,10 +406,10 @@ const ExercisesPage = () => {
           <div className="exercises-header-buttons">
             <div className='userName' style={{ paddingLeft: '10px' }}>{userName}</div>
             <img src={userPicture} className='userPicture' alt="" />
-            <button className={`exercises-theme-toggle ${theme}`} onClick={toggleTheme}>
+            <button className={`exercises-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
               {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
             </button>
-            <button className={`exercises-chat-button ${theme}`} onClick={() => navigate('/student')}>
+            <button className={`exercises-chat-button ${theme} ${tutorial2}`} onClick={() => navigate('/student')}>
               <IoIosChatboxes />
             </button>
           </div>
