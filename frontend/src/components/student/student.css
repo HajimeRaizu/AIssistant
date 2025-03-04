@@ -462,7 +462,7 @@
     font-size: 18px;
     overflow-y: auto;
     border: none;
-    min-height: fit-content;
+    height: auto;
     max-height: 168px;
     white-space: pre-wrap;
 }
@@ -627,7 +627,6 @@ textarea:focus {
     padding: 15px;
     border-radius: 8px;
     overflow-x: auto;
-    transition: background 0.3s ease, color 0.3s ease;
     max-width: 100%;
     white-space: pre-wrap;
     word-wrap: break-word;
@@ -1347,4 +1346,10 @@ textarea:focus {
 .student-aissistant.ai{
     color: rgb(86, 86, 255);
     padding: 0;
+}
+
+.student-chat-group{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

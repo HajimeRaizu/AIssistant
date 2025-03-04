@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+*{
+  transition: background 0.2s ease, color 0.1s ease;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

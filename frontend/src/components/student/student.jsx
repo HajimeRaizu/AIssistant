@@ -193,7 +193,32 @@ const StudentPage = () => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
-      setInput((prevInput) => prevInput + "\n");
+  
+      const textarea = textareaRef.current;
+      if (!textarea) return;
+  
+      const cursorPosition = textarea.selectionStart;
+      const currentValue = input;
+  
+      // Insert the newline at the cursor position
+      const newValue =
+        currentValue.slice(0, cursorPosition) + "\n" + currentValue.slice(cursorPosition);
+  
+      setInput(newValue);
+  
+      // Wait for state update before adjusting height and scrolling
+      requestAnimationFrame(() => {
+        textarea.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+  
+        // Resize textarea and ensure cursor is visible
+        setTimeout(() => {
+          textarea.style.height = "auto"; // Reset height
+          textarea.style.height = `${textarea.scrollHeight}px`; // Adjust height dynamically
+  
+          // Scroll to keep the cursor visible
+          textarea.scrollTop = textarea.scrollHeight;
+        }, 0);
+      });
     } else if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (!isDisabled) {
@@ -219,35 +244,54 @@ const StudentPage = () => {
 
   const formatMessageText = (text, sender) => {
     if (!text) return null;
-
+  
     if (sender === "bot") {
-      const boldTextRegex = /\*\*(.*?)\*\*/g;
-      const codeBlockRegex = /```([\s\S]*?)```/g;
-
+      const boldTextRegex = /\*\*(.*?)\*\*/g; // Matches **bold** text
+      const codeBlockRegex = /```([\s\S]*?)```/g; // Matches ```code blocks```
+      const headingRegex = /###\s*(.*?)\n/g; // Matches ### headings
+  
+      // Split the text by code blocks first
       const parts = text.split(codeBlockRegex);
-
+  
       return parts.map((part, index) => {
         if (index % 2 === 1) {
+          // This is a code block
           return (
             <pre key={index} className={`student-code-block ${theme}`}>
               <code>{part}</code>
             </pre>
           );
         }
-
-        const boldParts = part.split(boldTextRegex);
+  
+        // Process headings and bold text in non-code parts
+        const headingParts = part.split(headingRegex);
         return (
           <span key={index} className="student-message-text" style={{ whiteSpace: 'pre-wrap' }}>
-            {boldParts.map((boldPart, boldIndex) => {
-              if (boldIndex % 2 === 1) {
-                return <strong key={boldIndex}>{boldPart}</strong>;
+            {headingParts.map((headingPart, headingIndex) => {
+              if (headingIndex % 2 === 1) {
+                // This is a heading (###)
+                return <h3 key={headingIndex}>{headingPart}</h3>;
               }
-              return boldPart;
+  
+              // Process bold text in non-heading parts
+              const boldParts = headingPart.split(boldTextRegex);
+              return (
+                <span key={headingIndex}>
+                  {boldParts.map((boldPart, boldIndex) => {
+                    if (boldIndex % 2 === 1) {
+                      // This is bold text (**)
+                      return <strong key={boldIndex}>{boldPart}</strong>;
+                    }
+                    return boldPart;
+                  })}
+                </span>
+              );
             })}
           </span>
         );
       });
     } else {
+      // For user messages, just render the text as is
       return (
         <span className="student-message-text" style={{ whiteSpace: 'pre-wrap' }}>
           {text}
@@ -257,14 +301,24 @@ const StudentPage = () => {
   };
 
   const handleInputChange = (e) => {
-    setInput(e.target.value);
-
     const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = "auto";
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 7 * 24)}px`;
-    }
+    if (!textarea) return;
+  
+    const value = e.target.value;
+    const cursorPosition = textarea.selectionStart; // Save cursor position
+  
+    setInput(value); // Update state
+  
+    // Reset height and adjust dynamically
+    textarea.style.height = "auto"; // Reset height
+    textarea.style.height = `${textarea.scrollHeight}px`; // Adjust height based on content
+  
+    // Restore cursor position after state update
+    setTimeout(() => {
+      textarea.setSelectionRange(cursorPosition, cursorPosition); // Restore cursor position
+    }, 0);
   };
+  
 
   const createNewChat = async () => {
     if (input.trim() === "") return;
@@ -410,36 +464,64 @@ const StudentPage = () => {
     setNewChatName("");
   };
 
-  if (isLoading) {
-    return <div className={`student-loading-container ${theme}`}>Loading...</div>;
-  }
+  const groupChatsByDate = (chats) => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+    const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+    const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
+  
+    // Initialize grouped chats object
+    const groupedChats = {
+      today: [],
+      yesterday: [],
+      last7Days: [],
+      last30Days: [],
+      months: {}, // Only for the current year
+      years: {}, // For previous years
+    };
+  
+    chats.forEach(chat => {
+      const chatDate = new Date(chat.createdAt);
+  
+      if (chatDate >= today) {
+        groupedChats.today.push(chat);
+      } else if (chatDate >= yesterday) {
+        groupedChats.yesterday.push(chat);
+      } else if (chatDate >= sevenDaysAgo) {
+        groupedChats.last7Days.push(chat);
+      } else if (chatDate >= thirtyDaysAgo) {
+        groupedChats.last30Days.push(chat);
+      } else {
+        const chatMonth = chatDate.toLocaleString('default', { month: 'long' });
+        const chatYear = chatDate.getFullYear();
+  
+        // Group by month (only for the current year)
+        if (chatYear === now.getFullYear()) {
+          if (!groupedChats.months[chatMonth]) {
+            groupedChats.months[chatMonth] = [];
+          }
+          groupedChats.months[chatMonth].push(chat);
+        }
+  
+        // Group by year (only for previous years)
+        if (chatYear < now.getFullYear()) {
+          if (!groupedChats.years[chatYear]) {
+            groupedChats.years[chatYear] = [];
+          }
+          groupedChats.years[chatYear].push(chat);
+        }
+      }
+    });
+  
+    return groupedChats;
+  };
 
-  return (
-    <div className={`student-container ${theme}`}>
-      <div className="student-header-buttons">
-        <div className="userName" style={{paddingLeft: '10px'}}>{userName}</div>
-        <img src={userPicture} className='userPicture' alt="" />
-        <button className={`student-theme-toggle ${theme}`} onClick={toggleTheme}>
-          {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
-        </button>
-        <button className={`student-exercises-button ${theme}`} onClick={() => navigate('/exercises')}>
-          <LuBookMarked/>
-        </button>
-      </div>
-      <div className={`student-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar}/>
-      <div className={`student-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
-        <div className="student-profile">
-          <img src={`${userPicture}`} alt={`${userName}.jpg`} />
-          <p>{userName}</p>
-        </div>
-        <button 
-          className="student-new-chat" 
-          onClick={handleNewChatClick} 
-          disabled={isDisabled}
-        >
-          New Chat
-        </button>
-        <div className="student-chat-list">
+  const renderGroupedChats = (groupedChats) => {
+    const renderChats = (chats, groupLabel) => {
+      return (
+        <div key={groupLabel} className={`student-chat-group ${theme}`}>
+          <h3>{groupLabel}</h3>
           {chats.map(chat => (
             <div
               key={chat.id}
@@ -517,6 +599,64 @@ const StudentPage = () => {
             </div>
           ))}
         </div>
+      );
+    };
+  
+    return (
+      <>
+        {groupedChats.today.length > 0 && renderChats(groupedChats.today, "Today")}
+        {groupedChats.yesterday.length > 0 && renderChats(groupedChats.yesterday, "Yesterday")}
+        {groupedChats.last7Days.length > 0 && renderChats(groupedChats.last7Days, "7 Days")}
+        {groupedChats.last30Days.length > 0 && renderChats(groupedChats.last30Days, "30 Days")}
+    
+        {/* Render chats grouped by month (only for the current year) */}
+        {Object.entries(groupedChats.months).map(([month, chats]) => (
+          renderChats(chats, month) // Only show the month name (e.g., "January")
+        ))}
+    
+        {/* Render chats grouped by year (only for previous years) */}
+        {Object.entries(groupedChats.years).map(([year, chats]) => (
+          renderChats(chats, year) // Show the year (e.g., "2024")
+        ))}
+      </>
+    );
+    
+  };
+
+  const groupedChats = groupChatsByDate(chats);
+
+  if (isLoading) {
+    return <div className={`student-loading-container ${theme}`}>Loading...</div>;
+  }
+
+  return (
+    <div className={`student-container ${theme}`}>
+      <div className="student-header-buttons">
+        <div className="userName" style={{ paddingLeft: '10px' }}>{userName}</div>
+        <img src={userPicture} className='userPicture' alt="" />
+        <button className={`student-theme-toggle ${theme}`} onClick={toggleTheme}>
+          {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
+        </button>
+        <button className={`student-exercises-button ${theme}`} onClick={() => navigate('/exercises')}>
+          <LuBookMarked />
+        </button>
+      </div>
+      <div className={`student-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar} />
+      <div className={`student-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
+        <div className="student-profile">
+          <img src={`${userPicture}`} alt={`${userName}.jpg`} />
+          <p>{userName}</p>
+        </div>
+        <button
+          className="student-new-chat"
+          onClick={handleNewChatClick}
+          disabled={isDisabled}
+        >
+          New Chat
+        </button>
+        <div className="student-chat-list">
+          {renderGroupedChats(groupedChats)}
+        </div>
         <div className="student-logout-section">
           <button className={`student-logout-button ${theme}`} onClick={handleLogout}>Logout</button>
         </div>
@@ -534,7 +674,7 @@ const StudentPage = () => {
           <div className="student-chat-container">
             <div className={`student-chat-header ${theme}`}>
               <div className="student-aissistant">
-                <h2 style={{color: 'rgb(86, 86, 255)'}}>AI</h2>
+                <h2 style={{ color: 'rgb(86, 86, 255)' }}>AI</h2>
                 <h2>ssistant Chat</h2>
               </div>
               <p className="student-disclaimer">This chat will respond to any programming language.</p>
@@ -558,7 +698,7 @@ const StudentPage = () => {
                 </div>
               ))}
               {isTyping && (
-                  <p className="student-typing-indicator">Typing...</p>
+                <p className="student-typing-indicator">Typing...</p>
               )}
             </div>
             <div className={`student-chat-input ${theme}`}>
@@ -572,9 +712,9 @@ const StudentPage = () => {
                 className={theme}
               />
               <div className={`student-chat-input-button ${theme}`}>
-                <button 
-                  onClick={handleSend} 
-                  className={`student-submit-query ${theme}`} 
+                <button
+                  onClick={handleSend}
+                  className={`student-submit-query ${theme}`}
                   disabled={isDisabled}
                 >
                   Ask
@@ -592,8 +732,8 @@ const StudentPage = () => {
               <div className={`student-newchat-header ${theme}`}>
                 <div className="student-aissistant">
                   <h1>Hello World! I am </h1>
-                  <h2 style={{color: 'rgb(86, 86, 255)', fontSize: '24px', paddingLeft: '7px'}}>AI</h2>
-                  <h2 style={{fontSize: '24px'}}>ssistant.</h2>
+                  <h2 style={{ color: 'rgb(86, 86, 255)', fontSize: '24px', paddingLeft: '7px' }}>AI</h2>
+                  <h2 style={{ fontSize: '24px' }}>ssistant.</h2>
                 </div>
                 <p>Your personal academia companion.</p>
               </div>
