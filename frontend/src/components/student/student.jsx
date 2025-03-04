@@ -650,16 +650,17 @@ const StudentPage = () => {
       <div className={`student-tutorial-highlight ${tutorial}`} onClick={handleTutorial}></div>
       <div className={`student-tutorial ${tutorial}`} onClick={handleTutorial}>
         <span>
-          <p>click here to add</p>
-          <p>a subject using a</p>
-          <p>subject code</p>
+          <p>click here to hide and</p>
+          <p>unhide sidebar to</p>
+          <p>navigate through</p>
+          <p>chats</p>
         </span>
       </div>
       <div className={`student-tutorial-highlight2 ${tutorial2}`} onClick={handleTutorial}></div>
       <div className={`student-tutorial2 ${tutorial2}`} onClick={handleTutorial}>
         <span>
           <p>click here to navigate</p>
-          <p>to AIssistant chat</p>
+          <p>to AIssistant learn</p>
         </span>
       </div>
       <div className={`student-tutorial-highlight3 ${tutorial3}`} onClick={handleTutorial}></div>
