@@ -76,6 +76,8 @@ const InstructorPage = () => {
   const userName = localStorage.getItem("userName");
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
+  const [selectedWeek, setSelectedWeek] = useState("");
+  const [weeklyPrompts, setWeeklyPrompts] = useState({});
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -151,7 +153,7 @@ const InstructorPage = () => {
   }, []);
 
   const handleGenerateFAQ = async () => {
-    if (isGeneratingFAQ || !selectedLanguage) return;
+    if (isGeneratingFAQ || !selectedLanguage || !selectedWeek) return;
     setIsGeneratingFAQ(true);
     setFaq("");
   
@@ -169,7 +171,6 @@ const InstructorPage = () => {
         params: { subjectCodes },
       });
       const students = studentsResponse.data;
-      console.log("Students with access:", students);
   
       // Fetch prompts from these students
       const prompts = [];
@@ -180,12 +181,13 @@ const InstructorPage = () => {
         prompts.push(...studentPromptsResponse.data);
       }
   
-      // Filter prompts based on the selected programming language
+      // Filter prompts based on the selected programming language and week
       const filteredPrompts = prompts
-        .filter(prompt => prompt.text.toLowerCase().includes(selectedLanguage.toLowerCase()))
+        .filter(prompt => 
+          prompt.text.toLowerCase().includes(selectedLanguage.toLowerCase()) &&
+          weeklyPrompts[selectedWeek].includes(prompt.text)
+        )
         .map(prompt => prompt.text); // Extract only the `text` property
-  
-      console.log("Filtered prompts:", filteredPrompts);
   
       // Generate FAQ using the filtered prompts
       const response = await fetch(`${base_url}/api/generateFAQInstructor`, {
@@ -357,6 +359,52 @@ const InstructorPage = () => {
         queries: groupedData[label]
     }));
   };
+
+  const groupPromptsByWeek = () => {
+    const allMessages = queryData.map(message => ({
+      timestamp: new Date(message.timestamp),
+      text: message.text
+    }));
+  
+    allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  
+    if (allMessages.length === 0) return {};
+  
+    const firstDate = new Date(allMessages[0].timestamp);
+    const firstMonday = new Date(firstDate);
+    if (firstMonday.getDay() !== 1) {
+      firstMonday.setDate(firstMonday.getDate() - firstMonday.getDay() + 1);
+    }
+  
+    let groupedData = {};
+  
+    let currentDate = new Date(firstMonday);
+    let weekNumber = 1;
+  
+    while (currentDate <= new Date(allMessages[allMessages.length - 1].timestamp)) {
+      let groupKey = `Week ${weekNumber}`;
+      groupedData[groupKey] = [];
+      weekNumber++;
+      currentDate.setDate(currentDate.getDate() + 7);
+    }
+  
+    allMessages.forEach(message => {
+      const date = new Date(message.timestamp);
+      const diff = Math.floor((date - firstMonday) / (7 * 24 * 60 * 60 * 1000));
+      const groupKey = `Week ${Math.max(1, diff + 1)}`;
+  
+      if (groupKey in groupedData) {
+        groupedData[groupKey].push(message.text);
+      }
+    });
+  
+    return groupedData;
+  };
+  
+  useEffect(() => {
+    const groupedPrompts = groupPromptsByWeek();
+    setWeeklyPrompts(groupedPrompts);
+  }, [queryData]);
 
   const handleDeleteSubject = async (subjectCode) => {
     try {
@@ -1390,10 +1438,20 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                       <option key={index} value={language}>{language}</option>
                     ))}
                   </select>
+                  <select 
+                    value={selectedWeek} 
+                    onChange={(e) => setSelectedWeek(e.target.value)}
+                    style={{ marginRight: '10px' }}
+                  >
+                    <option value="">Select a week</option>
+                    {Object.keys(weeklyPrompts).map((week, index) => (
+                      <option key={index} value={week}>{week}</option>
+                    ))}
+                  </select>
                   <button 
                     className="generate-faq-button"
                     onClick={handleGenerateFAQ}
-                    disabled={isGeneratingFAQ || !selectedLanguage}
+                    disabled={isGeneratingFAQ || !selectedLanguage || !selectedWeek}
                   >
                     {isGeneratingFAQ ? "Generating..." : "Generate FAQ"}
                   </button>

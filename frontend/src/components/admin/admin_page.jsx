@@ -67,6 +67,8 @@ const AdminPage = () => {
   const userPicture = localStorage.getItem("profileImage");
   const [isUpdatingRole, setIsUpdatingRole] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [weeklyPrompts, setWeeklyPrompts] = useState({});
+  const [selectedWeek, setSelectedWeek] = useState("");
   
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -115,6 +117,10 @@ const AdminPage = () => {
           timestamp: new Date(message.timestamp),
           text: message.text,
         })));
+  
+        // Group prompts by week
+        const groupedPrompts = groupPromptsByWeek(allMessages);
+        setWeeklyPrompts(groupedPrompts);
       } catch (error) {
         console.error("Failed to fetch total queries:", error);
       }
@@ -160,13 +166,50 @@ const AdminPage = () => {
     fetchData();
   }, []);
 
+  const groupPromptsByWeek = (allMessages) => {
+    allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  
+    if (allMessages.length === 0) return {};
+  
+    const firstDate = new Date(allMessages[0].timestamp);
+    const firstMonday = new Date(firstDate);
+    if (firstMonday.getDay() !== 1) {
+      firstMonday.setDate(firstMonday.getDate() - firstMonday.getDay() + 1);
+    }
+  
+    let groupedData = {};
+  
+    let currentDate = new Date(firstMonday);
+    let weekNumber = 1;
+  
+    while (currentDate <= new Date(allMessages[allMessages.length - 1].timestamp)) {
+      let groupKey = `Week ${weekNumber}`;
+      groupedData[groupKey] = [];
+      weekNumber++;
+      currentDate.setDate(currentDate.getDate() + 7);
+    }
+  
+    allMessages.forEach(message => {
+      const date = new Date(message.timestamp);
+      const diff = Math.floor((date - firstMonday) / (7 * 24 * 60 * 60 * 1000));
+      const groupKey = `Week ${Math.max(1, diff + 1)}`;
+  
+      if (groupKey in groupedData) {
+        groupedData[groupKey].push(message.text);
+      }
+    });
+  
+    return groupedData;
+  };
+
   const handleGenerateFAQ = async () => {
-    if (isGeneratingFAQ) return; // Prevent multiple simultaneous requests
+    if (isGeneratingFAQ || !selectedWeek) return; // Prevent multiple simultaneous requests
     setIsGeneratingFAQ(true);
     setFaq(""); // Clear the FAQ content before starting
   
     try {
-      const prompts = queryData.map((query) => query.text);
+      // Filter prompts based on the selected week
+      const prompts = weeklyPrompts[selectedWeek] || [];
   
       // Use fetch for streaming
       const response = await fetch(`${base_url}/api/generateFAQ`, {
@@ -176,8 +219,6 @@ const AdminPage = () => {
         },
         body: JSON.stringify({ prompts }),
       });
-
-      console.log("Response Object:", response);
   
       if (!response.ok) {
         throw new Error("Failed to generate FAQ");
@@ -196,7 +237,6 @@ const AdminPage = () => {
         faqContent += chunk;
   
         // Update the FAQ state with the new content
-        // Use a functional update to ensure the state is updated correctly
         setFaq((prevFaq) => prevFaq + chunk);
       }
     } catch (error) {
@@ -754,13 +794,25 @@ const handleEditUser = async (user, newRole) => {
             <div className="faq-section">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>Frequently Asked Questions</h2>
-                <button 
-                  className="generate-faq-button"
-                  onClick={handleGenerateFAQ}
-                  disabled={isGeneratingFAQ}
-                >
-                  {isGeneratingFAQ ? "Generating..." : "Generate FAQ"}
-                </button>
+                <div>
+                  <select 
+                    value={selectedWeek} 
+                    onChange={(e) => setSelectedWeek(e.target.value)}
+                    style={{ marginRight: '10px' }}
+                  >
+                    <option value="">Select a week</option>
+                    {Object.keys(weeklyPrompts).map((week, index) => (
+                      <option key={index} value={week}>{week}</option>
+                    ))}
+                  </select>
+                  <button 
+                    className="generate-faq-button"
+                    onClick={handleGenerateFAQ}
+                    disabled={isGeneratingFAQ || !selectedWeek}
+                  >
+                    {isGeneratingFAQ ? "Generating..." : "Generate FAQ"}
+                  </button>
+                </div>
               </div>
               <pre className="faq-box">{formatFAQText(faq)}</pre>
             </div>

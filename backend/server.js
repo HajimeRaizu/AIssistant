@@ -407,8 +407,6 @@ app.post("/api/generateFAQInstructor", async (req, res) => {
       ${prompts.map((prompt, index) => `${index + 1}. ${prompt}`).join("\n")}
     `;
 
-    console.log(prompts);
-
     // Set headers for streaming
     res.setHeader("Content-Type", "text/plain");
     res.setHeader("Transfer-Encoding", "chunked");

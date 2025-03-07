@@ -69,7 +69,6 @@ const LoginGoogle = () => {
   };
 
   const handleGoogleLoginError = () => {
-    console.log("Login failed");
     alert("Failed to login with Google");
   };
 
