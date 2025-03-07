@@ -35,14 +35,41 @@ const InstructorPage = () => {
   const [copyButtonText, setCopyButtonText] = useState("Copy");
   const [learningMaterials, setLearningMaterials] = useState({});
   const [selectedSubject, setSelectedSubject] = useState(null);
-  const [selectedSubtopic, setSelectedSubtopic] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
+  const [selectedSubtopic, setSelectedSubtopic] = useState(null);
   const [editingExercise, setEditingExercise] = useState(null);
   const [showSubjectConfirmModal, setShowSubjectConfirmModal] = useState(false);
-  const [subjectToDelete, setSubjectToDelete] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const [totalLearningMaterials, setTotalLearningMaterials] = useState(0);
   const [isGeneratingFAQ, setIsGeneratingFAQ] = useState(false);
   const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
+  const [editingSubject, setEditingSubject] = useState(null);
+  const [editingLesson, setEditingLesson] = useState(null);
+  const [editingSubtopic, setEditingSubtopic] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [showCreateSubjectModal, setShowCreateSubjectModal] = useState(false);
+  const [showCreateLessonModal, setShowCreateLessonModal] = useState(false);
+  const [showCreateSubtopicModal, setShowCreateSubtopicModal] = useState(false);
+  const programmingLanguages = ["Python", "JavaScript", "Java", "C++", "C#"];
+
+  const [newSubject, setNewSubject] = useState({
+    subjectName: "",
+    lessons: [],
+  });
+  const [newLesson, setNewLesson] = useState({
+    lessonName: "",
+    subtopics: [],
+  });
+  const [newSubtopic, setNewSubtopic] = useState({
+    subtopicCode: "",
+    subtopicTitle: "",
+    content: "",
+    questions: "",
+    answers: "",
+  });
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+
   const navigate = useNavigate();
   const isAuthenticated = localStorage.getItem("isAuthenticated");
   const userId = localStorage.getItem("userId");
@@ -59,11 +86,9 @@ const InstructorPage = () => {
           });
           const role = response.data.role;
   
-          // Update both state and localStorage
           setUserRole(role);
           localStorage.setItem("userRole", role);
   
-          // Navigate based on the fetched role
           if (role === "student") {
             navigate("/student");
           } else if (role === "admin") {
@@ -88,66 +113,93 @@ const InstructorPage = () => {
   useEffect(() => {
     const fetchTotalQueries = async () => {
       try {
-        const response = await axios.get(`${base_url}/api/getChats`);
-        const allMessages = response.data.flatMap(chat => 
-          chat.messages.filter(message => message.sender === "user")
-        );
+        const instructorEmail = localStorage.getItem("userEmail");
+        const response = await axios.get(`${base_url}/api/getStudentPromptsByInstructor`, {
+          params: { instructorEmail },
+        });
+        const allMessages = response.data;
         setTotalQueries(allMessages.length);
-
-        const queryData = allMessages.map(message => ({
+        setQueryData(allMessages.map(message => ({
           timestamp: new Date(message.timestamp),
-          text: message.text
-        }));
-        setQueryData(queryData);
+          text: message.text,
+        })));
       } catch (error) {
         console.error("Failed to fetch total queries:", error);
       }
     };
-
+  
     const fetchLearningMaterials = async () => {
       try {
-        const instructorEmail = localStorage.getItem("userEmail"); // Get the instructor's email from localStorage
+        const instructorEmail = localStorage.getItem("userEmail");
         const response = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
-          params: { instructorEmail }, // Pass the instructorEmail as a query parameter
+          params: { instructorEmail },
         });
         setLearningMaterials(response.data);
-    
-        // Calculate the number of unique subjects uploaded by the instructor
-        const uniqueSubjects = new Set(Object.keys(response.data));
-        setTotalLearningMaterials(uniqueSubjects.size);
+        setTotalLearningMaterials(Object.keys(response.data).length);
       } catch (error) {
         console.error("Failed to fetch learning materials:", error);
       }
     };
-
-    fetchTotalQueries();
-    fetchLearningMaterials();
+  
+    const fetchData = async () => {
+      await fetchTotalQueries();
+      await fetchLearningMaterials();
+      setIsLoading(false); // Set loading to false after fetching data
+    };
+  
+    fetchData();
   }, []);
 
   const handleGenerateFAQ = async () => {
-    if (isGeneratingFAQ) return; // Prevent multiple simultaneous requests
+    if (isGeneratingFAQ || !selectedLanguage) return;
     setIsGeneratingFAQ(true);
-    setFaq(""); // Clear the FAQ content before starting
+    setFaq("");
   
     try {
-      const prompts = queryData.map((query) => query.text);
+      const instructorEmail = localStorage.getItem("userEmail");
   
-      // Use fetch for streaming
-      const response = await fetch(`${base_url}/api/generateFAQ`, {
+      // Fetch the subjects owned by the instructor
+      const subjectsResponse = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
+        params: { instructorEmail },
+      });
+      const subjectCodes = Object.keys(subjectsResponse.data);
+  
+      // Fetch students who have access to these subjects
+      const studentsResponse = await axios.get(`${base_url}/api/getStudentsBySubjects`, {
+        params: { subjectCodes },
+      });
+      const students = studentsResponse.data;
+      console.log("Students with access:", students);
+  
+      // Fetch prompts from these students
+      const prompts = [];
+      for (const student of students) {
+        const studentPromptsResponse = await axios.get(`${base_url}/api/getStudentPrompts`, {
+          params: { studentEmail: student.email },
+        });
+        prompts.push(...studentPromptsResponse.data);
+      }
+  
+      // Filter prompts based on the selected programming language
+      const filteredPrompts = prompts
+        .filter(prompt => prompt.text.toLowerCase().includes(selectedLanguage.toLowerCase()))
+        .map(prompt => prompt.text); // Extract only the `text` property
+  
+      console.log("Filtered prompts:", filteredPrompts);
+  
+      // Generate FAQ using the filtered prompts
+      const response = await fetch(`${base_url}/api/generateFAQInstructor`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompts }),
+        body: JSON.stringify({ prompts: filteredPrompts }), // Send only the `text` property
       });
-
-      console.log("Response Object:", response);
   
       if (!response.ok) {
         throw new Error("Failed to generate FAQ");
       }
   
-      // Read the streaming response
       const reader = response.body.getReader();
       let faqContent = "";
   
@@ -155,20 +207,66 @@ const InstructorPage = () => {
         const { done, value } = await reader.read();
         if (done) break;
   
-        // Decode the chunk and append it to the FAQ content
         const chunk = new TextDecoder().decode(value);
         faqContent += chunk;
   
-        // Update the FAQ state with the new content
-        // Use a functional update to ensure the state is updated correctly
         setFaq((prevFaq) => prevFaq + chunk);
       }
     } catch (error) {
       console.error("Failed to generate FAQ:", error);
       setFaq("Failed to generate FAQ. Please try again.");
     } finally {
-      setIsGeneratingFAQ(false); // Reset the generating state
+      setIsGeneratingFAQ(false);
     }
+  };
+
+  const formatFAQText = (text) => {
+    if (!text) return null;
+  
+    const boldTextRegex = /\*\*(.*?)\*\*/g; // Matches **bold** text
+    const codeBlockRegex = /```([\s\S]*?)```/g; // Matches ```code blocks```
+    const headingRegex = /###\s*(.*?)\n/g; // Matches ### headings
+  
+    // Split the text by code blocks first
+    const parts = text.split(codeBlockRegex);
+  
+    return parts.map((part, index) => {
+      if (index % 2 === 1) {
+        // This is a code block
+        return (
+          <pre key={index} className="faq-code-block">
+            <code>{part}</code>
+          </pre>
+        );
+      }
+  
+      // Process headings and bold text in non-code parts
+      const headingParts = part.split(headingRegex);
+      return (
+        <span key={index} className="faq-text" style={{ whiteSpace: 'pre-wrap' }}>
+          {headingParts.map((headingPart, headingIndex) => {
+            if (headingIndex % 2 === 1) {
+              // This is a heading (###)
+              return <h3 key={headingIndex}>{headingPart}</h3>;
+            }
+  
+            // Process bold text in non-heading parts
+            const boldParts = headingPart.split(boldTextRegex);
+            return (
+              <span key={headingIndex}>
+                {boldParts.map((boldPart, boldIndex) => {
+                  if (boldIndex % 2 === 1) {
+                    // This is bold text (**)
+                    return <strong key={boldIndex}>{boldPart}</strong>;
+                  }
+                  return boldPart;
+                })}
+              </span>
+            );
+          })}
+        </span>
+      );
+    });
   };
 
   const handleLogout = () => {
@@ -182,7 +280,7 @@ const InstructorPage = () => {
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isAuthenticated");
-    navigate("/"); // Redirect to the login page
+    navigate("/");
   };
 
   const getGraphData = () => {
@@ -243,7 +341,7 @@ const InstructorPage = () => {
                 groupedData[groupKey]++;
             }
         });
-    }
+    }  
 
     const sortedLabels = Object.keys(groupedData).sort((a, b) => {
         if (graphFilter === 'weekly') {
@@ -260,77 +358,125 @@ const InstructorPage = () => {
     }));
   };
 
-  const handleDeleteSubject = async (subject) => {
+  const handleDeleteSubject = async (subjectCode) => {
     try {
-      const encodedSubject = encodeURIComponent(subject);
-      const instructorEmail = localStorage.getItem("userEmail"); // Get the instructor's email
-      await axios.delete(`${base_url}/api/deleteSubject/${encodedSubject}`, {
-        params: { instructorEmail }, // Pass the instructorEmail when deleting
+      const instructorEmail = localStorage.getItem("userEmail");
+      await axios.delete(`${base_url}/api/deleteSubject/${subjectCode}`, {
+        params: { instructorEmail },
       });
+  
       const updatedLearningMaterials = { ...learningMaterials };
-      delete updatedLearningMaterials[subject];
+      delete updatedLearningMaterials[subjectCode]; 
       setLearningMaterials(updatedLearningMaterials);
+      
       alert("Subject deleted successfully!");
     } catch (error) {
       console.error("Failed to delete subject:", error);
       alert("Failed to delete subject.");
     }
   };
+  
+  const handleDeleteLesson = async (subjectCode, lessonIndex) => {
+    try {
+        await axios.delete(`${base_url}/api/deleteLesson/${subjectCode}/${lessonIndex}`);
 
-  const handleConfirmDeleteSubject = (subject) => {
-    setSubjectToDelete(subject);
+        setLearningMaterials((prevMaterials) => {
+          const updatedMaterials = JSON.parse(JSON.stringify(prevMaterials)); // Deep clone
+          updatedMaterials[subjectCode].lessons = updatedMaterials[subjectCode].lessons.filter((_, index) => index !== lessonIndex);
+          return updatedMaterials;
+      });      
+
+        // Reset selected lesson and subtopic
+        setSelectedLesson(null);
+        setSelectedSubtopic(null);
+
+        alert("Lesson deleted successfully!");
+    } catch (error) {
+        console.error("Failed to delete lesson:", error);
+        alert("Failed to delete lesson.");
+    }
+};
+
+
+const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => {
+  try {
+      await axios.delete(`${base_url}/api/deleteSubtopic/${subjectCode}/${lessonIndex}/${subtopicIndex}`);
+
+      setLearningMaterials((prevMaterials) => {
+        const updatedMaterials = JSON.parse(JSON.stringify(prevMaterials)); // Deep copy
+        updatedMaterials[subjectCode].lessons[lessonIndex].subtopics = 
+            updatedMaterials[subjectCode].lessons[lessonIndex].subtopics.filter((_, index) => index !== subtopicIndex);
+        return updatedMaterials;
+      });
+
+      // Reset selected subtopic
+      setSelectedSubtopic(null);
+
+      alert("Subtopic deleted successfully!");
+  } catch (error) {
+      console.error("Failed to delete subtopic:", error);
+      alert("Failed to delete subtopic.");
+  }
+};
+
+
+  const handleConfirmDelete = (item) => {
+    setItemToDelete(item);
     setShowSubjectConfirmModal(true);
   };
 
   const handleUploadLearningMaterials = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const jsonContent = e.target.result;
+        try {
+          const learningMaterials = JSON.parse(jsonContent);
   
-      // Get the instructor's email from localStorage
-      const instructorEmail = localStorage.getItem("userEmail");
-      formData.append("instructorEmail", instructorEmail);
+          const instructorEmail = localStorage.getItem("userEmail");
+          const ownerName = localStorage.getItem("userName");
   
-      try {
-        // Upload the file
-        const uploadResponse = await axios.post(`${base_url}/api/uploadLearningMaterials`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data", // Ensure the correct content type
-          },
-        });
+          learningMaterials.ownerEmail = instructorEmail;
+          learningMaterials.ownerName = ownerName;
   
-        if (uploadResponse.status === 200) {
-          alert("Learning materials uploaded successfully!");
-  
-          // Fetch the updated learning materials
-          const response = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
-            params: { instructorEmail },
+          const uploadResponse = await axios.post(`${base_url}/api/uploadLearningMaterials`, {
+            learningMaterials,
+            instructorEmail,
+            ownerName,
+          }, {
+            headers: {
+              "Content-Type": "application/json",
+            },
           });
   
-          // Update state with the new learning materials
-          setLearningMaterials(response.data);
+          if (uploadResponse.status === 200) {
+            alert("Learning materials uploaded successfully!");
   
-          // Update the count of unique subjects
-          const uniqueSubjects = new Set(Object.keys(response.data));
-          setTotalLearningMaterials(uniqueSubjects.size);
-          
+            const response = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
+              params: { instructorEmail },
+            });
   
-          // Clear the file input
-          if (fileInputRef.current) {
-            fileInputRef.current.value = ""; // Reset the file input
+            setLearningMaterials(response.data);
+  
+            const uniqueSubjects = new Set(Object.keys(response.data));
+            setTotalLearningMaterials(uniqueSubjects.size);
+  
+            if (fileInputRef.current) {
+              fileInputRef.current.value = "";
+            }
+          } else {
+            alert("Failed to upload learning materials.");
           }
-        } else {
-          alert("Failed to upload learning materials.");
+        } catch (error) {
+          console.error("Error uploading learning materials:", error);
+          console.error("Error details:", error.response);
+          alert("Failed to upload learning materials. Check the console for details.");
         }
-      } catch (error) {
-        console.error("Error uploading learning materials:", error);
-        console.error("Error details:", error.response); // Log the full error response
-        alert("Failed to upload learning materials. Check the console for details.");
-      }
+      };
+      reader.readAsText(file);
     }
   };
-
 
   const handleBackToSubjects = () => {
     setSelectedSubject(null);
@@ -352,13 +498,68 @@ const InstructorPage = () => {
 
   const handleEditExercise = (exercise) => {
     setEditingExercise({
-      docId: exercise.docId, // Pass the document ID
+      docId: exercise.docId,
       content: exercise.content,
       questions: exercise.questions,
       answers: exercise.answers,
     });
   };
 
+  const handleEditSubjectName = async (subjectCode, newSubjectName) => {
+    try {
+      await axios.put(`${base_url}/api/updateSubjectName/${subjectCode}`, {
+        subjectName: newSubjectName,
+      });
+  
+      setLearningMaterials((prevMaterials) => {
+        const updatedMaterials = { ...prevMaterials };
+        updatedMaterials[subjectCode].subjectName = newSubjectName;
+        return updatedMaterials;
+      });
+  
+      alert("Subject name updated successfully!");
+    } catch (error) {
+      console.error("Failed to update subject name:", error);
+      alert("Failed to update subject name.");
+    }
+  };
+
+  const handleEditLessonName = async (subjectCode, lessonIndex, newLessonName) => {
+    try {
+      await axios.put(`${base_url}/api/updateLessonName/${subjectCode}/${lessonIndex}`, {
+        lessonName: newLessonName,
+      });
+  
+      setLearningMaterials((prevMaterials) => {
+        const updatedMaterials = { ...prevMaterials };
+        updatedMaterials[subjectCode].lessons[lessonIndex].lessonName = newLessonName;
+        return updatedMaterials;
+      });
+  
+      alert("Lesson name updated successfully!");
+    } catch (error) {
+      console.error("Failed to update lesson name:", error);
+      alert("Failed to update lesson name.");
+    }
+  };
+
+  const handleEditSubtopic = async (subjectCode, lessonIndex, subtopicIndex, newSubtopic) => {
+    try {
+      await axios.put(`${base_url}/api/updateSubtopic/${subjectCode}/${lessonIndex}/${subtopicIndex}`, newSubtopic);
+  
+      setLearningMaterials((prevMaterials) => {
+        const updatedMaterials = { ...prevMaterials };
+        updatedMaterials[subjectCode].lessons[lessonIndex].subtopics[subtopicIndex] = newSubtopic;
+        return updatedMaterials;
+      });
+  
+      alert("Subtopic updated successfully!");
+    } catch (error) {
+      console.error("Failed to update subtopic:", error);
+      alert("Failed to update subtopic.");
+    }
+  };
+  
   const handleSaveExercise = async () => {
     try {
       const updatedExercise = {
@@ -366,20 +567,28 @@ const InstructorPage = () => {
         questions: editingExercise.questions,
         answers: editingExercise.answers,
       };
-
+  
+      setLearningMaterials((prevMaterials) => {
+        const updatedMaterials = JSON.parse(JSON.stringify(prevMaterials));
+  
+        if (
+          updatedMaterials[selectedSubject] &&
+          updatedMaterials[selectedSubject].lessons[selectedLesson] &&
+          updatedMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic]
+        ) {
+          updatedMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].content = updatedExercise.content;
+          updatedMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].questions = updatedExercise.questions;
+          updatedMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].answers = updatedExercise.answers;
+        }
+  
+        return updatedMaterials;
+      });
+  
       await axios.put(
-        `${base_url}/api/updateExercise/${editingExercise.docId}`,
+        `${base_url}/api/updateExercise/${selectedSubject}/${selectedLesson}/${selectedSubtopic}`,
         updatedExercise
       );
-
-      // Update local state
-      const updatedLearningMaterials = { ...learningMaterials };
-      const subtopic = updatedLearningMaterials[selectedSubject][selectedLesson][selectedSubtopic];
-      subtopic.content = updatedExercise.content;
-      subtopic.questions = updatedExercise.questions;
-      subtopic.answers = updatedExercise.answers;
-
-      setLearningMaterials(updatedLearningMaterials);
+  
       setEditingExercise(null);
       alert("Exercise updated successfully!");
     } catch (error) {
@@ -388,49 +597,134 @@ const InstructorPage = () => {
     }
   };
 
-  const renderExercises = () => {
-    if (!selectedSubject) {
-      // Render the list of subjects
-      return Object.keys(learningMaterials).map((subject) => (
-        <div
-          key={subject}
-          className="instructor-exercise-subject"
-          onClick={() => setSelectedSubject(subject)}
-        >
-          <div>{subject}</div>
-          <button
-            className="instructor-delete-subject-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleConfirmDeleteSubject(subject);
-            }}
-          >
-            Delete Subject
-          </button>
-        </div>
-      ));
-    } else if (!selectedLesson) {
-      // Render the list of lessons for the selected subject
-      const subjectData = learningMaterials[selectedSubject];
-      const firstLesson = Object.keys(subjectData)[0]; // Get the first lesson
-      const firstSubtopic = Object.keys(subjectData[firstLesson])[0]; // Get the first subtopic
-      const subjectId = subjectData[firstLesson][firstSubtopic].subjectId; // Access the subjectId from the first subtopic
+  const handleDownloadLearningMaterials = async (subjectCode) => {
+    try {
+      const instructorEmail = localStorage.getItem("userEmail");
   
-      // Sort lessons numerically
-      const sortedLessons = Object.keys(subjectData).sort((a, b) => {
-        const aNumber = parseInt(a.replace('Lesson ', ''), 10);
-        const bNumber = parseInt(b.replace('Lesson ', ''), 10);
-        return aNumber - bNumber;
+      // Fetch learning materials for the selected subject
+      const response = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
+        params: { instructorEmail },
       });
+  
+      if (!response.data[subjectCode]) {
+        alert("Learning materials not found.");
+        return;
+      }
+  
+      const learningMaterial = response.data[subjectCode];
+      const jsonString = JSON.stringify(learningMaterial, null, 2); // Pretty-print JSON
+  
+      // Create a Blob object
+      const blob = new Blob([jsonString], { type: "application/json" });
+  
+      // Create a temporary download link
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${learningMaterial.subjectName}.json`; // Set filename based on subject name
+      document.body.appendChild(link);
+      link.click();
+  
+      // Cleanup
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error("Failed to download learning materials:", error);
+      alert("Failed to download learning materials.");
+    }
+  };  
+
+  const renderExercises = () => {
+    if (selectedSubject === null || selectedSubject === undefined) {
+      return (
+        <div>
+          <button className="add-subject" onClick={handleCreateNewSubject}>
+            Add Subject
+          </button>
+          {Object.keys(learningMaterials).map((subject) => (
+            <div
+              key={subject}
+              className="instructor-exercise-subject"
+              onClick={() => setSelectedSubject(subject)}
+            >
+              {editingSubject === subject ? (
+                <input
+                  type="text"
+                  className="edit-subject-name"
+                  value={learningMaterials[subject].subjectName}
+                  onChange={(e) => {
+                    const updatedMaterials = { ...learningMaterials };
+                    updatedMaterials[subject].subjectName = e.target.value;
+                    setLearningMaterials(updatedMaterials);
+                  }}
+                />
+              ) : (
+                <div>{learningMaterials[subject].subjectName}</div>
+              )}
+              <div className="control-buttons">
+                {editingSubject === subject ? (
+                  <>
+                    <button
+                      className="instructor-save-edit-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditSubjectName(subject, learningMaterials[subject].subjectName);
+                        setEditingSubject(null);
+                      }}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="instructor-cancel-edit-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingSubject(null);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="instructor-edit-subject-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingSubject(subject);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="instructor-delete-subject-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleConfirmDelete({ type: 'subject', subjectCode: subject });
+                      }}
+                    >
+                      Delete Subject
+                    </button>
+                    <button onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownloadLearningMaterials(subject);
+                    }}>Download JSON</button>
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    } else if (selectedLesson === null || selectedLesson === undefined) {
+      const subjectData = learningMaterials[selectedSubject];
+      const lessons = subjectData.lessons;
   
       return (
         <div>
-          {/* Display the subjectId and copy button */}
           <div className="subject-id-container">
-            <p>Subject ID: {subjectId}</p>
+            <p>Subject Code: {subjectData.subjectCode}</p>
             <button
               onClick={() => {
-                navigator.clipboard.writeText(subjectId);
+                navigator.clipboard.writeText(subjectData.subjectCode);
                 setCopyButtonText("Copied");
                 setTimeout(() => setCopyButtonText("Copy"), 2000);
               }}
@@ -438,70 +732,185 @@ const InstructorPage = () => {
               {copyButtonText}
             </button>
           </div>
-          {sortedLessons.map((lesson) => (
-            <div
-              key={lesson}
-              className="instructor-exercise-lesson"
-              onClick={() => setSelectedLesson(lesson)}
-            >
-              {`${lesson}`}
-            </div>
-          ))}
-          <button
-            className="instructor-back-to-subjects-button"
-            onClick={handleBackToSubjects}
-          >
-            Back to Subjects
+          <button className="add-lesson" onClick={() => setShowCreateLessonModal(true)}>
+            Add Lesson
           </button>
+          <div>
+            {lessons.map((lesson, index) => (
+              <div key={`lesson-${index}`} className="instructor-exercise-lesson">
+                {editingLesson === index ? (
+                  <input
+                    type="text"
+                    value={lesson.lessonName}
+                    onChange={(e) => {
+                      const updatedMaterials = { ...learningMaterials };
+                      updatedMaterials[selectedSubject].lessons[index].lessonName = e.target.value;
+                      setLearningMaterials(updatedMaterials);
+                    }}
+                  />
+                ) : (
+                  <div onClick={() => setSelectedLesson(index)}>{lesson.lessonName}</div>
+                )}
+                <div className="control-buttons">
+                  {editingLesson === index ? (
+                    <>
+                      <button
+                        className="instructor-save-edit-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditLessonName(selectedSubject, index, lesson.lessonName);
+                          setEditingLesson(null);
+                        }}
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="instructor-cancel-edit-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingLesson(null);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="instructor-edit-lesson-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingLesson(index);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="instructor-delete-lesson-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleConfirmDelete({ type: 'lesson', subjectCode: selectedSubject, lessonIndex: index });
+                        }}
+                      >
+                        Delete Lesson
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+            <button className="instructor-back-to-subjects-button" onClick={handleBackToSubjects}>
+              Back to Subjects
+            </button>
+          </div>
         </div>
       );
-    } else if (!selectedSubtopic) {
-      // Render the list of subtopics for the selected lesson
-      const subtopics = Object.keys(learningMaterials[selectedSubject][selectedLesson]);
-  
-      // Sort subtopics numerically
-      const sortedSubtopics = subtopics.sort((a, b) => {
-        const aParts = a.split('.').map(Number);
-        const bParts = b.split('.').map(Number);
-        for (let i = 0; i < Math.min(aParts.length, bParts.length); i++) {
-          if (aParts[i] !== bParts[i]) {
-            return aParts[i] - bParts[i];
-          }
-        }
-        return aParts.length - bParts.length;
-      });
+    } else if (selectedSubtopic === null || selectedSubtopic === undefined) {
+      const lessonData = learningMaterials[selectedSubject].lessons[selectedLesson];
+      const subtopics = lessonData.subtopics;
   
       return (
         <div>
-          {sortedSubtopics.map((subtopicCode) => {
-            const subtopic = learningMaterials[selectedSubject][selectedLesson][subtopicCode];
-            return (
-              <div
-                key={subtopicCode}
-                className="instructor-exercise-subtopic"
-                onClick={() => setSelectedSubtopic(subtopicCode)}
-              >
-                {`${subtopicCode} - ${subtopic.subtopicTitle}`}
-              </div>
-            );
-          })}
-          <button
-            className="instructor-back-to-lessons-button"
-            onClick={handleBackToLessons}
-          >
-            Back to Lessons
+          <button className="add-subtopic" onClick={() => setShowCreateSubtopicModal(true)}>
+            Add Subtopic
           </button>
+          <div>
+            {subtopics.map((subtopic, index) => (
+              <div key={`subtopic-${index}`} className="instructor-exercise-subtopic">
+                {editingSubtopic === index ? (
+                  <div>
+                    <input
+                      type="text"
+                      value={subtopic.subtopicCode}
+                      onChange={(e) => {
+                        const updatedMaterials = { ...learningMaterials };
+                        updatedMaterials[selectedSubject].lessons[selectedLesson].subtopics[index].subtopicCode = e.target.value;
+                        setLearningMaterials(updatedMaterials);
+                      }}
+                    />
+                    <input
+                      type="text"
+                      value={subtopic.subtopicTitle}
+                      onChange={(e) => {
+                        const updatedMaterials = { ...learningMaterials };
+                        updatedMaterials[selectedSubject].lessons[selectedLesson].subtopics[index].subtopicTitle = e.target.value;
+                        setLearningMaterials(updatedMaterials);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div onClick={() => setSelectedSubtopic(index)}>
+                    {`${subtopic['subtopicCode']} - ${subtopic['subtopicTitle']}`}
+                  </div>
+                )}
+                <div className="control-buttons">
+                  {editingSubtopic === index ? (
+                    <>
+                      <button
+                        className="instructor-save-edit-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditSubtopic(selectedSubject, selectedLesson, index, {
+                            subtopicCode: subtopic.subtopicCode,
+                            subtopicTitle: subtopic.subtopicTitle,
+                            content: subtopic.content,
+                            questions: subtopic.questions,
+                            answers: subtopic.answers,
+                          });
+                          setEditingSubtopic(null);
+                        }}
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="instructor-cancel-edit-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingSubtopic(null);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="instructor-edit-subtopic-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingSubtopic(index);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="instructor-delete-subtopic-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleConfirmDelete({ type: 'subtopic', subjectCode: selectedSubject, lessonIndex: selectedLesson, subtopicIndex: index });
+                        }}
+                      >
+                        Delete Subtopic
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+            <button className="instructor-back-to-lessons-button" onClick={handleBackToLessons}>
+              Back to Lessons
+            </button>
+          </div>
         </div>
       );
     } else {
-      // Render the content of the selected subtopic
-      const subtopic = learningMaterials[selectedSubject][selectedLesson][selectedSubtopic];
+      const subtopic =
+        learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic];
   
       return (
         <div className="instructor-exercise-content">
-          <h2>{subtopic.subtopicTitle}</h2>
+          <h2>{`${subtopic['subtopicCode']} - ${subtopic['subtopicTitle']}`}</h2>
   
-          {/* Content Section */}
           {editingExercise ? (
             <textarea
               className="instructor-content-textarea"
@@ -514,10 +923,6 @@ const InstructorPage = () => {
             <span>{subtopic.content}</span>
           )}
   
-          {/* Images Section */}
-          {subtopic.images && <img src={subtopic.images} alt="Subtopic" />}
-  
-          {/* Exercises Section */}
           <h3>Exercises</h3>
           {editingExercise ? (
             <textarea
@@ -531,7 +936,6 @@ const InstructorPage = () => {
             <span>{subtopic.questions}</span>
           )}
   
-          {/* Answers Section */}
           <h3>Answers</h3>
           {editingExercise ? (
             <textarea
@@ -545,19 +949,13 @@ const InstructorPage = () => {
             <span>{subtopic.answers}</span>
           )}
   
-          <div className='instructor-content-buttons'>
+          <div className="instructor-content-buttons">
             {editingExercise ? (
               <div className="instructor-e-buttons">
-                <button
-                  className="instructor-editing-button"
-                  onClick={handleSaveExercise}
-                >
+                <button className="instructor-save-button" onClick={handleSaveExercise}>
                   Save
                 </button>
-                <button
-                  className="instructor-editing-button"
-                  onClick={() => setEditingExercise(null)}
-                >
+                <button className="instructor-cancel-button" onClick={() => setEditingExercise(null)}>
                   Cancel
                 </button>
               </div>
@@ -565,7 +963,7 @@ const InstructorPage = () => {
               <button
                 onClick={() => {
                   handleEditExercise({
-                    docId: subtopic.docId, // Pass the document ID
+                    docId: selectedSubject,
                     content: subtopic.content,
                     questions: subtopic.questions,
                     answers: subtopic.answers,
@@ -583,7 +981,7 @@ const InstructorPage = () => {
       );
     }
   };
-
+  
   const pieChartData = [
     { name: 'Queries', value: totalQueries },
   ];
@@ -621,6 +1019,263 @@ const InstructorPage = () => {
       },
     },
   };
+
+  const handleCreateNewSubject = () => {
+    setShowCreateSubjectModal(true);
+  };
+
+  const renderCreateSubjectModal = () => {
+    return (
+      <div className="instructor-create-material-modal">
+        <div className="instructor-modal-content">
+          <h2>Create New Subject</h2>
+          <div className="instructor-create-material-form">
+            <label>Subject Name:</label>
+            <input
+              type="text"
+              value={newSubject.subjectName}
+              onChange={(e) =>
+                setNewSubject({ ...newSubject, subjectName: e.target.value })
+              }
+            />
+          </div>
+          <div className="instructor-modal-actions">
+            <button onClick={handleSaveSubject}>Save</button>
+            <button onClick={() => setShowCreateSubjectModal(false)}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const handleSaveSubject = async () => {
+    try {
+      const instructorEmail = localStorage.getItem("userEmail");
+      const ownerName = localStorage.getItem("userName");
+  
+      const newSubjectData = {
+        subjectName: newSubject.subjectName,
+        ownerName: ownerName,
+        ownerEmail: instructorEmail,
+        lessons: [],
+      };
+  
+      const response = await axios.post(`${base_url}/api/createSubject`, newSubjectData);
+  
+      if (response.status === 200) {
+        alert("Subject created successfully!");
+        setShowCreateSubjectModal(false);
+        setNewSubject({ subjectName: "", lessons: [] });
+  
+        const updatedResponse = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
+          params: { instructorEmail },
+        });
+        setLearningMaterials(updatedResponse.data);
+      } else {
+        alert("Failed to create subject.");
+      }
+    } catch (error) {
+      console.error("Failed to create subject:", error);
+      alert("Failed to create subject.");
+    }
+  };
+
+  const handleAddLesson = () => {
+    setNewSubject((prev) => ({
+      ...prev,
+      lessons: [...prev.lessons, newLesson],
+    }));
+    setNewLesson({
+      lessonName: "",
+      subtopics: [],
+    });
+  };
+
+  const renderCreateLessonModal = () => {
+    return (
+      <div className="instructor-create-lesson-modal">
+        <div className="instructor-modal-content">
+          <h2>Create New Lesson</h2>
+          <div className="instructor-create-lesson-form">
+            <label>Lesson Name:</label>
+            <input
+              type="text"
+              value={newLesson.lessonName}
+              onChange={(e) =>
+                setNewLesson({ ...newLesson, lessonName: e.target.value })
+              }
+            />
+          </div>
+          <div className="instructor-modal-actions">
+            <button onClick={handleSaveLesson}>Save</button>
+            <button onClick={() => setShowCreateLessonModal(false)}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const handleSaveLesson = async () => {
+    try {
+      const instructorEmail = localStorage.getItem("userEmail");
+  
+      const newLessonData = {
+        lessonName: newLesson.lessonName,
+        subtopics: [],
+      };
+  
+      const response = await axios.put(
+        `${base_url}/api/addLesson/${selectedSubject}`,
+        newLessonData,
+        {
+          params: { instructorEmail },
+        }
+      );
+  
+      if (response.status === 200) {
+        alert("Lesson created successfully!");
+        setShowCreateLessonModal(false);
+        setNewLesson({ lessonName: "", subtopics: [] });
+  
+        const updatedResponse = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
+          params: { instructorEmail },
+        });
+        setLearningMaterials(updatedResponse.data);
+      } else {
+        alert("Failed to create lesson.");
+      }
+    } catch (error) {
+      console.error("Failed to create lesson:", error);
+      alert("Failed to create lesson.");
+    }
+  };
+
+  const handleAddSubtopic = () => {
+    setNewLesson((prev) => ({
+      ...prev,
+      subtopics: [...prev.subtopics, newSubtopic],
+    }));
+    setNewSubtopic({
+      subtopicCode: "",
+      subtopicTitle: "",
+      content: "",
+      questions: "",
+      answers: "",
+    });
+  };
+
+  const renderCreateSubtopicModal = () => {
+    return (
+      <div className="instructor-create-subtopic-modal">
+        <div className="instructor-modal-content">
+          <h2>Create New Subtopic</h2>
+          <div className="instructor-create-subtopic-form">
+            <label>Subtopic Code:</label>
+            <input
+              type="text"
+              value={newSubtopic.subtopicCode}
+              onChange={(e) =>
+                setNewSubtopic({ ...newSubtopic, subtopicCode: e.target.value })
+              }
+            />
+            <label>Subtopic Title:</label>
+            <input
+              type="text"
+              value={newSubtopic.subtopicTitle}
+              onChange={(e) =>
+                setNewSubtopic({ ...newSubtopic, subtopicTitle: e.target.value })
+              }
+            />
+            <label>Content:</label>
+            <textarea
+              value={newSubtopic.content}
+              onChange={(e) =>
+                setNewSubtopic({ ...newSubtopic, content: e.target.value })
+              }
+            />
+            <label>Questions:</label>
+            <textarea
+              value={newSubtopic.questions}
+              onChange={(e) =>
+                setNewSubtopic({ ...newSubtopic, questions: e.target.value })
+              }
+            />
+            <label>Answers:</label>
+            <textarea
+              value={newSubtopic.answers}
+              onChange={(e) =>
+                setNewSubtopic({ ...newSubtopic, answers: e.target.value })
+              }
+            />
+          </div>
+          <div className="instructor-modal-actions">
+            <button onClick={handleSaveSubtopic}>Save</button>
+            <button onClick={() => setShowCreateSubtopicModal(false)}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const handleSaveSubtopic = async () => {
+    try {
+      const instructorEmail = localStorage.getItem("userEmail");
+  
+      const newSubtopicData = {
+        subtopicCode: newSubtopic.subtopicCode,
+        subtopicTitle: newSubtopic.subtopicTitle,
+        content: newSubtopic.content,
+        questions: newSubtopic.questions,
+        answers: newSubtopic.answers,
+      };
+  
+      const response = await axios.put(
+        `${base_url}/api/addSubtopic/${selectedSubject}/${selectedLesson}`,
+        newSubtopicData,
+        {
+          params: { instructorEmail },
+        }
+      );
+  
+      if (response.status === 200) {
+        alert("Subtopic created successfully!");
+        setShowCreateSubtopicModal(false);
+        setNewSubtopic({
+          subtopicCode: "",
+          subtopicTitle: "",
+          content: "",
+          questions: "",
+          answers: "",
+        });
+  
+        const updatedResponse = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
+          params: { instructorEmail },
+        });
+        setLearningMaterials(updatedResponse.data);
+      } else {
+        alert("Failed to create subtopic.");
+      }
+    } catch (error) {
+      console.error("Failed to create subtopic:", error);
+      alert("Failed to create subtopic.");
+    }
+  };
+
+  const handleConfirmDeleteAction = () => {
+    if (itemToDelete.type === 'subject') {
+      handleDeleteSubject(itemToDelete.subjectCode);
+    } else if (itemToDelete.type === 'lesson') {
+      handleDeleteLesson(itemToDelete.subjectCode, itemToDelete.lessonIndex);
+    } else if (itemToDelete.type === 'subtopic') {
+      handleDeleteSubtopic(itemToDelete.subjectCode, itemToDelete.lessonIndex, itemToDelete.subtopicIndex);
+    }
+    
+    setShowSubjectConfirmModal(false);
+  };
+
+  if (isLoading) {
+    return <div className="instructor-loading-container">Loading...</div>;
+  }
 
   return (
     <div className="instructor-container">
@@ -724,15 +1379,27 @@ const InstructorPage = () => {
             <div className="instructor-faq-section">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>Frequently Asked Questions</h2>
-                <button 
-                  className="generate-faq-button"
-                  onClick={handleGenerateFAQ}
-                  disabled={isGeneratingFAQ}
-                >
-                  {isGeneratingFAQ ? "Generating..." : "Generate FAQ"}
-                </button>
+                <div>
+                  <select 
+                    value={selectedLanguage} 
+                    onChange={(e) => setSelectedLanguage(e.target.value)}
+                    style={{ marginRight: '10px' }}
+                  >
+                    <option value="">Select a language</option>
+                    {programmingLanguages.map((language, index) => (
+                      <option key={index} value={language}>{language}</option>
+                    ))}
+                  </select>
+                  <button 
+                    className="generate-faq-button"
+                    onClick={handleGenerateFAQ}
+                    disabled={isGeneratingFAQ || !selectedLanguage}
+                  >
+                    {isGeneratingFAQ ? "Generating..." : "Generate FAQ"}
+                  </button>
+                </div>
               </div>
-              <pre className="instructor-faq-box">{faq}</pre>
+              <pre className="instructor-faq-box">{formatFAQText(faq)}</pre>
             </div>
           </div>
         ) : (
@@ -740,11 +1407,11 @@ const InstructorPage = () => {
             <h1><LuBookMarked />Manage Learning Materials</h1>
             <input 
               type="file" 
-              accept=".xlsx" 
+              accept=".json" 
               onChange={handleUploadLearningMaterials} 
               ref={fileInputRef}
             />
-            <p>Upload an Excel file to update learning materials.</p>
+            <p>Upload an Excel file to add learning materials.</p>
             <div className="instructor-exercises-container">
               {renderExercises()}
             </div>
@@ -755,17 +1422,18 @@ const InstructorPage = () => {
       {showSubjectConfirmModal && (
         <div className="instructor-confirmation-modal">
           <div className="instructor-modal-content">
-            <p>Are you sure you want to delete this subject?</p>
+            <p>Are you sure you want to delete this {itemToDelete.type}?</p>
             <div className="instructor-modal-actions">
-              <button onClick={() => {
-                handleDeleteSubject(subjectToDelete);
-                setShowSubjectConfirmModal(false);
-              }}>Yes</button>
+              <button onClick={handleConfirmDeleteAction}>Yes</button>
               <button onClick={() => setShowSubjectConfirmModal(false)}>No</button>
             </div>
           </div>
         </div>
       )}
+
+      {showCreateSubjectModal && renderCreateSubjectModal()}
+      {showCreateLessonModal && renderCreateLessonModal()}
+      {showCreateSubtopicModal && renderCreateSubtopicModal()}
     </div>
   );
 };

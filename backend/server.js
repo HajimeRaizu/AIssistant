@@ -239,7 +239,6 @@ app.post("/api/llama", async (req, res) => {
 
     // Retrieve previous context for this user and chat
     let context = contextCache[userId][chatId];
-    console.log(userId, chatId, context);
 
     const systemPreprompt = `
       You are an AI assistant designed to help students learn programming effectively. When answering prompts follow these strict guidelines when responding:
@@ -289,21 +288,21 @@ app.post("/api/llama", async (req, res) => {
     res.setHeader("Content-Type", "text/plain");
     res.setHeader("Transfer-Encoding", "chunked");
 
-    /*const response = await deepseek.chat.completions.create({
+    const response = await deepseek.chat.completions.create({
       model: "deepseek-chat",
       messages,
       max_tokens: 8192,
       stream: true, // Enable streaming
-    });*/
+    });
 
     // Make the API call to Hugging Face
-    const response = await qwen.chat.completions.create({
+    /*const response = await qwen.chat.completions.create({
       model: "tgi",
       messages,
       max_tokens: 8192,
       temperature: 0.3,
       stream: true,
-    });
+    });*/
 
     // Stream the response back to the client
     let botResponse = "";
@@ -327,7 +326,6 @@ app.post("/api/llama", async (req, res) => {
 
     // End the response
     res.end();
-    console.log(botResponse);
   } catch (error) {
     console.error("Hugging Face API Error:", error.response ? error.response.data : error.message);
     res.status(500).json({ error: "Failed to generate response from Qwen model" });
@@ -347,9 +345,12 @@ app.post("/api/generateFAQ", async (req, res) => {
       Organize the following questions into an FAQ with up to 10 frequently asked questions:
 
       Guidelines:
-      1. Create a top 10 most frequently asked questions based in the given questions below.
-      2. DO NOT ANSWER THE QUESTIONS.
-      3. Just answer with the top 10 frequently asked questions, nothing else.
+      1. Review the given list of questions.
+      2. Identify and generalize similar questions to create a list of the most frequently asked ones.
+      3. Ensure the final list contains at most 10 generalized questions.
+      4. Do not add new questions—only work with the ones provided.
+      5. Do not answer any of the questions.
+      6. If fewer than 10 questions can be generalized, provide only the available ones.
 
       Questions:
       ${prompts.map((prompt, index) => `${index + 1}. ${prompt}`).join("\n")}
@@ -383,6 +384,62 @@ app.post("/api/generateFAQ", async (req, res) => {
   }
 });
 
+app.post("/api/generateFAQInstructor", async (req, res) => {
+  const { prompts } = req.body;
+
+  if (!Array.isArray(prompts)) {
+    return res.status(400).json({ error: "Invalid input: prompts must be an array" });
+  }
+
+  try {
+    const inputPrompt = `
+      Organize the following questions into an FAQ with up to 10 frequently asked questions:
+
+      Guidelines:
+      1. Review the given list of questions.
+      2. Identify and generalize similar questions to create a list of the most frequently asked ones.
+      3. Ensure the final list contains at most 10 generalized questions.
+      4. Do not add new questions—only work with the ones provided.
+      5. Do not answer any of the questions.
+      6. If fewer than 10 questions can be generalized, provide only the available ones.
+
+      Questions:
+      ${prompts.map((prompt, index) => `${index + 1}. ${prompt}`).join("\n")}
+    `;
+
+    console.log(prompts);
+
+    // Set headers for streaming
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Transfer-Encoding", "chunked");
+
+    // Call the AI model to generate the FAQ
+    const response = await deepseek.chat.completions.create({
+      model: "deepseek-chat",
+      messages: [
+        {
+          role: "user",
+          content: inputPrompt,
+        },
+      ],
+      max_tokens: 8192,
+      stream: true, // Enable streaming
+    });
+
+    // Stream the response back to the client
+    for await (const chunk of response) {
+      const botResponse = chunk.choices[0]?.delta?.content || "";
+      res.write(botResponse);
+    }
+
+    // End the response
+    res.end();
+  } catch (error) {
+    console.error("Error generating FAQ:", error.response ? error.response.data : error.message);
+    res.status(500).json({ error: "Failed to generate FAQ" });
+  }
+});
+
 // 4. User management functions
 // Get all users
 app.get("/api/getUsers", async (req, res) => {
@@ -398,38 +455,6 @@ app.get("/api/getUsers", async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     handleFirestoreError(res, error);
-  }
-});
-
-// Upload users from Excel file
-app.post("/api/uploadUsers", upload.single("file"), async (req, res) => {
-  try {
-    const filePath = `${__dirname}/users.xlsx`; // Path to the uploaded file
-    const workbook = XLSX.readFile(filePath); // Read the file
-    const sheet_name_list = workbook.SheetNames;
-    const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]); // Convert the first sheet to JSON
-
-    const batch = db.batch();
-    const studentsRef = db.collection("users");
-
-    data.forEach((row) => {
-      const newStudentRef = studentsRef.doc(); // Auto-generate document ID
-      const studentId = newStudentRef.id; // Use the auto-generated ID as studentId
-      const defaultPassword = "N3msuP4zzword"; // Default password
-
-      batch.set(newStudentRef, {
-        email: row.email,
-        name: row.name,
-        studentId: studentId,
-        password: defaultPassword,
-      });
-    });
-
-    await batch.commit(); // Commit the batch operation
-    res.status(200).json({ message: "Users uploaded successfully" });
-  } catch (error) {
-    console.error("Error uploading users:", error);
-    res.status(500).json({ error: "Failed to upload users" });
   }
 });
 
@@ -568,15 +593,15 @@ app.post("/api/login", async (req, res) => {
 // 5. Learning materials and exercises functions
 // Get learning materials for the logged-in instructor
 app.get("/api/getLearningMaterials", async (req, res) => {
-  const { subjectIds } = req.query;
+  const { subjectCodes } = req.query;
 
   try {
-    if (!subjectIds || !Array.isArray(subjectIds)) {
+    if (!subjectCodes || !Array.isArray(subjectCodes)) {
       return res.status(400).json({ error: "Invalid subject IDs" });
     }
 
     const learningMaterialsRef = db.collection("learningMaterials");
-    const querySnapshot = await learningMaterialsRef.where("subjectId", "in", subjectIds).get();
+    const querySnapshot = await learningMaterialsRef.where("subjectCode", "in", subjectCodes).get();
 
     if (querySnapshot.empty) {
       return res.status(200).json({});
@@ -585,17 +610,46 @@ app.get("/api/getLearningMaterials", async (req, res) => {
     const learningMaterials = {};
     querySnapshot.forEach((doc) => {
       const material = doc.data();
-      const { subjectName, lesson, subtopicCode } = material;
+      const { subjectName, lessons, ownerEmail, ownerName, subjectCode } = material;
 
+      // Initialize the subject in the learningMaterials object
       if (!learningMaterials[subjectName]) {
-        learningMaterials[subjectName] = {};
+        learningMaterials[subjectName] = {
+          subjectName,
+          ownerEmail,
+          ownerName,
+          subjectCode,
+          lessons: [],
+        };
       }
 
-      if (!learningMaterials[subjectName][lesson]) {
-        learningMaterials[subjectName][lesson] = {};
-      }
+      // Iterate through lessons
+      lessons.forEach((lesson) => {
+        const { lessonName, subtopics } = lesson;
 
-      learningMaterials[subjectName][lesson][subtopicCode] = material;
+        // Initialize the lesson in the subject
+        const lessonData = {
+          lessonName,
+          subtopics: [],
+        };
+
+        // Iterate through subtopics
+        subtopics.forEach((subtopic) => {
+          const { "subtopicCode": subtopicCode, "subtopicTitle": subtopicTitle, content, questions, answers } = subtopic;
+
+          // Add subtopic data to the lesson
+          lessonData.subtopics.push({
+            subtopicCode,
+            subtopicTitle,
+            content,
+            questions,
+            answers,
+          });
+        });
+
+        // Add lesson data to the subject
+        learningMaterials[subjectName].lessons.push(lessonData);
+      });
     });
 
     res.status(200).json(learningMaterials);
@@ -606,43 +660,23 @@ app.get("/api/getLearningMaterials", async (req, res) => {
 });
 
 // Endpoint to get learning materials for a specific instructor
-app.get("/api/getInstructorLearningMaterials", async (req, res) => {
+app.get('/api/getInstructorLearningMaterials', async (req, res) => {
   const { instructorEmail } = req.query;
 
   try {
-    if (!instructorEmail) {
-      return res.status(400).json({ error: "Instructor email is required" });
-    }
+    const snapshot = await db.collection('learningMaterials')
+      .where('ownerEmail', '==', instructorEmail)
+      .get();
 
-    // Query the learningMaterials collection for the instructor's email
-    const learningMaterialsRef = db.collection("learningMaterials");
-    const querySnapshot = await learningMaterialsRef.where("instructorEmail", "==", instructorEmail).get();
-
-    if (querySnapshot.empty) {
-      return res.status(200).json({});
-    }
-
-    // Organize the learning materials by subject, lesson, and subtopic
     const learningMaterials = {};
-    querySnapshot.forEach((doc) => {
-      const material = doc.data();
-      const { subjectName, lesson, subtopicCode } = material;
-
-      if (!learningMaterials[subjectName]) {
-        learningMaterials[subjectName] = {};
-      }
-
-      if (!learningMaterials[subjectName][lesson]) {
-        learningMaterials[subjectName][lesson] = {};
-      }
-
-      learningMaterials[subjectName][lesson][subtopicCode] = material;
+    snapshot.forEach(doc => {
+      learningMaterials[doc.id] = doc.data();
     });
 
-    res.status(200).json(learningMaterials);
+    res.status(200).send(learningMaterials);
   } catch (error) {
-    console.error("Error fetching learning materials:", error);
-    res.status(500).json({ error: "Failed to fetch learning materials" });
+    console.error('Error fetching learning materials:', error);
+    res.status(500).send({ message: 'Failed to fetch learning materials.' });
   }
 });
 
@@ -658,71 +692,46 @@ app.get("/api/getTotalLearningMaterials", async (req, res) => {
   }
 });
 
-app.post("/api/uploadLearningMaterials", upload.single("file"), async (req, res) => {
+const generateSubjectCode = (length = 6) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let code = '';
+  for (let i = 0; i < length; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+};
+
+app.post('/api/uploadLearningMaterials', async (req, res) => {
+  const { learningMaterials, instructorEmail, ownerName } = req.body;
+
   try {
-    // Ensure the file is uploaded
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
+    let subjectCode;
+    let subjectRef;
+    let doc;
 
-    // Access instructorEmail from req.body
-    const { instructorEmail } = req.body;
+    // Generate a unique subject code
+    do {
+      subjectCode = generateSubjectCode(6); // Adjust length if needed
+      subjectRef = db.collection('learningMaterials').doc(subjectCode);
+      doc = await subjectRef.get();
+    } while (doc.exists); // Ensure uniqueness
 
-    if (!instructorEmail) {
-      return res.status(400).json({ error: "Instructor email is required" });
-    }
-
-    // Read the file from memory
-    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
-    const sheet_name_list = workbook.SheetNames;
-    const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
-
-    const batch = db.batch();
-    const learningMaterialsRef = db.collection("learningMaterials");
-
-    // Fetch the instructor's name from the instructors collection using their email
-    const instructorsRef = db.collection("users");
-    const instructorQuery = await instructorsRef.where("email", "==", instructorEmail).get();
-
-    if (instructorQuery.empty) {
-      return res.status(404).json({ error: "Instructor not found" });
-    }
-
-    // Get the instructor's name from the query result
-    const instructorDoc = instructorQuery.docs[0];
-    const instructorName = instructorDoc.data().name;
-
-    // Generate a single subjectId for the entire file
-    const subjectId = generateUniqueId();
-
-    data.forEach((row) => {
-      // Prepare the learning material data
-      const learningMaterialData = {
-        subjectId,
-        subjectName: row.subject,
-        lesson: row.lesson,
-        subtopicCode: row["subtopic code"],
-        subtopicTitle: row["subtopic title"],
-        content: row.content,
-        images: row.Images || null,
-        questions: row.questions || null,
-        answers: row.answers || null,
-        instructorEmail,
-        instructorName,
-      };
-
-      // Store learning material data with a unique document ID
-      const learningMaterialDocRef = learningMaterialsRef.doc(generateUniqueId());
-      batch.set(learningMaterialDocRef, learningMaterialData);
+    // Save to Firestore with the new structure
+    await subjectRef.set({
+      subjectName: learningMaterials.subjectName,
+      ownerName: ownerName,
+      ownerEmail: instructorEmail,
+      subjectCode: subjectCode,
+      lessons: learningMaterials.lessons,
     });
 
-    await batch.commit();
-    res.status(200).json({ message: "Learning materials uploaded successfully", subjectId });
+    res.status(200).send({ message: 'Learning materials uploaded successfully!', subjectCode });
   } catch (error) {
-    console.error("Error uploading learning materials:", error);
-    res.status(500).json({ error: "Failed to upload learning materials" });
+    console.error('Error uploading learning materials:', error);
+    res.status(500).send({ message: 'Failed to upload learning materials.' });
   }
 });
+
 
 // Helper function to generate a unique ID
 function generateUniqueId() {
@@ -730,24 +739,32 @@ function generateUniqueId() {
 }
 
 // Update an exercise
-app.put("/api/updateExercise/:docId", async (req, res) => {
-  const { docId } = req.params; // Use document ID for updates
+app.put("/api/updateExercise/:subjectCode/:lessonIndex/:subtopicIndex", async (req, res) => {
+  const { subjectCode, lessonIndex, subtopicIndex } = req.params;
   const { content, questions, answers } = req.body;
 
   try {
-    const exerciseRef = db.collection("learningMaterials").doc(docId);
-    const exerciseDoc = await exerciseRef.get();
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    const subjectDoc = await subjectRef.get();
 
-    if (!exerciseDoc.exists) {
-      return res.status(404).json({ error: "Document not found" });
+    if (!subjectDoc.exists) {
+      return res.status(404).json({ error: "Subject not found" });
     }
 
-    // Update only the editable fields
-    await exerciseRef.update({
-      content,
-      questions,
-      answers,
-    });
+    const subjectData = subjectDoc.data();
+    const lessons = subjectData.lessons || [];
+
+    if (!lessons[lessonIndex] || !lessons[lessonIndex].subtopics[subtopicIndex]) {
+      return res.status(404).json({ error: "Lesson or subtopic not found" });
+    }
+
+    // Update the specific subtopic
+    lessons[lessonIndex].subtopics[subtopicIndex].content = content;
+    lessons[lessonIndex].subtopics[subtopicIndex].questions = questions;
+    lessons[lessonIndex].subtopics[subtopicIndex].answers = answers;
+
+    // Update Firestore document
+    await subjectRef.update({ lessons });
 
     res.status(200).json({ message: "Exercise updated successfully" });
   } catch (error) {
@@ -757,28 +774,79 @@ app.put("/api/updateExercise/:docId", async (req, res) => {
 });
 
 // Delete a subject
-app.delete("/api/deleteSubject/:subject", async (req, res) => {
-  const { subject } = req.params;
+app.delete("/api/deleteSubject/:subjectCode", async (req, res) => {
+  const { subjectCode } = req.params;
   const { instructorEmail } = req.query; // Get instructorEmail from query params
-  const decodedSubject = decodeURIComponent(subject);
 
   try {
-    const exercisesSnapshot = await db.collection("learningMaterials")
-      .where("subjectName", "==", decodedSubject)
-      .where("instructorEmail", "==", instructorEmail) // Ensure the instructorEmail matches
-      .get();
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    const doc = await subjectRef.get();
 
-    const batch = db.batch();
+    if (!doc.exists || doc.data().ownerEmail !== instructorEmail) {
+      return res.status(404).json({ error: "Subject not found or unauthorized" });
+    }
 
-    exercisesSnapshot.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
-
-    await batch.commit();
+    await subjectRef.delete(); // Delete the document
     res.status(200).json({ message: "Subject deleted successfully" });
   } catch (error) {
     console.error("Error deleting subject:", error);
     res.status(500).json({ error: "Failed to delete subject" });
+  }
+});
+
+app.delete("/api/deleteLesson/:subjectCode/:lessonIndex", async (req, res) => {
+  const { subjectCode, lessonIndex } = req.params;
+
+  try {
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    const subjectDoc = await subjectRef.get();
+
+    if (!subjectDoc.exists) {
+      return res.status(404).json({ error: "Subject not found" });
+    }
+
+    const subjectData = subjectDoc.data();
+    const lessons = subjectData.lessons || [];
+
+    if (!lessons[lessonIndex]) {
+      return res.status(404).json({ error: "Lesson not found" });
+    }
+
+    lessons.splice(lessonIndex, 1);
+    await subjectRef.update({ lessons });
+
+    res.status(200).json({ message: "Lesson deleted successfully!" });
+  } catch (error) {
+    console.error("Error deleting lesson:", error);
+    res.status(500).json({ error: "Failed to delete lesson" });
+  }
+});
+
+app.delete("/api/deleteSubtopic/:subjectCode/:lessonIndex/:subtopicIndex", async (req, res) => {
+  const { subjectCode, lessonIndex, subtopicIndex } = req.params;
+
+  try {
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    const subjectDoc = await subjectRef.get();
+
+    if (!subjectDoc.exists) {
+      return res.status(404).json({ error: "Subject not found" });
+    }
+
+    const subjectData = subjectDoc.data();
+    const lessons = subjectData.lessons || [];
+
+    if (!lessons[lessonIndex] || !lessons[lessonIndex].subtopics[subtopicIndex]) {
+      return res.status(404).json({ error: "Lesson or subtopic not found" });
+    }
+
+    lessons[lessonIndex].subtopics.splice(subtopicIndex, 1);
+    await subjectRef.update({ lessons });
+
+    res.status(200).json({ message: "Subtopic deleted successfully!" });
+  } catch (error) {
+    console.error("Error deleting subtopic:", error);
+    res.status(500).json({ error: "Failed to delete subtopic" });
   }
 });
 
@@ -840,44 +908,13 @@ app.get("/api/checkInstructorEmail", async (req, res) => {
   }
 });
 
-app.post("/api/uploadInstructors", upload.single("file"), async (req, res) => {
-  try {
-    const filePath = `${__dirname}/users.xlsx`; // Path to the uploaded file
-    const workbook = XLSX.readFile(filePath); // Read the file
-    const sheet_name_list = workbook.SheetNames;
-    const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]], { header: 1 }); // Convert the first sheet to JSON with headers
-
-    const batch = db.batch();
-    const instructorsRef = db.collection("instructors");
-
-    // Start from the second row (index 1) to ignore the header row
-    for (let i = 1; i < data.length; i++) {
-      const row = data[i];
-      const email = row[0]; // First column is email
-      const name = row[1]; // Second column is name
-
-      const newInstructorRef = instructorsRef.doc(); // Auto-generate document ID
-      batch.set(newInstructorRef, {
-        email: email,
-        name: name, // Save the name field
-      });
-    }
-
-    await batch.commit(); // Commit the batch operation
-    res.status(200).json({ message: "Instructors uploaded successfully" });
-  } catch (error) {
-    console.error("Error uploading instructors:", error);
-    res.status(500).json({ error: "Failed to upload instructors" });
-  }
-});
-
 app.post("/api/addAccessLearningMaterial", async (req, res) => {
-  const { studentId, subjectId } = req.body;
+  const { studentId, subjectCode } = req.body;
 
   try {
-    // Check if the subjectId exists in the learningMaterials collection
+    // Check if the subjectCode exists in the learningMaterials collection
     const learningMaterialsRef = db.collection("learningMaterials");
-    const querySnapshot = await learningMaterialsRef.where("subjectId", "==", subjectId).get();
+    const querySnapshot = await learningMaterialsRef.where("subjectCode", "==", subjectCode).get();
 
     if (querySnapshot.empty) {
       return res.status(404).json({ error: "Invalid subject code. Please check the code and try again." });
@@ -887,17 +924,17 @@ app.post("/api/addAccessLearningMaterial", async (req, res) => {
     const accessDoc = await accessRef.get();
 
     if (!accessDoc.exists) {
-      // If the document doesn't exist, create it with subjectIds as an array
+      // If the document doesn't exist, create it with subjectCodes as an array
       await accessRef.set({
         studentId,
-        subjectIds: [subjectId], // Use subjectIds instead of subjectId
+        subjectCodes: [subjectCode], // Use subjectCodes instead of subjectCode
       });
     } else {
-      // If the document exists, update the subjectIds array
-      const existingIds = accessDoc.data().subjectIds || [];
-      if (!existingIds.includes(subjectId)) {
-        existingIds.push(subjectId);
-        await accessRef.update({ subjectIds: existingIds });
+      // If the document exists, update the subjectCodes array
+      const existingIds = accessDoc.data().subjectCodes || [];
+      if (!existingIds.includes(subjectCode)) {
+        existingIds.push(subjectCode);
+        await accessRef.update({ subjectCodes: existingIds });
       }
     }
 
@@ -916,7 +953,7 @@ app.get("/api/getAccessLearningMaterials", async (req, res) => {
     const accessDoc = await accessRef.get();
 
     if (!accessDoc.exists) {
-      return res.status(200).json({ subjectIds: [] }); // Change from subjectCodes to subjectIds
+      return res.status(200).json({ subjectCodes: [] }); // Change from subjectCodes to subjectCodes
     }
 
     res.status(200).json(accessDoc.data());
@@ -1000,7 +1037,7 @@ app.get("/api/getUserRole", async (req, res) => {
 
 // Endpoint to remove access to a subject for a student
 app.delete("/api/removeAccessLearningMaterial", async (req, res) => {
-  const { studentId, subjectId } = req.body;
+  const { studentId, subjectCode } = req.body;
 
   try {
     const accessRef = db.collection("accessLearningMaterials").doc(studentId);
@@ -1010,15 +1047,288 @@ app.delete("/api/removeAccessLearningMaterial", async (req, res) => {
       return res.status(404).json({ error: "Access record not found" });
     }
 
-    const existingIds = accessDoc.data().subjectIds || [];
-    const updatedIds = existingIds.filter(id => id !== subjectId);
+    const existingIds = accessDoc.data().subjectCodes || [];
 
-    await accessRef.update({ subjectIds: updatedIds });
+    // Ensure subjectCode is a string for comparison
+    const updatedIds = existingIds.filter(id => id !== subjectCode.toString());
+
+    await accessRef.update({ subjectCodes: updatedIds });
 
     res.status(200).json({ message: "Access removed successfully" });
   } catch (error) {
-    console.error("Error removing access:", error);
     res.status(500).json({ error: "Failed to remove access" });
+  }
+});
+
+app.post("/api/createSubject", async (req, res) => {
+  const { subjectName, ownerName, ownerEmail } = req.body;
+
+  try {
+    // Generate a unique subject code
+    const subjectCode = generateSubjectCode(6); // Adjust length if needed
+
+    // Create the subject document in Firestore
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    await subjectRef.set({
+      subjectName,
+      ownerName,
+      ownerEmail,
+      subjectCode,
+      lessons: [], // Initialize with an empty lessons array
+    });
+
+    res.status(200).json({ message: "Subject created successfully!", subjectCode });
+  } catch (error) {
+    console.error("Error creating subject:", error);
+    res.status(500).json({ error: "Failed to create subject" });
+  }
+});
+
+app.put("/api/addLesson/:subjectCode", async (req, res) => {
+  const { subjectCode } = req.params;
+  const { lessonName } = req.body;
+
+  try {
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    const subjectDoc = await subjectRef.get();
+
+    if (!subjectDoc.exists) {
+      return res.status(404).json({ error: "Subject not found" });
+    }
+
+    const subjectData = subjectDoc.data();
+    const lessons = subjectData.lessons || [];
+
+    // Add the new lesson to the lessons array
+    lessons.push({
+      lessonName,
+      subtopics: [], // Initialize with an empty subtopics array
+    });
+
+    // Update the subject document in Firestore
+    await subjectRef.update({ lessons });
+
+    res.status(200).json({ message: "Lesson added successfully!" });
+  } catch (error) {
+    console.error("Error adding lesson:", error);
+    res.status(500).json({ error: "Failed to add lesson" });
+  }
+});
+
+app.put("/api/addSubtopic/:subjectCode/:lessonIndex", async (req, res) => {
+  const { subjectCode, lessonIndex } = req.params;
+  const { subtopicCode, subtopicTitle, content, questions, answers } = req.body;
+
+  try {
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    const subjectDoc = await subjectRef.get();
+
+    if (!subjectDoc.exists) {
+      return res.status(404).json({ error: "Subject not found" });
+    }
+
+    const subjectData = subjectDoc.data();
+    const lessons = subjectData.lessons || [];
+
+    if (!lessons[lessonIndex]) {
+      return res.status(404).json({ error: "Lesson not found" });
+    }
+
+    // Add the new subtopic to the subtopics array
+    lessons[lessonIndex].subtopics.push({
+      subtopicCode,
+      subtopicTitle,
+      content,
+      questions,
+      answers,
+    });
+
+    // Update the subject document in Firestore
+    await subjectRef.update({ lessons });
+
+    res.status(200).json({ message: "Subtopic added successfully!" });
+  } catch (error) {
+    console.error("Error adding subtopic:", error);
+    res.status(500).json({ error: "Failed to add subtopic" });
+  }
+});
+
+app.put("/api/updateSubtopic/:subjectCode/:lessonIndex/:subtopicIndex", async (req, res) => {
+  const { subjectCode, lessonIndex, subtopicIndex } = req.params;
+  const { subtopicCode, subtopicTitle, content, questions, answers } = req.body;
+
+  try {
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    const subjectDoc = await subjectRef.get();
+
+    if (!subjectDoc.exists) {
+      return res.status(404).json({ error: "Subject not found" });
+    }
+
+    const subjectData = subjectDoc.data();
+    const lessons = subjectData.lessons || [];
+
+    if (!lessons[lessonIndex] || !lessons[lessonIndex].subtopics[subtopicIndex]) {
+      return res.status(404).json({ error: "Lesson or subtopic not found" });
+    }
+
+    lessons[lessonIndex].subtopics[subtopicIndex].subtopicCode = subtopicCode;
+    lessons[lessonIndex].subtopics[subtopicIndex].subtopicTitle = subtopicTitle;
+    lessons[lessonIndex].subtopics[subtopicIndex].content = content;
+    lessons[lessonIndex].subtopics[subtopicIndex].questions = questions;
+    lessons[lessonIndex].subtopics[subtopicIndex].answers = answers;
+
+    await subjectRef.update({ lessons });
+
+    res.status(200).json({ message: "Subtopic updated successfully!" });
+  } catch (error) {
+    console.error("Error updating subtopic:", error);
+    res.status(500).json({ error: "Failed to update subtopic" });
+  }
+});
+
+app.put("/api/updateLessonName/:subjectCode/:lessonIndex", async (req, res) => {
+  const { subjectCode, lessonIndex } = req.params;
+  const { lessonName } = req.body;
+
+  try {
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    const subjectDoc = await subjectRef.get();
+
+    if (!subjectDoc.exists) {
+      return res.status(404).json({ error: "Subject not found" });
+    }
+
+    const subjectData = subjectDoc.data();
+    const lessons = subjectData.lessons || [];
+
+    if (!lessons[lessonIndex]) {
+      return res.status(404).json({ error: "Lesson not found" });
+    }
+
+    // Update the lesson name
+    lessons[lessonIndex].lessonName = lessonName;
+
+    // Update the subject document in Firestore
+    await subjectRef.update({ lessons });
+
+    res.status(200).json({ message: "Lesson name updated successfully!" });
+  } catch (error) {
+    console.error("Error updating lesson name:", error);
+    res.status(500).json({ error: "Failed to update lesson name" });
+  }
+});
+
+app.put("/api/updateSubjectName/:subjectCode", async (req, res) => {
+  const { subjectCode } = req.params;
+  const { subjectName } = req.body;
+
+  try {
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    await subjectRef.update({ subjectName });
+
+    res.status(200).json({ message: "Subject name updated successfully!" });
+  } catch (error) {
+    console.error("Error updating subject name:", error);
+    res.status(500).json({ error: "Failed to update subject name" });
+  }
+});
+
+app.get("/api/getStudentsBySubjects", async (req, res) => {
+  const { subjectCodes } = req.query;
+
+  // Validate the subjectCodes parameter
+  if (!subjectCodes || !Array.isArray(subjectCodes)) {
+    return res.status(400).json({ error: "subjectCodes must be an array" });
+  }
+
+  try {
+    // Query Firestore for students who have access to the given subject codes
+    const snapshot = await db.collection("accessLearningMaterials")
+      .where("subjectCodes", "array-contains-any", subjectCodes)
+      .get();
+
+    const students = [];
+    snapshot.forEach(doc => {
+      const studentData = doc.data();
+      if (studentData.studentId) {
+        // Push only the studentId (or email) to the students array
+        students.push({ email: studentData.studentId }); // Assuming studentId is the email
+      }
+    });
+
+    res.status(200).json(students);
+  } catch (error) {
+    console.error("Error fetching students by subjects:", error);
+    res.status(500).json({ error: "Failed to fetch students by subjects." });
+  }
+});
+
+app.get("/api/getStudentPrompts", async (req, res) => {
+  const { studentEmail } = req.query;
+
+  try {
+    // Query Firestore for chats belonging to the student
+    const snapshot = await db.collection("chats")
+      .where("userId", "==", studentEmail)
+      .get();
+
+    const prompts = [];
+    snapshot.forEach(doc => {
+      const messages = doc.data().messages || [];
+      prompts.push(...messages.filter(message => message.sender === "user"));
+    });
+
+    res.status(200).json(prompts);
+  } catch (error) {
+    console.error("Error fetching student prompts:", error);
+    res.status(500).json({ error: "Failed to fetch student prompts." });
+  }
+});
+
+app.get("/api/getStudentPromptsByInstructor", async (req, res) => {
+  const { instructorEmail } = req.query;
+
+  try {
+    // Step 1: Fetch the subjects owned by the instructor
+    const subjectsSnapshot = await db.collection("learningMaterials")
+      .where("ownerEmail", "==", instructorEmail)
+      .get();
+
+    if (subjectsSnapshot.empty) {
+      return res.status(200).json([]); // No subjects found for the instructor
+    }
+
+    const subjectCodes = subjectsSnapshot.docs.map(doc => doc.data().subjectCode);
+
+    // Step 2: Fetch students who have access to these subjects
+    const accessSnapshot = await db.collection("accessLearningMaterials")
+      .where("subjectCodes", "array-contains-any", subjectCodes)
+      .get();
+
+    if (accessSnapshot.empty) {
+      return res.status(200).json([]); // No students found with access
+    }
+
+    const studentEmails = accessSnapshot.docs.map(doc => doc.data().studentId);
+
+    // Step 3: Fetch prompts from these students
+    const prompts = [];
+    for (const studentEmail of studentEmails) {
+      const chatsSnapshot = await db.collection("chats")
+        .where("userId", "==", studentEmail)
+        .get();
+
+      chatsSnapshot.forEach(doc => {
+        const messages = doc.data().messages || [];
+        prompts.push(...messages.filter(message => message.sender === "user"));
+      });
+    }
+
+    res.status(200).json(prompts);
+  } catch (error) {
+    console.error("Error fetching student prompts by instructor:", error);
+    res.status(500).json({ error: "Failed to fetch student prompts by instructor." });
   }
 });
 

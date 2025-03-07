@@ -66,6 +66,7 @@ const AdminPage = () => {
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
   const [isUpdatingRole, setIsUpdatingRole] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -110,12 +111,10 @@ const AdminPage = () => {
           chat.messages.filter(message => message.sender === "user")
         );
         setTotalQueries(allMessages.length);
-  
-        const queryData = allMessages.map(message => ({
+        setQueryData(allMessages.map(message => ({
           timestamp: new Date(message.timestamp),
-          text: message.text
-        }));
-        setQueryData(queryData);
+          text: message.text,
+        })));
       } catch (error) {
         console.error("Failed to fetch total queries:", error);
       }
@@ -143,30 +142,22 @@ const AdminPage = () => {
   
     const fetchTotalLearningMaterials = async () => {
       try {
-        const response = await axios.get(`${base_url}/api/getLearningMaterials`);
-        const learningMaterials = response.data;
-  
-        // Count unique subject codes across all learning materials
-        const uniqueSubjects = new Set();
-        Object.keys(learningMaterials).forEach(subjectName => {
-          Object.keys(learningMaterials[subjectName]).forEach(lesson => {
-            Object.keys(learningMaterials[subjectName][lesson]).forEach(subtopicCode => {
-              const subjectId = learningMaterials[subjectName][lesson][subtopicCode].subjectId;
-              uniqueSubjects.add(subjectId);
-            });
-          });
-        });
-  
-        setTotalLearningMaterials(uniqueSubjects.size);
+        const response = await axios.get(`${base_url}/api/getTotalLearningMaterials`);
+        setTotalLearningMaterials(response.data.totalLearningMaterials);
       } catch (error) {
         console.error("Failed to fetch total learning materials:", error);
       }
     };
   
-    fetchTotalQueries();
-    fetchtotalStudents();
-    fetchInstructors();
-    fetchTotalLearningMaterials();
+    const fetchData = async () => {
+      await fetchTotalQueries();
+      await fetchtotalStudents();
+      await fetchInstructors();
+      await fetchTotalLearningMaterials();
+      setIsLoading(false); // Set loading to false after fetching data
+    };
+  
+    fetchData();
   }, []);
 
   const handleGenerateFAQ = async () => {
@@ -214,6 +205,55 @@ const AdminPage = () => {
     } finally {
       setIsGeneratingFAQ(false); // Reset the generating state
     }
+  };
+
+  const formatFAQText = (text) => {
+    if (!text) return null;
+  
+    const boldTextRegex = /\*\*(.*?)\*\*/g; // Matches **bold** text
+    const codeBlockRegex = /```([\s\S]*?)```/g; // Matches ```code blocks```
+    const headingRegex = /###\s*(.*?)\n/g; // Matches ### headings
+  
+    // Split the text by code blocks first
+    const parts = text.split(codeBlockRegex);
+  
+    return parts.map((part, index) => {
+      if (index % 2 === 1) {
+        // This is a code block
+        return (
+          <pre key={index} className="faq-code-block">
+            <code>{part}</code>
+          </pre>
+        );
+      }
+  
+      // Process headings and bold text in non-code parts
+      const headingParts = part.split(headingRegex);
+      return (
+        <span key={index} className="faq-text" style={{ whiteSpace: 'pre-wrap' }}>
+          {headingParts.map((headingPart, headingIndex) => {
+            if (headingIndex % 2 === 1) {
+              // This is a heading (###)
+              return <h3 key={headingIndex}>{headingPart}</h3>;
+            }
+  
+            // Process bold text in non-heading parts
+            const boldParts = headingPart.split(boldTextRegex);
+            return (
+              <span key={headingIndex}>
+                {boldParts.map((boldPart, boldIndex) => {
+                  if (boldIndex % 2 === 1) {
+                    // This is bold text (**)
+                    return <strong key={boldIndex}>{boldPart}</strong>;
+                  }
+                  return boldPart;
+                })}
+              </span>
+            );
+          })}
+        </span>
+      );
+    });
   };
 
   const handleLogout = () => {
@@ -574,6 +614,10 @@ const handleEditUser = async (user, newRole) => {
     },
   };
 
+  if (isLoading) {
+    return <div className="admin-loading-container">Loading...</div>;
+  }
+  
   return (
     <div className="admin-container">
       <div className="admin-sidebar">
@@ -718,7 +762,7 @@ const handleEditUser = async (user, newRole) => {
                   {isGeneratingFAQ ? "Generating..." : "Generate FAQ"}
                 </button>
               </div>
-              <pre className="faq-box">{faq}</pre>
+              <pre className="faq-box">{formatFAQText(faq)}</pre>
             </div>
           </div>
         ) : activeTab === 'students' ? (

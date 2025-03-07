@@ -20,11 +20,11 @@ const ExercisesPage = () => {
   const [userAnswers, setUserAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [subjectId, setSubjectId] = useState("");
-  const [studentId, setStudentId] = useState(localStorage.getItem("userId")||"");
+  const [studentId, setStudentId] = useState(localStorage.getItem("userId") || "");
   const [hasSubjectCode, setHasSubjectCode] = useState(false);
   const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-  const [showOptions, setShowOptions] = useState(null); // State to manage the visibility of the three-dot menu
+  const [showOptions, setShowOptions] = useState(null);
   const navigate = useNavigate();
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
@@ -37,7 +37,7 @@ const ExercisesPage = () => {
       if (userEmail) {
         try {
           const response = await axios.get(`${base_url}/api/getUserRole`, {
-            params: { email: userEmail }
+            params: { email: userEmail },
           });
           const role = response.data.role;
 
@@ -45,7 +45,7 @@ const ExercisesPage = () => {
           localStorage.setItem("userRole", role);
 
           if (role === "student") {
-            return
+            return;
           } else if (role === "admin") {
             navigate("/admin");
           } else if (role === "instructor") {
@@ -71,7 +71,6 @@ const ExercisesPage = () => {
     if (studentId) {
       fetchLearningMaterials();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentId]);
 
   const fetchLearningMaterials = async () => {
@@ -79,12 +78,12 @@ const ExercisesPage = () => {
       const accessResponse = await axios.get(`${base_url}/api/getAccessLearningMaterials`, {
         params: { studentId },
       });
-      const subjectIds = accessResponse.data.subjectIds;
-  
-      if (subjectIds.length > 0) {
+      const subjectCodes = accessResponse.data.subjectCodes;
+
+      if (subjectCodes.length > 0) {
         setHasSubjectCode(true);
         const materialsResponse = await axios.get(`${base_url}/api/getLearningMaterials`, {
-          params: { subjectIds },
+          params: { subjectCodes },
         });
         setLearningMaterials(materialsResponse.data);
       } else {
@@ -100,13 +99,13 @@ const ExercisesPage = () => {
   };
 
   const handleTutorial = () => {
-    if (tutorial){
+    if (tutorial) {
       setTutorial(false);
       setTutorial2(true);
-    } else if (!tutorial && tutorial2){
+    } else if (!tutorial && tutorial2) {
       setTutorial2(false);
       setTutorial3(true);
-    } else if (!tutorial && !tutorial2){
+    } else if (!tutorial && !tutorial2) {
       setTutorial3(false);
     }
   };
@@ -117,13 +116,13 @@ const ExercisesPage = () => {
     setSelectedSubtopic(null);
   };
 
-  const handleLessonClick = (lesson) => {
-    setSelectedLesson(lesson);
+  const handleLessonClick = (lessonIndex) => {
+    setSelectedLesson(lessonIndex);
     setSelectedSubtopic(null);
   };
 
-  const handleSubtopicClick = (subtopic) => {
-    setSelectedSubtopic(subtopic);
+  const handleSubtopicClick = (subtopicIndex) => {
+    setSelectedSubtopic(subtopicIndex);
   };
 
   const toggleTheme = () => {
@@ -131,7 +130,7 @@ const ExercisesPage = () => {
   };
 
   const toggleSidebar = () => {
-    setIsSidebarVisible(prev => !prev);
+    setIsSidebarVisible((prev) => !prev);
   };
 
   const handleAnswerChange = (questionIndex, value) => {
@@ -142,92 +141,48 @@ const ExercisesPage = () => {
   };
 
   const checkAnswers = () => {
-    if (!selectedSubtopic || !selectedSubject || !selectedLesson) return;
-
-    const correctAnswers = learningMaterials[selectedSubject][selectedLesson][selectedSubtopic].answers;
-    const correctAnswersArray = correctAnswers.split(/\d+\.\s*/).filter(answer => answer.trim() !== "");
-
+    const subtopic =
+      learningMaterials[selectedSubject]?.lessons[selectedLesson]?.subtopics[selectedSubtopic];
+  
+    const correctAnswersArray = subtopic.answers
+      .split(/\d+\.\s*/) // Split by numbers (e.g., "1. Answer")
+      .filter((answer) => answer.trim() !== ""); // Remove empty values
+  
     const results = {};
-    const totalQuestions = correctAnswersArray.length;
     let correctCount = 0;
-
+    const totalQuestions = correctAnswersArray.length;
+  
     for (let i = 0; i < totalQuestions; i++) {
       const correctAnswer = correctAnswersArray[i].trim().toLowerCase();
-      const studentAnswer = userAnswers[i] ? userAnswers[i].trim().toLowerCase() : "";
-
+      const studentAnswer = userAnswers[i]?.trim()?.toLowerCase() || "";
+  
       results[i] = studentAnswer === correctAnswer;
       if (results[i]) correctCount++;
     }
-
+  
     alert(
       `You got ${correctCount} out of ${totalQuestions} correct.\n\n` +
-      Object.keys(results)
-        .map((key) => `Question ${parseInt(key) + 1}: ${results[key] ? "Correct" : "Incorrect"}`)
-        .join("\n")
+        Object.keys(results)
+          .map(
+            (key) =>
+              `Question ${parseInt(key) + 1}: ${results[key] ? "✅ Correct" : "❌ Incorrect"}`
+          )
+          .join("\n")
     );
-  };
-
-  const sortSubtopics = (subtopics) => {
-    return Object.keys(subtopics).sort((a, b) => {
-      const [majorA, minorA] = a.split('.').map(Number);
-      const [majorB, minorB] = b.split('.').map(Number);
-
-      if (majorA === majorB) {
-        return minorA - minorB;
-      }
-      return majorA - majorB;
-    });
-  };
-
-  const renderExercises = (exercises) => {
-    if (!exercises) return null;
-
-    const lines = exercises.split("\n").filter((line) => line.trim() !== "");
-
-    return (
-      <div className={`exercise-container ${theme}`}>
-        {lines.map((line, index) => {
-          const isNumberedQuestion = /^\d+\./.test(line);
-
-          return (
-            <React.Fragment key={index}>
-              <div className={`exercise-text ${theme}`}>{line}</div>
-              {isNumberedQuestion && (
-                <input
-                  type="text"
-                  value={userAnswers[index] || ""}
-                  onChange={(e) => handleAnswerChange(index, e.target.value)}
-                  className={`exercise-input ${theme}`}
-                  placeholder="Your answer"
-                />
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
-    );
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userName");
-    sessionStorage.removeItem("userId");
-    sessionStorage.removeItem("userName");
-    navigate("/");
-  };
+  };  
 
   const handleSubjectCodeSubmit = async () => {
     if (!subjectId || !studentId) {
       alert("Please enter a valid subject ID and ensure you are logged in.");
       return;
     }
-  
+
     try {
       const response = await axios.post(`${base_url}/api/addAccessLearningMaterial`, {
         studentId,
-        subjectId,
+        subjectCode: subjectId,
       });
-  
+
       if (response.status === 200) {
         alert("Subject ID added successfully!");
         setHasSubjectCode(true);
@@ -243,28 +198,23 @@ const ExercisesPage = () => {
     }
   };
 
-  const handleRemoveAccess = async (subjectId) => {
+  const handleRemoveAccess = async (studentId, subjectCode) => {
     try {
       const response = await axios.delete(`${base_url}/api/removeAccessLearningMaterial`, {
-        data: { studentId, subjectId },
+        headers: { "Content-Type": "application/json" },
+        data: { studentId, subjectCode }, // DELETE needs 'data' object
       });
   
       if (response.status === 200) {
-        alert("Access removed successfully!");
-  
-        // Update the learningMaterials state to remove the subject
+        alert("Subject removed successfully!");
+        // Update state to reflect the removed subject
         const updatedLearningMaterials = { ...learningMaterials };
-        for (const subject in updatedLearningMaterials) {
-          if (updatedLearningMaterials[subject][Object.keys(updatedLearningMaterials[subject])[0]][Object.keys(updatedLearningMaterials[subject][Object.keys(updatedLearningMaterials[subject])[0]])[0]].subjectId === subjectId) {
-            delete updatedLearningMaterials[subject];
-            break;
-          }
-        }
-  
-        setLearningMaterials(updatedLearningMaterials); // Update the state to reflect the changes
-        setSelectedSubject(null); // Deselect the subject if it was selected
+        delete updatedLearningMaterials[subjectCode]; // Remove the subject from the state
+        setLearningMaterials(updatedLearningMaterials); // Update the state
+        fetchLearningMaterials();
+        setSelectedSubject(null); // Reset the selected subject
       } else {
-        alert("Failed to remove access. Please try again.");
+        alert("Failed to remove Subject. Please try again.");
       }
     } catch (error) {
       console.error("Failed to remove access:", error);
@@ -272,48 +222,58 @@ const ExercisesPage = () => {
     }
   };
 
-  const SubjectBox = ({ subject, instructorEmail, instructorName, subjectId }) => {
+  const handleLogout = () => {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("userName");
+    navigate("/");
+  };
+
+  const SubjectBox = ({ subject, subjectCode, ownerEmail, ownerName }) => {
     const [showOptions, setShowOptions] = useState(null);
   
-    // Add a click event listener to the document to detect clicks outside the menu
     useEffect(() => {
       const handleClickOutside = (event) => {
-        // Check if the click is outside the options menu
         if (showOptions && !event.target.closest(".subject-box-options-menu")) {
-          setShowOptions(null); // Hide the menu
+          setShowOptions(null);
         }
       };
   
-      // Attach the event listener
       document.addEventListener("click", handleClickOutside);
-  
-      // Clean up the event listener on component unmount
       return () => {
         document.removeEventListener("click", handleClickOutside);
       };
     }, [showOptions]);
   
     return (
-      <div className={`subject-box ${theme}`} onClick={() => handleSubjectClick(subject)}>
+      <div className={`subject-box ${theme}`} onClick={() => handleSubjectClick(subjectCode)}>
         <div className="subject-box-header">
-          <h3>{subject}</h3>
+          <h3>{subject.subjectName}</h3>
           <div
             className="subject-box-options"
             onClick={(e) => {
-              e.stopPropagation(); // Prevent the click from bubbling up to the document
-              setShowOptions(showOptions === subjectId ? null : subjectId); // Toggle the menu
+              e.stopPropagation(); // Stop propagation here
+              setShowOptions(showOptions === subjectCode ? null : subjectCode);
             }}
           >
             <MdMoreVert />
           </div>
-          {showOptions === subjectId && (
+          {showOptions === subjectCode && (
             <div className="subject-box-options-menu">
-              <button onClick={() => handleRemoveAccess(subjectId)}>Remove</button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Stop propagation here
+                  handleRemoveAccess(studentId, subject.subjectCode);
+                }}
+              >
+                Remove
+              </button>
             </div>
           )}
         </div>
-        <p>{instructorEmail}</p>
-        <p>{instructorName}</p>
+        <p>{ownerEmail}</p>
+        <p>{ownerName}</p>
       </div>
     );
   };
@@ -347,8 +307,8 @@ const ExercisesPage = () => {
           <p>dark mode</p>
         </span>
       </div>
-      <div className={`exercises-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar} />
-      <div className={`exercises-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
+      <div className={`exercises-overlay ${isSidebarVisible ? "visible" : "hidden"}`} onClick={toggleSidebar} />
+      <div className={`exercises-sidebar ${theme} ${isSidebarVisible ? "visible" : "hidden"}`}>
         <div className="student-profile">
           <img src={`${userPicture}`} alt={`${userName}.jpg`} />
           <p>{userName}</p>
@@ -367,18 +327,18 @@ const ExercisesPage = () => {
         </button>
         {hasSubjectCode ? (
           <ul>
-            {Object.keys(learningMaterials).map((subject) => (
+            {Object.keys(learningMaterials).map((subjectCode) => (
               <li
-                key={subject}
-                className={`${theme} ${selectedSubject === subject ? 'active' : ''}`}
-                onClick={() => handleSubjectClick(subject)}
+                key={subjectCode}
+                className={`${theme} ${selectedSubject === subjectCode ? "active" : ""}`}
+                onClick={() => handleSubjectClick(subjectCode)}
               >
-                {subject}
+                {learningMaterials[subjectCode].subjectName}
               </li>
             ))}
           </ul>
         ) : (
-          <p style={{ paddingTop: '10px' }}>No subject IDs added yet. Please add a subject ID to view learning materials.</p>
+          <p style={{ paddingTop: "10px" }}>No subject IDs added yet. Please add a subject ID to view learning materials.</p>
         )}
         <button className={`exercises-logout-button ${theme}`} onClick={handleLogout}>
           Logout
@@ -386,90 +346,113 @@ const ExercisesPage = () => {
       </div>
 
       <button
-        className={`exercises-sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}
+        className={`exercises-sidebar-toggle ${theme} ${isSidebarVisible ? "sidebar-visible" : "sidebar-hidden"}`}
         onClick={toggleSidebar}
       >
         {isSidebarVisible ? <MdChevronLeft /> : <MdChevronRight />}
       </button>
       <button
-        className={`exercises-sidebar-toggle2 ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}
+        className={`exercises-sidebar-toggle2 ${theme} ${isSidebarVisible ? "sidebar-visible" : "sidebar-hidden"}`}
         onClick={toggleSidebar}
       >
         {isSidebarVisible ? <MdChevronRight /> : <MdChevronLeft />}
       </button>
 
-      <div className={`exercises-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
-        <div className='exercises-header-container'>
+      <div className={`exercises-content ${theme} ${isSidebarVisible ? "sidebar-visible" : "sidebar-hidden"}`}>
+        <div className="exercises-header-container">
           <div className="exercises-header">
-            {hasSubjectCode && selectedSubject && <h1 className={theme}>{selectedSubject}</h1>}
+            {hasSubjectCode && selectedSubject && (
+              <h1 className={theme}>{learningMaterials[selectedSubject].subjectName}</h1>
+            )}
           </div>
           <div className="exercises-header-buttons">
-            <div className='userName' style={{ paddingLeft: '10px' }}>{userName}</div>
-            <img src={userPicture} className='userPicture' alt="" />
+            <div className="userName" style={{ paddingLeft: "10px" }}>
+              {userName}
+            </div>
+            <img src={userPicture} className="userPicture" alt="" />
             <button className={`exercises-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
               {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
             </button>
-            <button className={`exercises-chat-button ${theme} ${tutorial2}`} onClick={() => navigate('/student')}>
+            <button className={`exercises-chat-button ${theme} ${tutorial2}`} onClick={() => navigate("/student")}>
               <IoIosChatboxes />
             </button>
           </div>
         </div>
-        {hasSubjectCode && selectedSubject && !selectedLesson && (
+        {hasSubjectCode && selectedSubject && selectedLesson === null && (
           <div className="lessons">
             <h2 className={theme}>Lessons</h2>
             <button className={`back-button ${theme}`} onClick={() => setSelectedSubject(null)}>
               Back to Subjects
             </button>
             <ul>
-              {Object.keys(learningMaterials[selectedSubject])
-                .sort((a, b) => {
-                  // Extract the lesson numbers from the strings
-                  const lessonNumberA = parseInt(a.replace('Lesson ', ''), 10);
-                  const lessonNumberB = parseInt(b.replace('Lesson ', ''), 10);
-                  return lessonNumberA - lessonNumberB;
-                })
-                .map((lesson) => (
-                  <li
-                    key={lesson}
-                    className={`${theme}`}
-                    onClick={() => handleLessonClick(lesson)}
-                  >
-                    {`${lesson}`}
-                  </li>
-                ))}
-            </ul>
-          </div>
-        )}
-
-        {hasSubjectCode && selectedLesson && !selectedSubtopic && (
-          <div className="subtopics">
-            <h2 className={theme}>Subtopics for {selectedLesson}</h2>
-            <button className={`back-button ${theme}`} onClick={() => setSelectedLesson(null)}>
-              Back to Lessons
-            </button>
-            <ul>
-              {sortSubtopics(learningMaterials[selectedSubject][selectedLesson]).map((subtopic) => (
+              {learningMaterials[selectedSubject].lessons.map((lesson, index) => (
                 <li
-                  key={subtopic}
+                  key={index}
                   className={`${theme}`}
-                  onClick={() => handleSubtopicClick(subtopic)}
+                  onClick={() => handleLessonClick(index)}
                 >
-                  {`${subtopic} - ${learningMaterials[selectedSubject][selectedLesson][subtopic].subtopicTitle}`}
+                  {lesson.lessonName}
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        {hasSubjectCode && selectedSubtopic && (
+        {hasSubjectCode && selectedLesson !== null && selectedSubtopic === null && (
+          <div className="subtopics">
+            <h2 className={theme}>Subtopics for {learningMaterials[selectedSubject].lessons[selectedLesson].lessonName}</h2>
+            <button className={`back-button ${theme}`} onClick={() => setSelectedLesson(null)}>
+              Back to Lessons
+            </button>
+            <ul>
+            {learningMaterials[selectedSubject]?.lessons[selectedLesson]?.subtopics &&
+              learningMaterials[selectedSubject].lessons[selectedLesson].subtopics.map((subtopic, index) => (
+                <li
+                  key={index}
+                  className={`${theme}`}
+                  onClick={() => handleSubtopicClick(index)}
+                >
+                  {`${subtopic.subtopicCode} - ${subtopic.subtopicTitle}`}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {hasSubjectCode && selectedSubtopic !== null && (
           <div className={`subtopic-content ${theme}`}>
             <h1 className={theme}>
-              {selectedSubtopic} - {learningMaterials[selectedSubject][selectedLesson][selectedSubtopic].subtopicTitle}
+              {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicCode} -{" "}
+              {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicTitle}
             </h1>
             <p className={`line ${theme}`}></p>
-            <span>{learningMaterials[selectedSubject][selectedLesson][selectedSubtopic].content}</span>
+            <span>
+              {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].content}
+            </span>
             <h3>Exercises</h3>
-            {renderExercises(learningMaterials[selectedSubject][selectedLesson][selectedSubtopic]?.questions)}
+            <div className={`exercise-container ${theme}`}>
+              {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].questions
+                .split("\n")
+                .filter((line) => line.trim() !== "")
+                .map((line, index) => {
+                  const isNumberedQuestion = /^\d+\./.test(line);
+
+                  return (
+                    <React.Fragment key={index}>
+                      <div className={`exercise-text ${theme}`}>{line}</div>
+                      {isNumberedQuestion && (
+                        <input
+                          type="text"
+                          value={userAnswers[index] || ""}
+                          onChange={(e) => handleAnswerChange(index, e.target.value)}
+                          className={`exercise-input ${theme}`}
+                          placeholder="Your answer"
+                        />
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+            </div>
             <div className="button-container">
               <button className={`back-button ${theme}`} onClick={() => setSelectedSubtopic(null)}>
                 Back to Subtopics
@@ -483,23 +466,15 @@ const ExercisesPage = () => {
 
         {!selectedSubject && hasSubjectCode && (
           <div className="subject-boxes">
-            {Object.keys(learningMaterials).map((subject) => {
-              const firstLesson = Object.keys(learningMaterials[subject])[0];
-              const firstSubtopic = Object.keys(learningMaterials[subject][firstLesson])[0];
-              const instructorEmail = learningMaterials[subject][firstLesson][firstSubtopic].instructorEmail;
-              const instructorName = learningMaterials[subject][firstLesson][firstSubtopic].instructorName;
-              const subjectId = learningMaterials[subject][firstLesson][firstSubtopic].subjectId;
-
-              return (
-                <SubjectBox
-                  key={subject}
-                  subject={subject}
-                  instructorEmail={instructorEmail}
-                  instructorName={instructorName}
-                  subjectId={subjectId}
-                />
-              );
-            })}
+            {Object.keys(learningMaterials).map((subjectCode) => (
+              <SubjectBox
+                key={subjectCode}
+                subject={learningMaterials[subjectCode]}
+                subjectCode={subjectCode}
+                ownerEmail={learningMaterials[subjectCode].ownerEmail}
+                ownerName={learningMaterials[subjectCode].ownerName}
+              />
+            ))}
           </div>
         )}
       </div>

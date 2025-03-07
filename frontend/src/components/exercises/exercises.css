@@ -731,6 +731,7 @@ button {
 }
   
 .subject-box-options-menu {
+    z-index: 5;
     position: absolute;
     right: 0;
     top: 30px;
