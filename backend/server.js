@@ -288,21 +288,21 @@ app.post("/api/llama", async (req, res) => {
     res.setHeader("Content-Type", "text/plain");
     res.setHeader("Transfer-Encoding", "chunked");
 
-    const response = await deepseek.chat.completions.create({
+    /*const response = await deepseek.chat.completions.create({
       model: "deepseek-chat",
       messages,
       max_tokens: 8192,
       stream: true, // Enable streaming
-    });
+    });*/
 
     // Make the API call to Hugging Face
-    /*const response = await qwen.chat.completions.create({
+    const response = await qwen.chat.completions.create({
       model: "tgi",
       messages,
       max_tokens: 8192,
       temperature: 0.3,
       stream: true,
-    });*/
+    });
 
     // Stream the response back to the client
     let botResponse = "";
