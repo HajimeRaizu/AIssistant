@@ -6,6 +6,11 @@ import { MdOutlineDashboard, MdOutlineQuestionAnswer } from "react-icons/md";
 import { LuBookMarked } from "react-icons/lu";
 import { BiLogOut } from "react-icons/bi";
 import logo from '../assets/AIssistant.png';
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { FaFileDownload } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
+import { IoIosSave } from "react-icons/io";
 import {
   LineChart,
   Label,
@@ -704,6 +709,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                     updatedMaterials[subject].subjectName = e.target.value;
                     setLearningMaterials(updatedMaterials);
                   }}
+                  onClick={(e) =>{
+                    e.stopPropagation();
+                  }}
                 />
               ) : (
                 <div>{learningMaterials[subject].subjectName}</div>
@@ -718,8 +726,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                         handleEditSubjectName(subject, learningMaterials[subject].subjectName);
                         setEditingSubject(null);
                       }}
+                      title='Save'
                     >
-                      Save
+                      <IoIosSave />
                     </button>
                     <button
                       className="instructor-cancel-edit-button"
@@ -727,8 +736,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                         e.stopPropagation();
                         setEditingSubject(null);
                       }}
+                      title='Cancel'
                     >
-                      Cancel
+                      <MdCancel />
                     </button>
                   </>
                 ) : (
@@ -739,8 +749,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                         e.stopPropagation();
                         setEditingSubject(subject);
                       }}
+                      title='Edit'
                     >
-                      Edit
+                      <FaEdit />
                     </button>
                     <button
                       className="instructor-delete-subject-button"
@@ -748,13 +759,14 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                         e.stopPropagation();
                         handleConfirmDelete({ type: 'subject', subjectCode: subject });
                       }}
+                      title='Delete'
                     >
-                      Delete Subject
+                      <MdDelete />
                     </button>
                     <button onClick={(e) => {
                       e.stopPropagation();
                       handleDownloadLearningMaterials(subject);
-                    }}>Download JSON</button>
+                    }} title='Download'><FaFileDownload /></button>
                   </>
                 )}
               </div>
@@ -785,7 +797,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           </button>
           <div>
             {lessons.map((lesson, index) => (
-              <div key={`lesson-${index}`} className="instructor-exercise-lesson">
+              <div onClick={() => setSelectedLesson(index)} key={`lesson-${index}`} className="instructor-exercise-lesson">
                 {editingLesson === index ? (
                   <input
                     type="text"
@@ -795,9 +807,12 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                       updatedMaterials[selectedSubject].lessons[index].lessonName = e.target.value;
                       setLearningMaterials(updatedMaterials);
                     }}
+                    onClick={(e) =>{
+                      e.stopPropagation();
+                    }}
                   />
                 ) : (
-                  <div onClick={() => setSelectedLesson(index)}>{lesson.lessonName}</div>
+                  <div>{lesson.lessonName}</div>
                 )}
                 <div className="control-buttons">
                   {editingLesson === index ? (
@@ -809,8 +824,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                           handleEditLessonName(selectedSubject, index, lesson.lessonName);
                           setEditingLesson(null);
                         }}
+                        title='Save'
                       >
-                        Save
+                        <IoIosSave />
                       </button>
                       <button
                         className="instructor-cancel-edit-button"
@@ -818,8 +834,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                           e.stopPropagation();
                           setEditingLesson(null);
                         }}
+                        title='Cancel'
                       >
-                        Cancel
+                        <MdCancel />
                       </button>
                     </>
                   ) : (
@@ -830,8 +847,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                           e.stopPropagation();
                           setEditingLesson(index);
                         }}
+                        title='Edit'
                       >
-                        Edit
+                        <FaEdit />
                       </button>
                       <button
                         className="instructor-delete-lesson-button"
@@ -839,8 +857,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                           e.stopPropagation();
                           handleConfirmDelete({ type: 'lesson', subjectCode: selectedSubject, lessonIndex: index });
                         }}
+                        title='Delete'
                       >
-                        Delete Lesson
+                        <MdDelete />
                       </button>
                     </>
                   )}
@@ -864,10 +883,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           </button>
           <div>
             {subtopics.map((subtopic, index) => (
-              <div key={`subtopic-${index}`} className="instructor-exercise-subtopic">
+              <div onClick={() => setSelectedSubtopic(index)} key={`subtopic-${index}`} className="instructor-exercise-subtopic">
                 {editingSubtopic === index ? (
-                  <div>
+                  <div className="input-fields">
                     <input
+                      className="subtopic-code"
                       type="text"
                       value={subtopic.subtopicCode}
                       onChange={(e) => {
@@ -875,8 +895,12 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                         updatedMaterials[selectedSubject].lessons[selectedLesson].subtopics[index].subtopicCode = e.target.value;
                         setLearningMaterials(updatedMaterials);
                       }}
+                      onClick={(e) =>{
+                        e.stopPropagation();
+                      }}
                     />
                     <input
+                      className="subtopic-name"
                       type="text"
                       value={subtopic.subtopicTitle}
                       onChange={(e) => {
@@ -884,10 +908,13 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                         updatedMaterials[selectedSubject].lessons[selectedLesson].subtopics[index].subtopicTitle = e.target.value;
                         setLearningMaterials(updatedMaterials);
                       }}
+                      onClick={(e) =>{
+                        e.stopPropagation();
+                      }}
                     />
                   </div>
                 ) : (
-                  <div onClick={() => setSelectedSubtopic(index)}>
+                  <div>
                     {`${subtopic['subtopicCode']} - ${subtopic['subtopicTitle']}`}
                   </div>
                 )}
@@ -907,8 +934,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                           });
                           setEditingSubtopic(null);
                         }}
+                        title='Save'
                       >
-                        Save
+                        <IoIosSave />
                       </button>
                       <button
                         className="instructor-cancel-edit-button"
@@ -916,8 +944,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                           e.stopPropagation();
                           setEditingSubtopic(null);
                         }}
+                        title='Cancel'
                       >
-                        Cancel
+                        <MdCancel />
                       </button>
                     </>
                   ) : (
@@ -928,8 +957,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                           e.stopPropagation();
                           setEditingSubtopic(index);
                         }}
+                        title='Edit'
                       >
-                        Edit
+                        <FaEdit />
                       </button>
                       <button
                         className="instructor-delete-subtopic-button"
@@ -937,8 +967,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                           e.stopPropagation();
                           handleConfirmDelete({ type: 'subtopic', subjectCode: selectedSubject, lessonIndex: selectedLesson, subtopicIndex: index });
                         }}
+                        title='Delete'
                       >
-                        Delete Subtopic
+                        <MdDelete />
                       </button>
                     </>
                   )}
@@ -1000,11 +1031,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           <div className="instructor-content-buttons">
             {editingExercise ? (
               <div className="instructor-e-buttons">
-                <button className="instructor-save-button" onClick={handleSaveExercise}>
-                  Save
+                <button title='Save' className="instructor-save-button" onClick={handleSaveExercise}>
+                <IoIosSave />
                 </button>
-                <button className="instructor-cancel-button" onClick={() => setEditingExercise(null)}>
-                  Cancel
+                <button title='Cancel' className="instructor-cancel-button" onClick={() => setEditingExercise(null)}>
+                <MdCancel />
                 </button>
               </div>
             ) : (
@@ -1017,8 +1048,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                     answers: subtopic.answers,
                   });
                 }}
+                title='Edit'
               >
-                Edit
+                <FaEdit />
               </button>
             )}
             <button onClick={handleBackToSubtopics}>Back to Subtopics</button>
@@ -1085,6 +1117,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
               onChange={(e) =>
                 setNewSubject({ ...newSubject, subjectName: e.target.value })
               }
+              onClick={(e) =>{
+                e.stopPropagation();
+              }}
             />
           </div>
           <div className="instructor-modal-actions">
@@ -1152,6 +1187,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
               onChange={(e) =>
                 setNewLesson({ ...newLesson, lessonName: e.target.value })
               }
+              onClick={(e) =>{
+                e.stopPropagation();
+              }}
             />
           </div>
           <div className="instructor-modal-actions">
@@ -1225,6 +1263,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
               onChange={(e) =>
                 setNewSubtopic({ ...newSubtopic, subtopicCode: e.target.value })
               }
+              onClick={(e) =>{
+                e.stopPropagation();
+              }}
             />
             <label>Subtopic Title:</label>
             <input
@@ -1233,6 +1274,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
               onChange={(e) =>
                 setNewSubtopic({ ...newSubtopic, subtopicTitle: e.target.value })
               }
+              onClick={(e) =>{
+                e.stopPropagation();
+              }}
             />
             <label>Content:</label>
             <textarea
@@ -1463,7 +1507,8 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         ) : (
           <div className="instructor-manage-learning-materials-tab">
             <h1><LuBookMarked />Manage Learning Materials</h1>
-            <input 
+            <input
+              style={{width: 'fit-content'}}
               type="file" 
               accept=".json" 
               onChange={handleUploadLearningMaterials} 

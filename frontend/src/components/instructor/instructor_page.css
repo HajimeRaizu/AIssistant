@@ -654,6 +654,9 @@
 }
 
 .instructor-exercise-subtopic, .instructor-exercise-lesson {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 15px;
     margin: 10px 0;
     border-radius: 5px;
@@ -839,4 +842,25 @@
     height: 100vh;
     font-size: 1.5rem;
     color: #333;
-  }
+}
+
+.input-fields{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.input-fields .subtopic-code{
+    width: 50px;
+    font-size: medium;
+}
+
+.input-fields .subtopic-name{
+    width: 500px;
+    font-size: medium;
+}
+
+.instructor-exercise-lesson input{
+    width: 500px;
+    font-size: medium;
+}

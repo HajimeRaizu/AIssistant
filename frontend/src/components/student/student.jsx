@@ -571,6 +571,7 @@ const StudentPage = () => {
                         handleSaveChatName(chat.id);
                       }}
                       disabled={isDisabled}
+                      title='Save'
                     >
                       <LuSave />
                     </button>
@@ -581,6 +582,7 @@ const StudentPage = () => {
                         handleCancelEdit();
                       }}
                       disabled={isDisabled}
+                      title="Cancel"
                     >
                       <IoMdCloseCircleOutline />
                     </button>
@@ -594,6 +596,7 @@ const StudentPage = () => {
                         handleEditChat(chat.id, chat.chatName);
                       }}
                       disabled={isDisabled}
+                      title="Edit"
                     >
                       <FaEdit />
                     </button>
@@ -606,6 +609,7 @@ const StudentPage = () => {
                         }
                       }}
                       disabled={isDisabled}
+                      title="Delete"
                     >
                       <MdOutlineDelete className={`student-delete-icon ${theme}`} />
                     </button>
@@ -674,10 +678,10 @@ const StudentPage = () => {
       <div className="student-header-buttons">
         <div className="userName" style={{ paddingLeft: '10px' }}>{userName}</div>
         <img src={userPicture} className='userPicture' alt="" />
-        <button className={`student-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
+        <button title="Toggle theme" className={`student-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
           {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
         </button>
-        <button className={`student-exercise-button ${theme} ${tutorial2}`} onClick={() => navigate('/exercises')}>
+        <button title="Move to learning materials" className={`student-exercise-button ${theme} ${tutorial2}`} onClick={() => navigate('/exercises')}>
           <LuBookMarked />
         </button>
       </div>

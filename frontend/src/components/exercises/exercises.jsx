@@ -256,6 +256,7 @@ const ExercisesPage = () => {
               e.stopPropagation(); // Stop propagation here
               setShowOptions(showOptions === subjectCode ? null : subjectCode);
             }}
+            title="Options"
           >
             <MdMoreVert />
           </div>
@@ -370,10 +371,10 @@ const ExercisesPage = () => {
               {userName}
             </div>
             <img src={userPicture} className="userPicture" alt="" />
-            <button className={`exercises-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
+            <button title="Toggle theme" className={`exercises-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
               {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
             </button>
-            <button className={`exercises-chat-button ${theme} ${tutorial2}`} onClick={() => navigate("/student")}>
+            <button title="Move to chat" className={`exercises-chat-button ${theme} ${tutorial2}`} onClick={() => navigate("/student")}>
               <IoIosChatboxes />
             </button>
           </div>
