@@ -144,7 +144,7 @@ const StudentPage = () => {
     setIsTyping(true);
   
     try {
-      const response = await fetch(`${base_url}/api/llama`, {
+      const response = await fetch(`${base_url}/api/ai`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -364,7 +364,7 @@ const StudentPage = () => {
       setIsDisabled(true);
       setIsTyping(true);
   
-      const aiResponse = await fetch(`${base_url}/api/llama`, {
+      const aiResponse = await fetch(`${base_url}/api/ai`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

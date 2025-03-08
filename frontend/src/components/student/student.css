@@ -420,6 +420,7 @@
     align-self: flex-start;
     overflow: hidden;
     width: 100%;
+    user-select: none;
 }
 
 .student-bot-response.dark {
