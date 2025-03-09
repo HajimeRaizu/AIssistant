@@ -31,7 +31,11 @@ function App() {
             <StudentPage />
           </ProtectedRoute>
           } />
-        <Route path='/exercises' element={<ExercisesPage />} />
+        <Route path='/exercises' element={
+          <ProtectedRoute>
+            <ExercisesPage />
+          </ProtectedRoute>
+          } />
         <Route path='/instructor' element={
           <ProtectedRoute>
             <InstructorPage/>

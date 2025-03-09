@@ -227,7 +227,7 @@ const ExercisesPage = () => {
     localStorage.removeItem("userName");
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userName");
-    navigate("/");
+    navigate("/googleLogin");
   };
 
   const SubjectBox = ({ subject, subjectCode, ownerEmail, ownerName }) => {

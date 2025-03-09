@@ -287,7 +287,7 @@ const InstructorPage = () => {
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isAuthenticated");
-    navigate("/");
+    navigate("/googleLogin");
   };
 
   const getGraphData = () => {

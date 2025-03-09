@@ -255,7 +255,7 @@ const StudentPage = () => {
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isAuthenticated");
-    navigate("/");
+    navigate("/googleLogin");
   };
 
   const formatMessageText = (text, sender) => {

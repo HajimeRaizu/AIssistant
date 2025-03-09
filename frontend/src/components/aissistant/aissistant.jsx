@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import './aissistant.css';
 import logo from '../assets/AIssistant.png';
 import { useNavigate } from 'react-router-dom';
 
 const AIssistant = () => {
+  const userRole = localStorage.getItem("userRole");
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (userRole === "student"){
+      navigate('/student-landing');
+    } if (userRole === "instructor"){
+      navigate('/instructor');
+    } else if (userRole === "admin"){
+      navigate('/admin')
+    }
+  }, [userRole, navigate]);
 
   // Function to handle box clicks
   const handleBoxClick = () => {
