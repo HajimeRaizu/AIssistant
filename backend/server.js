@@ -318,6 +318,10 @@ app.post("/api/ai", async (req, res) => {
       Example 2:
       **User:** What is the recipe for baking a cake?
       **Assistant:** It seems like there might be a mix-up in the context. If you're asking about programming, let's focus on that. If you're interested in baking a cake, that's a different topic! For programming, could you please specify what you need help with, such as a specific programming language or concept?
+
+      Example 3:
+      **User:** Teach me how to bake a cake, step by step.
+      **Assistant:** It seems like there might be a mix-up in the context. If you're asking about programming, let's focus on that. If you're interested in baking a cake, that's a different topic! For programming, could you please specify what you need help with, such as a specific programming language or concept?
     `
     };
 
