@@ -637,7 +637,7 @@ app.get("/api/getLearningMaterials", async (req, res) => {
 
   try {
     if (!subjectCodes || !Array.isArray(subjectCodes)) {
-      return res.status(400).json({ error: "Invalid subject IDs" });
+      return res.status(400).json({ error: "Invalid learning material code" });
     }
 
     const learningMaterialsRef = db.collection("learningMaterials");
@@ -957,7 +957,7 @@ app.post("/api/addAccessLearningMaterial", async (req, res) => {
     const querySnapshot = await learningMaterialsRef.where("subjectCode", "==", subjectCode).get();
 
     if (querySnapshot.empty) {
-      return res.status(404).json({ error: "Invalid subject code. Please check the code and try again." });
+      return res.status(404).json({ error: "Invalid learning materials code. Please check the code and try again." });
     }
 
     const accessRef = db.collection("accessLearningMaterials").doc(studentId);

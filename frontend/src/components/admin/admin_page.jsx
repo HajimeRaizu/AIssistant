@@ -10,6 +10,7 @@ import { LuBookMarked } from "react-icons/lu";
 import logo from '../assets/AIssistant.png';
 import { BiLogOut } from "react-icons/bi";
 import DataTable from 'react-data-table-component';
+import Swal from 'sweetalert2';
 import {
   LineChart,
   Label,
@@ -428,35 +429,6 @@ const handleEditUser = async (user, newRole) => {
     }
   };
 
-  const handleConfirmDelete = (userId) => {
-    setUserIdToDelete(userId);
-    setShowConfirmModal(true);
-  };
-
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const response = await axios.post(`${base_url}/api/uploadUsers`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        alert("Users uploaded successfully!");
-        const usersResponse = await axios.get(`${base_url}/api/getUsers`);
-        setUsers(usersResponse.data);
-      } catch (error) {
-        console.error("Error uploading users:", error);
-        alert("Failed to upload users. Please check the file format and try again.");
-      } finally {
-        event.target.value = null;
-      }
-    }
-  };
-
   const handleAddSingleUser = async () => {
     if (isAddingUser) return;
     setIsAddingUser(true);
@@ -486,30 +458,6 @@ const handleEditUser = async (user, newRole) => {
       alert("University info updated successfully!");
     } catch (error) {
       console.error("Failed to update university info:", error);
-    }
-  };
-
-  const handleUploadInstructors = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        await axios.post(`${base_url}/api/uploadInstructors`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        alert("Instructors uploaded successfully!");
-        const response = await axios.get(`${base_url}/api/getInstructors`);
-        setInstructors(response.data);
-      } catch (error) {
-        console.error("Error uploading instructors:", error);
-        alert("Failed to upload instructors. Please check the file format and try again.");
-      } finally {
-        event.target.value = null;
-      }
     }
   };
 
@@ -545,11 +493,6 @@ const handleEditUser = async (user, newRole) => {
       console.error("Failed to delete instructor:", error);
       alert("Failed to delete instructor.");
     }
-  };
-
-  const handleConfirmDeleteInstructor = (instructorEmail) => {
-    setInstructorEmailToDelete(instructorEmail);
-    setShowConfirmInstructorModal(true);
   };
 
   const filteredUsers = users.filter(user => {

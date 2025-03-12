@@ -53,7 +53,7 @@
 .aissistant-user-type{
     align-self: center;
     background-color: lightblue;
-    width: 100px;
+    width: fit-content;
     margin-top: 25px;
 }
 

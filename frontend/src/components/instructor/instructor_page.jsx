@@ -11,6 +11,7 @@ import { MdDelete } from "react-icons/md";
 import { FaFileDownload } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { IoIosSave } from "react-icons/io";
+import Swal from 'sweetalert2'
 import {
   LineChart,
   Label,
@@ -422,10 +423,18 @@ const InstructorPage = () => {
       delete updatedLearningMaterials[subjectCode]; 
       setLearningMaterials(updatedLearningMaterials);
       
-      alert("Subject deleted successfully!");
+      Swal.fire({
+        title: "Success",
+        text: "Subject deleted successfully!",
+        icon: "success",
+      });
     } catch (error) {
       console.error("Failed to delete subject:", error);
-      alert("Failed to delete subject.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to delete subject.",
+        icon: "error",
+      })
     }
   };
   
@@ -443,10 +452,18 @@ const InstructorPage = () => {
         setSelectedLesson(null);
         setSelectedSubtopic(null);
 
-        alert("Lesson deleted successfully!");
+        Swal.fire({
+          title: "Success",
+          text: "Lesson deleted successfully!",
+          icon: "success",
+        })
     } catch (error) {
         console.error("Failed to delete lesson:", error);
-        alert("Failed to delete lesson.");
+        Swal.fire({
+          title: "Failed",
+          text: "Failed to delete lesson.",
+          icon: "error",
+        })
     }
 };
 
@@ -465,10 +482,18 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
       // Reset selected subtopic
       setSelectedSubtopic(null);
 
-      alert("Subtopic deleted successfully!");
+      Swal.fire({
+        title: "Success",
+        text: "Subtopic deleted successfully!",
+        icon: "success",
+      })
   } catch (error) {
       console.error("Failed to delete subtopic:", error);
-      alert("Failed to delete subtopic.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to delete subtopic.",
+        icon: "error",
+      })
   }
 };
 
@@ -504,7 +529,12 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           });
   
           if (uploadResponse.status === 200) {
-            alert("Learning materials uploaded successfully!");
+            Swal.fire({
+              title: "Success",
+              title: "Uploaded!",
+              text: "Learning materials uploaded successfully!",
+              icon: "success",
+            })
   
             const response = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
               params: { instructorEmail },
@@ -519,12 +549,18 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
               fileInputRef.current.value = "";
             }
           } else {
-            alert("Failed to upload learning materials.");
+            Swal.fire({
+              title: "Failed",
+              text: "Failed to upload learning materials.",
+              icon: "error",
+            })
           }
         } catch (error) {
-          console.error("Error uploading learning materials:", error);
-          console.error("Error details:", error.response);
-          alert("Failed to upload learning materials. Check the console for details.");
+          Swal.fire({
+            title: "Failed",
+            html: `Failed to upload learning materials:<br>${error}<br>${error.response}`,
+            icon: "error",
+          })
         }
       };
       reader.readAsText(file);
@@ -570,10 +606,18 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         return updatedMaterials;
       });
   
-      alert("Subject name updated successfully!");
+      Swal.fire({
+        title: "Success",
+        text: "Subject name updated successfully!",
+        icon: "success",
+      })
     } catch (error) {
       console.error("Failed to update subject name:", error);
-      alert("Failed to update subject name.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to update subject name",
+        icon: "error",
+      })
     }
   };
 
@@ -589,10 +633,18 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         return updatedMaterials;
       });
   
-      alert("Lesson name updated successfully!");
+      Swal.fire({
+        title: "Success",
+        text: "Lesson name updated successfully!",
+        icon: "success",
+      })
     } catch (error) {
       console.error("Failed to update lesson name:", error);
-      alert("Failed to update lesson name.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to update lesson name.",
+        icon: "error",
+      })
     }
   };
 
@@ -606,10 +658,18 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         return updatedMaterials;
       });
   
-      alert("Subtopic updated successfully!");
+      Swal.fire({
+        title: "Success",
+        text: "Subtopic updated successfully!",
+        icon: "success",
+      })
     } catch (error) {
       console.error("Failed to update subtopic:", error);
-      alert("Failed to update subtopic.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to update subtopic",
+        icon: "error",
+      })
     }
   };
   
@@ -643,10 +703,18 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
       );
   
       setEditingExercise(null);
-      alert("Exercise updated successfully!");
+      Swal.fire({
+        title: "Success",
+        text: "Learning material updated successfully!",
+        icon: "success",
+      })
     } catch (error) {
       console.error("Failed to update exercise:", error);
-      alert("Failed to update exercise.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to update learning material",
+        icon: "error",
+      })
     }
   };
 
@@ -660,7 +728,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
       });
   
       if (!response.data[subjectCode]) {
-        alert("Learning materials not found.");
+        Swal.fire({
+          title: "Error 404",
+          text: "Learning materials not found",
+          icon: "error",
+        })
         return;
       }
   
@@ -682,7 +754,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
       URL.revokeObjectURL(link.href);
     } catch (error) {
       console.error("Failed to download learning materials:", error);
-      alert("Failed to download learning materials.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to download learning material.",
+        icon: "error",
+      })
     }
   };  
 
@@ -1146,7 +1222,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
       const response = await axios.post(`${base_url}/api/createSubject`, newSubjectData);
   
       if (response.status === 200) {
-        alert("Subject created successfully!");
+        Swal.fire({
+          title: "Success",
+          text: "Subject created successfully!",
+          icon: "success",
+        })
         setShowCreateSubjectModal(false);
         setNewSubject({ subjectName: "", lessons: [] });
   
@@ -1155,11 +1235,19 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         });
         setLearningMaterials(updatedResponse.data);
       } else {
-        alert("Failed to create subject.");
+        Swal.fire({
+          title: "Failed",
+          text: "Failed to create subject",
+          icon: "error",
+        })
       }
     } catch (error) {
       console.error("Failed to create subject:", error);
-      alert("Failed to create subject.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to create subject",
+        icon: "error",
+      })
     }
   };
 
@@ -1219,7 +1307,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
       );
   
       if (response.status === 200) {
-        alert("Lesson created successfully!");
+        Swal.fire({
+          title: "Success",
+          text: "Lesson created successfully!",
+          icon: "success",
+        })
         setShowCreateLessonModal(false);
         setNewLesson({ lessonName: "", subtopics: [] });
   
@@ -1228,11 +1320,19 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         });
         setLearningMaterials(updatedResponse.data);
       } else {
-        alert("Failed to create lesson.");
+        Swal.fire({
+          title: "Failed",
+          text: "Failed to create Lesson",
+          icon: "error",
+        })
       }
     } catch (error) {
       console.error("Failed to create lesson:", error);
-      alert("Failed to create lesson.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to create lesson.",
+        icon: "error",
+      })
     }
   };
 
@@ -1330,7 +1430,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
       );
   
       if (response.status === 200) {
-        alert("Subtopic created successfully!");
+        Swal.fire({
+          title: "Success",
+          text: "Subtopic created successfully!",
+          icon: "success",
+        })
         setShowCreateSubtopicModal(false);
         setNewSubtopic({
           subtopicCode: "",
@@ -1345,11 +1449,19 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         });
         setLearningMaterials(updatedResponse.data);
       } else {
-        alert("Failed to create subtopic.");
+        Swal.fire({
+          title: "Failed",
+          text: "Failed to create subtopic",
+          icon: "error",
+        })
       }
     } catch (error) {
       console.error("Failed to create subtopic:", error);
-      alert("Failed to create subtopic.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to create subtopic",
+        icon: "error",
+      })
     }
   };
 

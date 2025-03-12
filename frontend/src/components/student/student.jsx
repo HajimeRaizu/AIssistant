@@ -690,7 +690,7 @@ const StudentPage = () => {
         <div className="student-profile">
           <img src={`${userPicture}`} alt={`${userName}.jpg`} />
           <p>{userName}</p>
-        </div>
+        </div>  
         <button
           className="student-new-chat"
           onClick={handleNewChatClick}

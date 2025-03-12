@@ -5,6 +5,7 @@ import "./loginGoogle_android.css";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import Swal from 'sweetalert2'
 
 const LoginGoogle = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -33,7 +34,11 @@ const LoginGoogle = () => {
     try {
       // Check if the email ends with @nemsu.edu.ph
       if (!decodedToken.email.endsWith("@nemsu.edu.ph")) {
-        alert("Invalid email.");
+        Swal.fire({
+          title: "Invalid email",
+          text: "Only NEMSU workspace accounts are allowed",
+          icon: "error",
+        })
         return;
       }
   
@@ -64,12 +69,20 @@ const LoginGoogle = () => {
       }
     } catch (error) {
       console.error("Error during Google login:", error);
-      alert("Failed to process Google login.");
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to login with Google",
+        icon: "error",
+      })
     }
   };
 
   const handleGoogleLoginError = () => {
-    alert("Failed to login with Google");
+    Swal.fire({
+      title: "Failed",
+      text: "Failed to login with Google",
+      icon: "error",
+    })
   };
 
   return (

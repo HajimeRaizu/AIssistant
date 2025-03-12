@@ -4,6 +4,7 @@ import "./exercises_android.css";
 import { MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight, MdMoreVert } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from 'sweetalert2'
 import { IoIosChatboxes } from "react-icons/io";
 
 const ExercisesPage = () => {
@@ -159,21 +160,26 @@ const ExercisesPage = () => {
       results[i] = studentAnswer === correctAnswer;
       if (results[i]) correctCount++;
     }
-  
-    alert(
-      `You got ${correctCount} out of ${totalQuestions} correct.\n\n` +
-        Object.keys(results)
+
+    Swal.fire({
+      title: `You got ${correctCount} out of ${totalQuestions} questions.`,
+      html: Object.keys(results)
           .map(
             (key) =>
               `Question ${parseInt(key) + 1}: ${results[key] ? "✅ Correct" : "❌ Incorrect"}`
           )
-          .join("\n")
-    );
+          .join("<br>"),
+      icon: "info"
+    });
   };  
 
   const handleSubjectCodeSubmit = async () => {
     if (!subjectId || !studentId) {
-      alert("Please enter a valid subject ID and ensure you are logged in.");
+      Swal.fire({
+        title: "Error!",
+        text: "Please enter a valid subject ID.",
+        icon: "error"
+      });
       return;
     }
 
@@ -184,15 +190,25 @@ const ExercisesPage = () => {
       });
 
       if (response.status === 200) {
-        alert("Subject ID added successfully!");
+        Swal.fire({
+          text: "Learning material added successfully!",
+          icon: "success"
+        });
         setHasSubjectCode(true);
         fetchLearningMaterials();
       } else {
-        alert("Failed to add subject ID. Please try again.");
+        Swal.fire({
+          text: "Invalid learning material code!",
+          icon: "error"
+        });
       }
     } catch (error) {
       console.error("Failed to add subject ID:", error);
-      alert(`Failed to add subject ID: ${error.response?.data?.error || error.message}`);
+      Swal.fire({
+        title: "Failed to add subject ID",
+        text: error.response?.data?.error,
+        icon: "error"
+      });
     } finally {
       setSubjectId("");
     }
@@ -206,7 +222,10 @@ const ExercisesPage = () => {
       });
   
       if (response.status === 200) {
-        alert("Subject removed successfully!");
+        Swal.fire({
+          text: "Subject removed successfully!",
+          icon: "success"
+        });
         // Update state to reflect the removed subject
         const updatedLearningMaterials = { ...learningMaterials };
         delete updatedLearningMaterials[subjectCode]; // Remove the subject from the state
@@ -214,11 +233,17 @@ const ExercisesPage = () => {
         fetchLearningMaterials();
         setSelectedSubject(null); // Reset the selected subject
       } else {
-        alert("Failed to remove Subject. Please try again.");
+        Swal.fire({
+          text: "Failed to remove Subject. Please try again.",
+          icon: "error",
+        })
       }
     } catch (error) {
-      console.error("Failed to remove access:", error);
-      alert(`Failed to remove access: ${error.response?.data?.error || error.message}`);
+      Swal.fire({
+        title: "Failed to remove learning material",
+        text: error.response?.data?.error || error.message,
+        icon: "error",
+      });
     }
   };
 
@@ -320,7 +345,7 @@ const ExercisesPage = () => {
             type="text"
             value={subjectId}
             onChange={(e) => setSubjectId(e.target.value)}
-            placeholder="Enter subject code"
+            placeholder="Enter learning material code"
           />
         </div>
         <button onClick={handleSubjectCodeSubmit} className={`submit-button ${theme}`}>

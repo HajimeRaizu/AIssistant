@@ -367,26 +367,26 @@
 }
 
 .student-message.user.dark {
-    background-color: var(--message-user-dark);
+    background:  var(--message-user-dark);
     color: var(--text-dark);
     align-self: flex-start;
 }
 
 .student-message.user.light {
-    background-color: var(--message-user-light);
-    color: var(--text-light);
+    background:  var(--message-user-light);
+    color: #1e1e1e;
     align-self: flex-start;
 }
 
 .student-message.bot.dark {
-    background-color: var(--message-bot-dark);
+    background:  var(--message-bot-dark);
     color: var(--text-dark);
     align-self: flex-start;
     align-items: flex-start;
 }
 
 .student-message.bot.light {
-    background-color: var(--message-bot-light);
+    background:  var(--message-bot-light);
     color: var(--text-light);
     align-self: flex-start;
     align-items: flex-start;
@@ -424,12 +424,12 @@
 }
 
 .student-bot-response.dark {
-    background-color: var(--message-bot-dark);
+    background:  var(--message-bot-dark);
     color: var(--text-dark);
 }
 
 .student-bot-response.light {
-    background-color: var(--message-bot-light);
+    background:  var(--message-bot-light);
     color: var(--text-light);
 }
 
@@ -456,7 +456,7 @@
     margin-right: 10px;
     font-family: "Host Grotesk", sans-serif;
     font-size: large;
-    background-color: var(--input-dark);
+    background:  var(--input-dark);
     color: var(--text-dark);
     resize: none;
     font-size: 18px;
@@ -472,7 +472,7 @@ textarea:focus {
 }
 
 .student-chat-input textarea.light {
-    background-color: var(--input-light);
+    background:  var(--input-light);
     color: var(--text-light);
 }
 
@@ -514,13 +514,13 @@ textarea:focus {
 
 .student-chat-input textarea:disabled.dark,
 .student-chat-input button:disabled.dark {
-    background-color: #7a7a7a;
+    background:  #7a7a7a;
     cursor: not-allowed;
 }
 
 .student-chat-input textarea:disabled.light,
 .student-chat-input button:disabled.light {
-    background-color: #ccc;
+    background:  #ccc;
     cursor: not-allowed;
 }
 
@@ -533,12 +533,12 @@ textarea:focus {
 }
 
 .student-chat-input button.dark {
-    background-color: var(--button-dark);
+    background:  var(--button-dark);
     color: var(--text-dark);
 }
 
 .student-chat-input button.light {
-    background-color: var(--button-light);
+    background:  var(--button-light);
     color: var(--text-light);
 }
 
@@ -606,12 +606,12 @@ textarea:focus {
 }
 
 .student-pre.dark {
-    background-color: var(--code-dark);
+    background:  var(--code-dark);
     color: var(--code-text-dark);
 }
 
 .student-pre.light {
-    background-color: var(--code-light);
+    background:  var(--code-light);
     color: var(--code-text-light);
 }
 
@@ -731,13 +731,13 @@ textarea:focus {
 
 .student-modal-content.dark {
     background: var(--sidebar-light);
-    background-color: var(--bg-light);
+    background:  var(--bg-light);
     color: var(--text-light);
 }
 
 .student-modal-content.light {
     background: var(--sidebar-dark);
-    background-color: var(--bg-dark);
+    background:  var(--bg-dark);
     color: var(--text-dark);
 }
 
@@ -834,12 +834,12 @@ textarea:focus {
 }
 
 .student-submit-query.dark {
-    background-color: var(--button-dark);
+    background:  var(--button-dark);
     color: var(--text-dark);
 }
 
 .student-submit-query.light {
-    background-color: var(--button-light);
+    background:  var(--button-light);
     color: var(--text-light);
 }
 
@@ -1116,6 +1116,7 @@ textarea:focus {
     padding: 5px;
     border-radius: 8px;
     overflow: hidden;
+    
 }
 
 .student-profile img{
@@ -1197,7 +1198,7 @@ textarea:focus {
     border-radius: 5px;
     font-family: "Host Grotesk", sans-serif;
     font-size: 16px;
-    background-color: var(--input-dark);
+    background:  var(--input-dark);
     color: var(--text-dark);
     border: 1px solid var(--tab-dark);
 }
@@ -1209,7 +1210,7 @@ textarea:focus {
     border-radius: 5px;
     font-family: "Host Grotesk", sans-serif;
     font-size: 16px;
-    background-color: var(--input-light);
+    background:  var(--input-light);
     color: var(--text-light);
     border: 1px solid var(--tab-light);
 }
@@ -1261,13 +1262,13 @@ textarea:focus {
 
 .student-chat-name-modal-actions.dark button {
     background: #353535;
-    background-color: var(--bg-dark);
+    background:  var(--bg-dark);
     color: var(--text-dark);
 }
 
 .student-chat-name-modal-actions.light button {
     background: #c2c2c2;
-    background-color: var(--bg-light);
+    background:  var(--bg-light);
     color: var(--text-light);
 }
 
