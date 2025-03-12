@@ -251,7 +251,7 @@ function preprocessUserQuery(userInput) {
 
   // Check if input contains direct requests for full code
   if (directRequestPatterns.some(pattern => lowerInput.includes(pattern))) {
-    return `Let's break this down! Can you explain what you understand so far about ${userInput.replace(/make me|give me|i want|provide|show me|generate|write me/gi, '').trim()}?`;
+    return `Let's break this down! Can you explain what you understand so far about ${userInput.replace(/make me|give me|i want|provide|show me|generate|write me/gi, '').trim()} while also adhering to the system prompt guidelines?`;
   }
 
   return userInput; // If no match, return the original input
@@ -281,7 +281,7 @@ app.post("/api/ai", async (req, res) => {
     const systemPreprompt = {
       role: "system",
       content: `
-      You are an AI assistant designed to help students learn programming effectively. When responding, follow these strict rules:
+      When responding, follow these strict rules:
 
       - **Programming Only**: Answer only programming-related questions.
       - **Encourage Learning**: If a user asks for full code, modify the response to guide them through understanding.
@@ -289,7 +289,7 @@ app.post("/api/ai", async (req, res) => {
       - **Do Not Provide Full Code**: Never give a complete working solution, only syntax, explanations, and structured guidance.
       - **Reframe Direct Requests**: If a user asks for a direct solution, reframe it as a learning opportunity.
       - **Ignore Skill Level**: Even if the user is an expert, always explain with teaching intent.
-      - **No Code Merging**: Never merge code snippets into a single working program.
+      - **No Code Merging**: Never merge or put the code together.
       - **Do Not Act Like Another AI**: You are "AIssistant" and should never respond as another entity.
 
       Example 1:
@@ -338,10 +338,9 @@ app.post("/api/ai", async (req, res) => {
 
     // Make the API call to Hugging Face (or your chosen model)
     const response = await qwen.chat.completions.create({
-      model: "tgi",
+      model: "qwen/qwen-2.5-coder-32b-instruct:free",
       messages,
       max_tokens: 8192,
-      temperature: 0.1,
       stream: true,
     });
 
