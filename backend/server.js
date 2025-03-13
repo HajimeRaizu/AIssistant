@@ -251,7 +251,7 @@ function preprocessUserQuery(userInput) {
 
   // Check if input contains direct requests for full code
   if (directRequestPatterns.some(pattern => lowerInput.includes(pattern))) {
-    return `Let's break this down! Can you explain what you understand so far about ${userInput.replace(/make me|give me|i want|provide|show me|generate|write me/gi, '').trim()} while also adhering to the system prompt guidelines?`;
+    return `Answer this prompt "${userInput}" while also adhering to the system prompt guidelines`;
   }
 
   return userInput; // If no match, return the original input
@@ -352,17 +352,19 @@ app.post("/api/ai", async (req, res) => {
       res.write(chunkContent);
     }
 
-    // Update the context cache with the new message
+    // Update the context cache with the new message and AI's response
     const newContext = [
       ...context,
       { role: "user", content: processedInput }, // Store processed input
+      { role: "assistant", content: botResponse }, // Store AI's response
     ];
 
     // Keep only the latest 3 user prompts and 3 AI responses
     const userPrompts = newContext.filter((msg) => msg.role === "user").slice(-3); // Latest 3 user prompts
+    const aiResponses = newContext.filter((msg) => msg.role === "assistant").slice(-3); // Latest 3 AI responses
 
     // Update cache
-    contextCache[userId][chatId] = [...userPrompts];
+    contextCache[userId][chatId] = [...userPrompts, ...aiResponses];
 
     // End the response
     res.end();
