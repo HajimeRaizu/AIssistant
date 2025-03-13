@@ -16,7 +16,7 @@ const ExercisesPage = () => {
   const [tutorial3, setTutorial3] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState(null);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const [learningMaterials, setLearningMaterials] = useState({});
   const [userAnswers, setUserAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -128,6 +128,7 @@ const ExercisesPage = () => {
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
+    localStorage.setItem("theme", theme === "dark" ? "light" : "dark");
   };
 
   const toggleSidebar = () => {

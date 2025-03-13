@@ -27,7 +27,7 @@ const StudentPage = () => {
   const [currentChatId, setCurrentChatId] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [chatToDelete, setChatToDelete] = useState(null);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreatingNewChat, setIsCreatingNewChat] = useState(false);
@@ -437,6 +437,7 @@ const StudentPage = () => {
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
+    localStorage.setItem("theme", theme === "dark" ? "light" : "dark");
   };
 
   const toggleSidebar = () => {
