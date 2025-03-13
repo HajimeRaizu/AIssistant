@@ -260,7 +260,7 @@ function preprocessUserQuery(userInput) {
 let contextCache = {}; // Simple in-memory cache for user contexts
 
 app.post("/api/ai", async (req, res) => {
-  const { input, userId, chatId } = req.body; // Add chatId to the request body
+  const { input, userId, chatId } = req.body;
 
   try {
     // Initialize context cache if not exists
@@ -359,12 +359,31 @@ app.post("/api/ai", async (req, res) => {
       { role: "assistant", content: botResponse }, // Store AI's response
     ];
 
-    // Keep only the latest 3 user prompts and 3 AI responses
-    const userPrompts = newContext.filter((msg) => msg.role === "user").slice(-3); // Latest 3 user prompts
-    const aiResponses = newContext.filter((msg) => msg.role === "assistant").slice(-3); // Latest 3 AI responses
+    // Keep only the latest 3 interactions (user + assistant pairs)
+    const latestInteractions = [];
+    let userCount = 0;
+    let assistantCount = 0;
 
-    // Update cache
-    contextCache[userId][chatId] = [...userPrompts, ...aiResponses];
+    // Iterate through the context in reverse to find the latest 3 user-assistant pairs
+    for (let i = newContext.length - 1; i >= 0; i--) {
+      const message = newContext[i];
+
+      if (message.role === "user" && userCount < 3) {
+        latestInteractions.unshift(message);
+        userCount++;
+      } else if (message.role === "assistant" && assistantCount < 3) {
+        latestInteractions.unshift(message);
+        assistantCount++;
+      }
+
+      // Stop once we have 3 user-assistant pairs
+      if (userCount === 3 && assistantCount === 3) {
+        break;
+      }
+    }
+
+    // Update cache with the latest 3 interactions
+    contextCache[userId][chatId] = latestInteractions;
 
     // End the response
     res.end();
