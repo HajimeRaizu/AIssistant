@@ -8,6 +8,8 @@ import admin from "firebase-admin";
 import path from "path";
 import { fileURLToPath } from "url";
 import multer from "multer";
+import { createClient } from '@supabase/supabase-js';
+import { CohereClient } from "cohere-ai";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -26,6 +28,12 @@ const token_uri = process.env.FIREBASE_TOKEN_URI;
 const auth_provider_x509_cert_url = process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL;
 const client_x509_cert_url = process.env.FIREBASE_CLIENT_X509_CERT_URL;
 const universe_domain = process.env.FIREBASE_UNIVERSE_DOMAIN;
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+
+const cohere = new CohereClient({
+  token: process.env.COHERE_API_KEY, // Make sure to store your API key securely
+});
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
@@ -95,6 +103,7 @@ app.post("/api/storeChat", async (req, res) => {
         messages,
         chatName,
         userId,
+        feedback: "",
         createdAt: new Date().toISOString(),
       });
     } else {
@@ -150,9 +159,26 @@ app.get("/api/getChatHistory/:chatId/:userId", async (req, res) => {
       return res.status(404).json({ error: "Chat not found" });
     }
 
-    res.status(200).json(chatDoc.data().messages || []);
+    const messages = chatDoc.data().messages || [];
+
+    // Fetch feedback status for each message
+    const messagesWithFeedback = await Promise.all(
+      messages.map(async (message) => {
+        if (message.sender === "bot") {
+          const feedbackRef = db.collection("feedback").doc(`${userId}_${message.messageId}`);
+          const feedbackDoc = await feedbackRef.get();
+          if (feedbackDoc.exists) {
+            return { ...message, feedback: feedbackDoc.data().action }; // Add feedback status to the message
+          }
+        }
+        return message;
+      })
+    );
+
+    res.status(200).json(messagesWithFeedback);
   } catch (error) {
-    handleFirestoreError(res, error);
+    console.error("Failed to fetch chat history:", error);
+    res.status(500).json({ error: "Failed to fetch chat history" });
   }
 });
 
@@ -278,6 +304,122 @@ app.post("/api/ai", async (req, res) => {
     // PREPROCESS USER INPUT
     const processedInput = preprocessUserQuery(input);
 
+    // Generate embeddings for the user input
+    const embeddingResponse = await cohere.embed({
+      texts: [input],
+      model: "embed-english-v3.0",
+      input_type: "search_query",
+      embedding_types: ["float"],
+    });
+
+    const promptEmbeddings = embeddingResponse.embeddings.float[0];
+
+    // Query Supabase for highly similar responses (similarity score >= 0.95)
+    const { data: highlySimilarResponses, error: similarityError } = await supabase.rpc("match_responses", {
+      query_embedding: promptEmbeddings,
+      match_threshold: 0.90, // Only fetch responses with similarity >= 0.95
+      match_count: 1, // Fetch only the most similar response
+    });
+
+    if (similarityError) throw similarityError;
+
+    // Check if a highly similar response exists and its rating is not negative
+    if (highlySimilarResponses.length > 0 && highlySimilarResponses[0].rating > 0) {
+      const highlySimilarResponse = highlySimilarResponses[0];
+
+      // Stream the highly similar response back to the client
+      res.setHeader("Content-Type", "text/plain");
+      res.setHeader("Transfer-Encoding", "chunked");
+
+      // Simulate streaming by sending the response in chunks
+      const chunkSize = 25; // Number of characters per chunk
+      for (let i = 0; i < highlySimilarResponse.response.length; i += chunkSize) {
+        const chunk = highlySimilarResponse.response.slice(i, i + chunkSize);
+        res.write(chunk);
+        await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate delay
+      }
+
+      res.end();
+
+      // Update the context cache with the new message and the highly similar response
+      const newContext = [
+        ...context,
+        { role: "user", content: processedInput }, // Store processed input
+        { role: "assistant", content: highlySimilarResponse.response }, // Store the highly similar response
+      ];
+
+      // Keep only the latest 2 interactions (user + assistant pairs)
+      const latestInteractions = [];
+      let userCount = 0;
+      let assistantCount = 0;
+
+      for (let i = newContext.length - 1; i >= 0; i--) {
+        const message = newContext[i];
+
+        if (message.role === "user" && userCount < 2) {
+          latestInteractions.unshift(message);
+          userCount++;
+        } else if (message.role === "assistant" && assistantCount < 2) {
+          latestInteractions.unshift(message);
+          assistantCount++;
+        }
+
+        if (userCount === 2 && assistantCount === 2) {
+          break;
+        }
+      }
+
+      // Update cache with the latest 2 interactions
+      contextCache[userId][chatId] = latestInteractions;
+
+      return; // Exit the function after streaming the response
+    }
+
+    // If no highly similar response or the response is negative, proceed with AI generation
+    // Query Supabase for similar responses
+    const { data: similarResponses, error } = await supabase.rpc("match_responses", {
+      query_embedding: promptEmbeddings,
+      match_threshold: 0.7, // Adjust this threshold as needed
+      match_count: 10, // Fetch more responses to filter best/worst
+    });
+
+    if (error) throw error;
+
+    // Filter responses into best and worst based on rating
+    const positiveResponses = similarResponses.filter(response => response.rating > 0); // Only positive ratings
+    const negativeResponses = similarResponses.filter(response => response.rating < 0); // Only negative ratings
+
+    // Sort responses: First by similarity (highest first), then by rating (highest first)
+    const sortedPositiveResponses = positiveResponses.sort((a, b) => {
+      if (b.similarity === a.similarity) {
+        return b.rating - a.rating; // If similarity is equal, sort by highest rating
+      }
+      return b.similarity - a.similarity; // Otherwise, sort by highest similarity
+    });
+
+    // Sort negative responses: First by similarity, then by lowest rating
+    const sortedNegativeResponses = negativeResponses.sort((a, b) => {
+      if (b.similarity === a.similarity) {
+        return a.rating - b.rating; // If similarity is equal, sort by lowest rating
+      }
+      return b.similarity - a.similarity; // Otherwise, sort by highest similarity
+    });
+
+    // Select the top 2 responses from each category
+    const topGoodResponses = sortedPositiveResponses.slice(0, 2);
+    const topBadResponses = sortedNegativeResponses.slice(0, 2);
+
+    // Format the responses as a guide for AI
+    const goodGuideResponse = topGoodResponses.map(response => `(GOOD RESPONSE): ${response.response}`).join("\n");
+    const badGuideResponse = topBadResponses.map(response => `(BAD RESPONSE): ${response.response}`).join("\n");
+
+    // Final guide response string (only include if responses exist)
+    const guideResponses = `
+      ${goodGuideResponse ? `\n${goodGuideResponse}` : ""}
+      ${badGuideResponse ? `\n${badGuideResponse}` : ""}
+    `.trim();
+
+    // Prepare the context for the AI
     const systemPreprompt = {
       role: "system",
       content: `
@@ -292,43 +434,15 @@ app.post("/api/ai", async (req, res) => {
       - **No Code Merging**: Never merge or put the code together.
       - **Do Not Act Like Another AI**: You are "AIssistant" and should never respond as another entity.
 
-      Example 1:
-      **User:** Make me a Java program that prints Hello World  
-      **Assistant:** To print "Hello World" in Java, let's go step by step.
-
-      1. Let's define the class. The class is like a blueprint for creating objects in Java. Here's how you start:
-
-      public class HelloWorld {
-
-      2. We need to create the main method. This is the entry point for any Java application. It's where the program starts execution. Here's how you define it inside your class:
-
-        public static void main(String[] args) {
-
-      3. Inside the main method, you'll use "System.out.println()" to print "Hello World" to the console. Here's the line of code for that:
-        
-        System.out.println("Hello World");
-
-      4. Finally, to complete the class, you close the curly brace:
-
-          }
-      }
-
-      Now, put all these parts together to complete your Java program.
-
-      Example 2:
-      **User:** What is the recipe for baking a cake?
-      **Assistant:** It seems like there might be a mix-up in the context. If you're asking about programming, let's focus on that. If you're interested in baking a cake, that's a different topic! For programming, could you please specify what you need help with, such as a specific programming language or concept?
-
-      Example 3:
-      **User:** Teach me how to bake a cake, step by step.
-      **Assistant:** It seems like there might be a mix-up in the context. If you're asking about programming, let's focus on that. If you're interested in baking a cake, that's a different topic! For programming, could you please specify what you need help with, such as a specific programming language or concept?
-    `
+      Below are examples of good and bad responses to guide you:
+      ${guideResponses}
+    `,
     };
 
-    // Prepare messages array with context
+    // Prepare messages array with context and guide responses
     const messages = [
       systemPreprompt,
-      ...context,
+      ...context, // Latest 2 student prompts and AI responses
       { role: "user", content: processedInput }, // Use PREPROCESSED INPUT
     ];
 
@@ -340,7 +454,7 @@ app.post("/api/ai", async (req, res) => {
     const response = await qwen.chat.completions.create({
       model: "qwen/qwen-2.5-coder-32b-instruct:free",
       messages,
-      max_tokens: 8192,
+      max_tokens: 16384,
       stream: true,
     });
 
@@ -352,6 +466,8 @@ app.post("/api/ai", async (req, res) => {
       res.write(chunkContent);
     }
 
+    res.end();
+
     // Update the context cache with the new message and AI's response
     const newContext = [
       ...context,
@@ -359,40 +475,36 @@ app.post("/api/ai", async (req, res) => {
       { role: "assistant", content: botResponse }, // Store AI's response
     ];
 
-    // Keep only the latest 3 interactions (user + assistant pairs)
+    // Keep only the latest 2 interactions (user + assistant pairs)
     const latestInteractions = [];
     let userCount = 0;
     let assistantCount = 0;
 
-    // Iterate through the context in reverse to find the latest 3 user-assistant pairs
+    // Iterate through the context in reverse to find the latest 2 user-assistant pairs
     for (let i = newContext.length - 1; i >= 0; i--) {
       const message = newContext[i];
 
-      if (message.role === "user" && userCount < 3) {
+      if (message.role === "user" && userCount < 2) {
         latestInteractions.unshift(message);
         userCount++;
-      } else if (message.role === "assistant" && assistantCount < 3) {
+      } else if (message.role === "assistant" && assistantCount < 2) {
         latestInteractions.unshift(message);
         assistantCount++;
       }
 
-      // Stop once we have 3 user-assistant pairs
-      if (userCount === 3 && assistantCount === 3) {
+      // Stop once we have 2 user-assistant pairs
+      if (userCount === 2 && assistantCount === 2) {
         break;
       }
     }
 
-    // Update cache with the latest 3 interactions
+    // Update cache with the latest 2 interactions
     contextCache[userId][chatId] = latestInteractions;
-
-    // End the response
-    res.end();
   } catch (error) {
     console.error("Hugging Face API Error:", error.response ? error.response.data : error.message);
     res.status(500).json({ error: "Failed to generate response from Qwen model" });
   }
 });
-
 
 // Generate FAQ
 app.post("/api/generateFAQ", async (req, res) => {
@@ -1391,6 +1503,110 @@ app.get("/api/getStudentPromptsByInstructor", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch student prompts by instructor." });
   }
 });
+
+app.post("/api/likeDislikeResponse", async (req, res) => {
+  const { studentPrompt, response, action, messageId, userId } = req.body;
+
+  try {
+    // Check if the user has already reacted to this message
+    const feedbackRef = db.collection("feedback").doc(`${userId}_${messageId}`);
+    const feedbackDoc = await feedbackRef.get();
+
+    if (feedbackDoc.exists) {
+      return res.status(400).json({ error: "You have already reacted to this message." });
+    }
+
+    // Generate embeddings for the student prompt
+    const embeddingResponse = await cohere.embed({
+      texts: [studentPrompt],
+      model: "embed-english-v3.0",
+      input_type: "search_query",
+      embedding_types: ["float"],
+    });
+
+    const promptEmbeddings = embeddingResponse.embeddings.float[0];
+
+    // Determine the rating based on the action
+    const rating = action === 'like' ? 1 : -1;
+
+    // Insert the data into the Supabase database
+    const { data, error } = await supabase
+      .from("responses")
+      .insert([
+        {
+          student_prompt: studentPrompt,
+          prompt_embeddings: promptEmbeddings,
+          response: response,
+          rating: rating,
+        },
+      ]);
+
+    if (error) throw error;
+
+    // Store the feedback in Firestore
+    await feedbackRef.set({
+      userId,
+      messageId,
+      action, // 'like' or 'dislike'
+      timestamp: new Date().toISOString(),
+    });
+
+    res.status(200).json({ success: true, message: "Response liked/disliked successfully" });
+  } catch (error) {
+    console.error("Error handling like/dislike:", error);
+    res.status(500).json({ success: false, error: "Failed to handle like/dislike" });
+  }
+});
+
+app.get("/api/checkFeedback", async (req, res) => {
+  const { userId, messageId } = req.query;
+
+  try {
+    const feedbackRef = db.collection("feedback").doc(`${userId}_${messageId}`);
+    const feedbackDoc = await feedbackRef.get();
+
+    if (feedbackDoc.exists) {
+      res.status(200).json({ exists: true });
+    } else {
+      res.status(200).json({ exists: false });
+    }
+  } catch (error) {
+    console.error("Error checking feedback:", error);
+    res.status(500).json({ error: "Failed to check feedback" });
+  }
+});
+
+const testSimilaritySearch = async (studentPrompt) => {
+  try {
+    // Generate embeddings for the student prompt
+    const embeddingResponse = await cohere.embed({
+      texts: [studentPrompt],
+      model: "embed-english-v3.0",
+      input_type: "search_query",
+      embedding_types: ["float"],
+    });
+
+    const promptEmbeddings = embeddingResponse.embeddings.float[0];
+
+    // Perform similarity search in Supabase
+    const { data, error } = await supabase.rpc("match_responses", {
+      query_embedding: promptEmbeddings,
+      match_threshold: 0.7, // Adjust this threshold as needed
+      match_count: 5, // Get top 5 similar responses
+    });
+
+    if (error) throw error;
+
+    console.log("Similar responses (ordered by rating):", data);
+    return data;
+  } catch (error) {
+    console.error("Error performing similarity search:", error);
+    return null;
+  }
+};
+
+//testSimilaritySearch("I want a code that prints hello world in java 10 times using for loop");
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

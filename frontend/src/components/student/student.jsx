@@ -9,10 +9,11 @@ import logo from '../assets/AIssistant.png';
 import { FaEdit } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { LuSave } from "react-icons/lu";
+import { BiLike, BiDislike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
 
 const StudentPage = () => {
-  const base_url = `https://aissistant-backend.vercel.app`;
-  //const base_url = `http://localhost:5000`;
+  //const base_url = `https://aissistant-backend.vercel.app`;
+  const base_url = `http://localhost:5000`;
   const [tutorial, setTutorial] = useState(false);
   const [tutorial2, setTutorial2] = useState(false);
   const [tutorial3, setTutorial3] = useState(false);
@@ -109,7 +110,8 @@ const StudentPage = () => {
   const fetchChatHistory = async (chatId) => {
     try {
       const response = await axios.get(`${base_url}/api/getChatHistory/${chatId}/${userId}`);
-      setMessages(response.data);
+      const messagesWithFeedback = response.data;
+      setMessages(messagesWithFeedback); // Set messages with feedback status
     } catch (error) {
       console.error("Failed to fetch chat history:", error);
     }
@@ -122,6 +124,7 @@ const StudentPage = () => {
   }, [messages]);
 
   const handleSend = async () => {
+    const messageId = Date.now().toString();
     if (input.trim() === "") return;
     const textarea = document.querySelector(".student-chat-input textarea");
     if (textarea) {
@@ -135,7 +138,7 @@ const StudentPage = () => {
   
     const newMessages = [
       ...messages,
-      { text: input, sender: "user", timestamp: new Date().toLocaleString() },
+      { text: input, sender: "user", timestamp: new Date().toLocaleString(), messageId: messageId },
     ];
     setMessages(newMessages);
   
@@ -164,7 +167,7 @@ const StudentPage = () => {
   
         const updatedMessages = [
           ...newMessages,
-          { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString(), messageId: messageId },
         ];
         setMessages(updatedMessages);
       }
@@ -176,7 +179,7 @@ const StudentPage = () => {
         chatId: currentChatId,
         messages: [
           ...newMessages,
-          { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString(), messageId: messageId },
         ],
         chatName: chatNameToStore,
         userId,
@@ -185,7 +188,7 @@ const StudentPage = () => {
       console.error("Failed to generate response:", error);
       const updatedMessages = [
         ...newMessages,
-        { text: "Failed to generate response. Please try again.", sender: "bot", timestamp: new Date().toLocaleString() },
+        { text: "Failed to generate response. Please try again.", sender: "bot", timestamp: new Date().toLocaleString(), messageId: messageId },
       ];
       setMessages(updatedMessages);
     } finally {
@@ -341,6 +344,7 @@ const StudentPage = () => {
   
     setIsSubmitting(true);
     setIsCreatingNewChat(true);
+    const messageId = Date.now().toString();
   
     try {
       const response = await axios.post(`${base_url}/api/createChat`, {
@@ -356,7 +360,7 @@ const StudentPage = () => {
       setMessages([]);
   
       const newMessages = [
-        { text: input, sender: "user", timestamp: new Date().toLocaleString() },
+        { text: input, sender: "user", timestamp: new Date().toLocaleString(), messageId: messageId },
       ];
       setMessages(newMessages);
       setInput("");
@@ -384,7 +388,7 @@ const StudentPage = () => {
   
         const updatedMessages = [
           ...newMessages,
-          { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString(), messageId: messageId },
         ];
         setMessages(updatedMessages);
       }
@@ -393,7 +397,7 @@ const StudentPage = () => {
         chatId: newChatId,
         messages: [
           ...newMessages,
-          { text: botText, sender: "bot", timestamp: new Date().toLocaleString() },
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString(), messageId: messageId },
         ],
         chatName: newChat.chatName,
         userId,
@@ -646,6 +650,64 @@ const StudentPage = () => {
 
   const groupedChats = groupChatsByDate(chats);
 
+  const handleLikeDislike = async (messageId, action) => {
+    try {
+      // Check if the user has already reacted to this message
+      const feedbackResponse = await axios.get(`${base_url}/api/checkFeedback`, {
+        params: {
+          userId: userId,
+          messageId: messageId,
+        },
+      });
+  
+      if (feedbackResponse.data.exists) {
+        alert("You have already reacted to this message.");
+        return;
+      }
+  
+      // Find the message in the messages array
+      const message = messages.find(msg => msg.messageId === messageId && msg.sender === "bot");
+      if (!message || message.sender !== "bot") {
+        console.error("Message not found or not a bot response");
+        return;
+      }
+  
+      // Find the corresponding user prompt that generated this response
+      const userPrompt = messages.find(msg => msg.messageId === messageId && msg.sender === "user");
+      if (!userPrompt || userPrompt.sender !== "user") {
+        console.log(userPrompt);
+        console.error("User prompt not found");
+        return;
+      }
+  
+      // Send the data to the backend
+      const response = await axios.post(`${base_url}/api/likeDislikeResponse`, {
+        studentPrompt: userPrompt.text,
+        response: message.text,
+        action, // 'like' or 'dislike'
+        messageId,
+        userId,
+      });
+  
+      if (response.data.success) {
+        console.log("Response liked/disliked successfully");
+  
+        // Update the messages state to reflect the feedback immediately
+        setMessages(prevMessages =>
+          prevMessages.map(msg =>
+            msg.messageId === messageId
+              ? { ...msg, feedback: action } // Add the feedback action to the message
+              : msg
+          )
+        );
+      } else {
+        console.error("Failed to like/dislike response");
+      }
+    } catch (error) {
+      console.error("Error liking/disliking response:", error);
+    }
+  };
+
   if (isLoading) {
     return <div className={`student-loading-container ${theme}`}>Loading...</div>;
   }
@@ -726,19 +788,59 @@ const StudentPage = () => {
             </div>
             <div className={`student-chat-body ${theme}`} ref={chatBodyRef}>
               {messages.map((message, index) => (
-                <div className={`student-message-pfp ${message.sender}`}>
+                <div className={`student-message-pfp ${message.sender}`} key={index}>
                   <img className="sender-image" src={`${message.sender === 'user' ? userPicture : logo}`} alt="sender.jpg" />
-                  <div className={`student-message ${message.sender}`} key={index}>
+                  <div className={`student-message ${message.sender}`}>
                     <div className={`student-message ${message.sender} ${theme}`}>
                       {message.sender === "user" ? (
                         <p>{formatMessageText(message.text, message.sender)}</p>
                       ) : (
                         <div className="student-bot-response">
                           {formatMessageText(message.text, message.sender)}
+                          <div className="student-response-actions">
+                          </div>
                         </div>
                       )}
                     </div>
-                    <span className={`student-timestamp ${message.sender}`}>{message.timestamp}</span>
+                    <div className="message-actions">
+                      <span className={`student-timestamp ${message.sender}`}>{message.timestamp}</span>
+                      {message.sender === "bot" ? (
+                      <div className="buttons">
+                        {message.feedback === 'like' ? (
+                          <div
+                            className={`student-like-button ${theme}`}
+                            title="Liked"
+                          >
+                            <BiSolidLike />
+                          </div>
+                        ) : message.feedback === 'dislike' ? (
+                          <div
+                            className={`student-dislike-button ${theme}`}
+                            title="Disliked"
+                          >
+                            <BiSolidDislike />
+                          </div>
+                        ) : (
+                          <>
+                            <div
+                              className={`student-like-button ${theme}`}
+                              onClick={() => handleLikeDislike(message.messageId, 'like')}
+                              title="Like"
+                            >
+                              <BiLike />
+                            </div>
+                            <div
+                              className={`student-dislike-button ${theme}`}
+                              onClick={() => handleLikeDislike(message.messageId, 'dislike')}
+                              title="Dislike"
+                            >
+                              <BiDislike />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      ): (null)}
+                    </div>
                   </div>
                 </div>
               ))}
