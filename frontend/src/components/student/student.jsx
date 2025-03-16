@@ -12,8 +12,8 @@ import { LuSave } from "react-icons/lu";
 import { BiLike, BiDislike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
 
 const StudentPage = () => {
-  //const base_url = `https://aissistant-backend.vercel.app`;
-  const base_url = `http://localhost:5000`;
+  const base_url = `https://aissistant-backend.vercel.app`;
+  //const base_url = `http://localhost:5000`;
   const [tutorial, setTutorial] = useState(false);
   const [tutorial2, setTutorial2] = useState(false);
   const [tutorial3, setTutorial3] = useState(false);
