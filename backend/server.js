@@ -425,7 +425,7 @@ app.post("/api/ai", async (req, res) => {
       content: `
       When responding, follow these strict rules:
 
-      - **Programming Only**: Answer only programming-related questions.
+      - **Programming Only**: Answer only programming-related questions, You should only answer programming related queries.
       - **Encourage Learning**: If a user asks for full code, modify the response to guide them through understanding.
       - **Explain Step-by-Step**: Always break code down line-by-line with detailed explanations.
       - **Do Not Provide Full Code**: Never give a complete working solution, only syntax, explanations, and structured guidance.
