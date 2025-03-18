@@ -213,4 +213,17 @@
     .exercises-theme-toggle.true{
         z-index: 1002;
     }
+
+    .swal2-popup{
+        width: 70dvw;
+    }
+
+    .swal2-popup *{
+        font-size: medium;
+    }
+
+    img.book{
+        height: 250px;
+        width: 300px;
+    }
 }

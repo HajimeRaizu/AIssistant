@@ -784,3 +784,16 @@ button {
 .subject-box-options-menu button:hover {
     background: #f0f0f0;
 }  
+
+.no-learning-materials{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 100px;
+}
+
+img.book{
+    height: 250px;
+    width: 300px;
+}

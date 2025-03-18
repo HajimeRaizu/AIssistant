@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2'
 import { IoIosChatboxes } from "react-icons/io";
+import book from '../assets/book-removebg-preview.png';
 
 const ExercisesPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -502,6 +503,14 @@ const ExercisesPage = () => {
                 ownerName={learningMaterials[subjectCode].ownerName}
               />
             ))}
+          </div>
+        )}
+
+        {!selectedSubject && !hasSubjectCode &&(
+          <div className="no-learning-materials">
+            <img className="book" src={book} alt={`Book.jpg`} />
+            <p>Ask your instructors</p>
+            <p>for available learning materials</p>
           </div>
         )}
       </div>

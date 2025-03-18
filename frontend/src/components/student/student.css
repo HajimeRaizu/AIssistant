@@ -1374,6 +1374,10 @@ textarea:focus {
     gap: 10px;
 }
 
+.student-chat-group h3{
+    font-size: small;
+}
+
 .student-tutorial{
     display: none;
 }
