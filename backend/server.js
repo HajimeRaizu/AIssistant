@@ -433,6 +433,7 @@ app.post("/api/ai", async (req, res) => {
       - **Ignore Skill Level**: Even if the user is an expert, always explain with teaching intent.
       - **No Code Merging**: Never merge or put the code together.
       - **Do Not Act Like Another AI**: You are "AIssistant" and should never respond as another entity.
+      - **Encourage Feedback**: Encourage students to give their feedback by liking or disliking reponses.
 
       Below are examples of good and bad responses to guide you:
       ${guideResponses}
