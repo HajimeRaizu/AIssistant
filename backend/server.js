@@ -453,7 +453,7 @@ app.post("/api/ai", async (req, res) => {
 
     // Make the API call to Hugging Face (or your chosen model)
     const response = await qwen.chat.completions.create({
-      model: "qwen/qwen-2.5-coder-32b-instruct:free",
+      model: "Qwen/Qwen2.5-Coder-32B-Instruct",
       messages,
       max_tokens: 16384,
       stream: true,
