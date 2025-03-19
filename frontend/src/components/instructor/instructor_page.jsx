@@ -839,7 +839,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                     >
                       <MdDelete />
                     </button>
-                    <button onClick={(e) => {
+                    <button className="download-learning-material" onClick={(e) => {
                       e.stopPropagation();
                       handleDownloadLearningMaterials(subject);
                     }} title='Download'><FaFileDownload /></button>
@@ -1107,10 +1107,10 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           <div className="instructor-content-buttons">
             {editingExercise ? (
               <div className="instructor-e-buttons">
-                <button title='Save' className="instructor-save-button" onClick={handleSaveExercise}>
+                <button title='Save' className="instructor-save-button" onClick={handleSaveExercise} style={{background: '#46cb4b'}}>
                 <IoIosSave />
                 </button>
-                <button title='Cancel' className="instructor-cancel-button" onClick={() => setEditingExercise(null)}>
+                <button title='Cancel' className="instructor-cancel-button" onClick={() => setEditingExercise(null)} style={{background: 'rgb(255, 88, 88)'}}>
                 <MdCancel />
                 </button>
               </div>
@@ -1125,6 +1125,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                   });
                 }}
                 title='Edit'
+                style={{ background: '#53b2ff' }}
               >
                 <FaEdit />
               </button>

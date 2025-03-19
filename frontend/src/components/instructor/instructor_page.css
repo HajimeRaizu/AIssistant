@@ -721,10 +721,20 @@
     border-radius: 5px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    transition: background 0.3s ease;
-    margin-right: 10px;
+    margin: 10px;
     background: var(--button-light);
     color: var(--text-light);
+}
+
+.add-subject, .add-lesson, .add-subtopic{
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Host Grotesk", sans-serif;
+    margin: 10px 10px 10px 0px;
+    background: rgb(94, 159, 49);
+    color: white;
 }
 
 .instructor-exercise-content button:hover, .instructor-back-to-subjects-button:hover {
@@ -864,4 +874,16 @@
 .instructor-exercise-lesson input{
     width: 500px;
     font-size: medium;
+}
+
+.instructor-edit-subject-button, .instructor-edit-lesson-button, .instructor-edit-subtopic-button{
+    background: #53b2ff;
+}
+
+.instructor-delete-subject-button, .instructor-delete-lesson-button, .instructor-delete-subtopic-button, .instructor-cancel-edit-button{
+    background: rgb(255, 88, 88);
+}
+
+.download-learning-material, .instructor-save-edit-button{
+    background: #46cb4b;
 }
