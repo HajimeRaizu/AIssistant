@@ -19,7 +19,7 @@ const UserType = () => {
         <div className='usertype-landing-aissistant'
           onClick={() => handleBoxClick('/')}
         ><img src={logo} alt="AIssistant.png" style={{height: '50px', width: '50px'}}/><h1 className='ai'>AI</h1><h1 className='landing-welcome'>ssistant</h1></div>
-        <div className='aissistant-2' style={{display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0px 0px 40px 0px'}}>
+        <div className='aissistant-2' style={{}}>
           <h1 className='ai' style={{color: 'rgb(86, 86, 255)', fontSize: '70px'}}>AI</h1><h1 className='landing-welcome' style={{fontSize: '70px'}}>ssistant</h1>
         </div>
         <section className="user-type-action-boxes">
