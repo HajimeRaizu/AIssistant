@@ -57,7 +57,7 @@ const InstructorPage = () => {
   const [showCreateSubjectModal, setShowCreateSubjectModal] = useState(false);
   const [showCreateLessonModal, setShowCreateLessonModal] = useState(false);
   const [showCreateSubtopicModal, setShowCreateSubtopicModal] = useState(false);
-  const programmingLanguages = ["Python", "JavaScript", "Java", "C++", "C#"];
+  const programmingLanguages = ["Python", "JavaScript", "Java", "C++", "C#", "HTML", "CSS"];
 
   const [newSubject, setNewSubject] = useState({
     subjectName: "",
