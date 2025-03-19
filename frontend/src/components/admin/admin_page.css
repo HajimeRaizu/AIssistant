@@ -263,6 +263,8 @@
   min-height: 280px;
   max-height: fit-content;
   font-size: 19px;
+  padding-bottom: 20px;
+  white-space: pre-wrap;
 }
 
 .generate-faq-button {
