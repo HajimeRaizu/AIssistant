@@ -635,7 +635,7 @@
 }
 
 .instructor-exercises-container {
-    margin-top: 20px;
+    margin-top: 0px;
     padding: 20px;
     border-radius: 10px;
     color: var(--text-light);
@@ -886,4 +886,12 @@
 
 .download-learning-material, .instructor-save-edit-button{
     background: #46cb4b;
+}
+
+.learning-material-command{
+    padding: 10px;
+    border: 1px solid #29428f;
+    margin-top: 20px;
+    background: #4e73df;
+    color: white;
 }

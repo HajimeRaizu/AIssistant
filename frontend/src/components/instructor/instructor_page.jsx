@@ -760,7 +760,133 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         icon: "error",
       })
     }
-  };  
+  };
+
+  const handleCopyCommand = () =>{
+    const contentToCopy = `
+{
+    "subjectName": "Intermediate Python Programming",
+    "lessons": [
+        {
+            "lessonName": "Lesson 1",
+            "subtopics": [
+                {
+                    "subtopicCode": 1,
+                    "subtopicTitle": "Introduction to Python",
+                    "content": "Python is an interpreted, object-oriented, high-level programming language.\nPython has a simple syntax similar to English language.\nPython is portable.\nPython codes have fewer lines.\nIt was created by Guido van Rossum and released in 1991.\n\nPython is easy to understand and can be used to create:\n- Web Applications\n- Data Science and Data Visualization\n- Machine Learning\n- Script for Vulnerability Testing\n- Embedded Systems and IoT\n- Job Scheduling and Automation\n- Computer Vision and Image Processing\n\nPython IDEs include VS Code, PyCharm, Sublime Text, Spyder, and more.\n\nCompanies using Python include Facebook, Dropbox, Mozilla, Firefox, Google, and YouTube.\n\nPython is popular due to its simplicity, high salary potential, and versatility in various fields such as web development, data science, and artificial intelligence.\n\nPython requirements include Python 3.11.0 or later, an interpreter, and a text editor like Sublime or VS Code. IDEs like Anaconda or PyCharm are optional.\n\nPython code can be executed via IDLE, command line, or Python shell.\n\nPython identifiers are names used to identify variables, functions, classes, modules, or other objects. They start with a letter or underscore and can contain letters, underscores, and digits. Python is case-sensitive.\n\nPython reserved words include 'and', 'as', 'assert', 'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'False', 'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'None', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'True', 'try', 'while', 'with', and 'yield'.\n\nPython uses indentation to indicate code blocks. Multi-line statements can be created using the line continuation character (\\).\n\nPython supports single, double, and triple quotes for string literals. Comments start with a # and are ignored by the Python interpreter.\n\nVariables in Python are containers for storing data values. They are created when a value is assigned to them. Variable names are case-sensitive and must start with a letter or underscore.\n\nPython data types include numeric (int, float, complex), string (str), sequence (list, tuple, range), binary (bytes, bytearray, memoryview), mapping (dict), boolean (bool), set (set, frozenset), and NoneType.\n\nPython variables refer to objects, not memory locations. Multiple variables can refer to the same object.\n\nEscape sequences in Python include \\\\ for backslash, \\n for new line, \\r for carriage return, \\t for tab, and \\b for backspace.\n\nOutput in Python can be displayed using the print() function. Variables can be combined with text using the + operator or formatted using str.format(), f-strings, or data type placeholders.\n\nCasting in Python allows converting one data type into another. Arithmetic operators include +, -, *, /, %, //, and **. Comparison operators include ==, !=, <, <=, >, and >=. Logical operators include not, or, and and.\n\nThe input() function in Python accepts user input.",
+                    "questions": "",
+                    "answers": ""
+                }
+            ]
+        },
+        {
+            "lessonName": "Lesson 2",
+            "subtopics": [
+                {
+                    "subtopicCode": 2,
+                    "subtopicTitle": "Strings and Math Built-in Functions",
+                    "content": "Strings are sequences of characters interpreted as text.\nStrings can be accessed using positive or negative index numbers.\nString placeholders can be used with format() or % for formatting.\nString formatting functions include upper(), lower(), capitalize(), title(), split(), replace(), and len().\n\nNumber formatting functions include round(), ceil(), floor(), and pow().\n\nPython math built-in functions include math.ceil(), math.factorial(), math.pi, and math.e.\n\nMathematical constants in Python include math.pi (3.141592653589793) and math.e (2.718281828459045).\n\nNumber formatting can be done using % for limiting decimal places, format(), or round().\n\nPython conditions can be used with math functions like round(), ceil(), floor(), and pow().",
+                    "questions": "",
+                    "answers": ""
+                }
+            ]
+        },
+        {
+            "lessonName": "Lesson 3",
+            "subtopics": [
+                {
+                    "subtopicCode": 3,
+                    "subtopicTitle": "Control Structures",
+                    "content": "Control structures in Python allow for the execution of statements based on conditions.\n\nTypes of control structures:\n1. Sequence: Statements are executed sequentially.\n2. Selection: Provides a choice between two alternatives based on a condition.\n3. Iteration: Allows repetition of instructions or statements in a loop body.\n\nSelection structures include if, if...else, and if...elif...else statements.\n\nComparison operators include ==, !=, <, <=, >, and >=.\n\nLogical operators include not, or, and and.\n\nNested if statements allow for multiple levels of condition checking.\n\nShort-hand if statements can be written in a single line using the syntax <if-expression> if <condition> else <else-expression>.\n\nCompound conditions involve multiple conditional expressions combined using and/or.\n\nBuilt-in methods for strings include isupper(), islower(), isdigit(), and isalpha().\n\nPractice exercises include checking employee years in service and office, and calculating discounts for an online store.",
+                    "questions": "",
+                    "answers": ""
+                }
+            ]
+        },
+        {
+            "lessonName": "Lesson 4",
+            "subtopics": [
+                {
+                    "subtopicCode": 4,
+                    "subtopicTitle": "Iteration",
+                    "content": "Iteration allows the repetition of instructions or statements in a loop body.\n\nTypes of loops in Python:\n1. while loop: Repeats a statement or group of statements while a condition is true.\n2. for loop: Executes a code block multiple times, often used for traversing arrays.\n3. Nested loops: Loops inside other loops.\n\nLoop control statements include break, continue, and pass.\n\nCommon loop applications include accumulating totals, validating user entry, and iterating through sequences.\n\nThe while loop continues as long as the condition is true. The for loop is used when the number of iterations is known.\n\nInfinite loops occur when the loop condition is always true. The break statement terminates the loop immediately.\n\nThe range() function generates a sequence of numbers and is often used with for loops.\n\nThe enumerate() function adds a counter to an iterable and returns it as an enumerate object.\n\nLoop control statements like continue skip the current iteration, while pass does nothing and is used as a placeholder.\n\nHands-on exercises include traversing a list to determine if numbers are odd or even, adding two numbers with user input, and creating a word bank program.",
+                    "questions": "",
+                    "answers": ""
+                }
+            ]
+        },
+        {
+            "lessonName": "Lesson 5",
+            "subtopics": [
+                {
+                    "subtopicCode": 5,
+                    "subtopicTitle": "Functions",
+                    "content": "Functions are blocks of organized, reusable code used to perform a single, related action.\n\nFunctions provide better modularity and code reusability.\n\nFunctions help reduce duplicate code, make programs easier to read and debug, and allow for code reuse.\n\nFunctions in Python are defined using the def keyword, followed by the function name and parentheses.\n\nFunction arguments can be positional, keyword, default, or arbitrary.\n\nFunctions can return values using the return statement.\n\nPython has built-in functions like print(), input(), type(), float(), and int(), as well as user-defined functions.\n\nFunction names must start with a letter or underscore and should be lowercase. They can contain numbers but should not start with one.\n\nFunctions can accept multiple parameters and return multiple values.\n\nFunctions can accept interactive user input using the input() function.\n\nGlobal and local variables in functions: Global variables are defined outside the function and can be accessed inside the function. Local variables are defined inside the function and are not accessible outside.\n\nRecursion is when a function calls itself.\n\nThe ternary operator allows for quick conditional definitions.\n\nFunctions can be called with keyword arguments, and default argument values can be set.\n\nMutable objects as default argument values should be used carefully, as they are evaluated only once.\n\nThe pass statement is used as a placeholder for future code.\n\nHands-on exercises include writing a program with user-defined functions and a menu within a while loop.",
+                    "questions": "",
+                    "answers": ""
+                }
+            ]
+        },
+        {
+            "lessonName": "Lesson 6",
+            "subtopics": [
+                {
+                    "subtopicCode": 6,
+                    "subtopicTitle": "Introduction to Tkinter",
+                    "content": "Tkinter is the standard GUI library for Python. Python when combined with Tkinter provides a fast and easy way to create GUI applications. Tkinter provides a powerful object-oriented interface to the Tk GUI toolkit.\n\nCreating a GUI application using Tkinter involves the following steps:\n1. Import the Tkinter module.\n2. Create the GUI application main window.\n3. Add one or more widgets to the GUI application.\n4. Enter the main event loop to take action against each event triggered by the user.\n\nTkinter widgets include Button, Canvas, Checkbutton, Entry, Frame, Label, Listbox, Menubutton, Menu, Message, Radiobutton, Scale, Scrollbar, Text, Toplevel, Spinbox, PanedWindow, LabelFrame, and tkMessageBox.\n\nStandard attributes in Tkinter include dimensions, colors, fonts, anchors, relief styles, bitmaps, and cursors.\n\nGeometry management in Tkinter is done using the pack(), grid(), and place() methods.\n\nThe pack() method organizes widgets in blocks before placing them in the parent widget.\n\nThe grid() method organizes widgets in a table-like structure in the parent widget.\n\nThe place() method organizes widgets by placing them in a specific position in the parent widget.\n\nTkinter also provides modules like tkinter.simpledialog, tkinter.filedialog, and tkinter.colorchooser for common dialogs.\n\nThe ttk module provides themed widgets with a modern look and feel across platforms.\n\nEvent handling in Tkinter involves binding events to callback functions using the bind() method or the command parameter in widget constructors.\n\nTkinter supports rendering images using the PhotoImage method.\n\nA simple calculator can be created using Tkinter by defining functions for button clicks, clearing the input field, and evaluating expressions.",
+                    "questions": "",
+                    "answers": ""
+                },
+                {
+                    "subtopicCode": 6.1,
+                    "subtopicTitle": "Introduction to Tkinter (Detailed)",
+                    "content": "Tkinter is the standard GUI library for Python. It provides a fast and easy way to create GUI applications.\n\nTo create a window in Tkinter:\n1. Import the tkinter module as tk.\n2. Create an instance of the tk.Tk class to create the application window.\n3. Call the mainloop() method to keep the window visible.\n\nWidgets in Tkinter include Label, Button, Entry, and more. Widgets are created using the syntax: widget = WidgetName(master, **options).\n\nThe title of the window can be changed using the title() method.\n\nThe size and location of the window can be controlled using the geometry() method.\n\nThe resizable() method can prevent the window from being resized.\n\nTransparency of the window can be set using the attributes() method with the '-alpha' option.\n\nBackground color of the window can be set using the configure() method.\n\nLabels can be added to the window using the Label widget. Fonts for labels can be set using the font keyword argument.\n\nImages can be displayed in Tkinter using the PhotoImage method.\n\nWindow stacking order can be controlled using the attributes() method with the '-topmost' option, and the lift() and lower() methods.\n\nThe default icon of the window can be changed using the iconbitmap() method.\n\nThe ttk module provides themed widgets with a modern look and feel across platforms. It includes widgets like Button, Checkbutton, Entry, Frame, Label, LabelFrame, Menubutton, PanedWindow, Radiobutton, Scale, Scrollbar, Combobox, Notebook, Progressbar, Separator, Sizegrip, and Treeview.\n\nEvent handling in Tkinter involves binding events to callback functions using the bind() method or the command parameter in widget constructors.\n\nA simple login form can be created using Tkinter by adding labels, entry fields, and buttons.",
+                    "questions": "",
+                    "answers": ""
+                },
+                {
+                    "subtopicCode": 6.2,
+                    "subtopicTitle": "Tkinter Geometry Manager",
+                    "content": "Tkinter uses geometry managers to organize widgets on a window. The three geometry managers are pack, grid, and place.\n\nThe pack geometry manager organizes widgets in blocks before placing them on the container widget. It has options like side, expand, fill, ipadx, ipady, padx, pady, and anchor.\n\nThe side parameter determines the direction of the widgets in the pack layout. Options include 'top', 'bottom', 'left', and 'right'.\n\nThe expand parameter determines whether the widget should expand to occupy any extra spaces allocated to the container.\n\nThe fill parameter determines if a widget will occupy the available space. Options include 'x', 'y', 'both', and 'none'.\n\nThe ipadx and ipady parameters create internal paddings for widgets.\n\nThe padx and pady parameters allow you to specify external padding to be added horizontally and vertically.\n\nThe anchor parameter allows you to anchor the widget to the edge of the allocated space.\n\nThe place geometry manager allows you to specify the exact placement of a widget using either absolute or relative positioning.\n\nThe grid geometry manager uses the concepts of rows and columns to arrange the widgets. It allows you to configure the rows and columns using the columnconfigure() and rowconfigure() methods.\n\nThe sticky option in the grid geometry manager specifies which edge of the cell the widget should stick to.\n\nPadding between cells of a grid can be added using the padx and pady options.\n\nA login screen can be designed using the grid geometry manager by configuring the grid and positioning the widgets.",
+                    "questions": "",
+                    "answers": ""
+                }
+            ]
+        },
+        {
+            "lessonName": "Lesson 7",
+            "subtopics": [
+                {
+                    "subtopicCode": 7,
+                    "subtopicTitle": "Introduction to OOP in Python",
+                    "content": "Object-oriented programming (OOP) is a method of structuring a program by bundling related properties and behaviors into individual objects.\n\nOOP is based on the concept of classes and objects. A class is like a blueprint for creating objects, and an object is an instance of a class.\n\nOOP helps reduce complexity and increase reusability through encapsulation, inheritance, polymorphism, and abstraction.\n\nEncapsulation allows you to group functions and variables together.\n\nInheritance allows a class to inherit properties and methods from another class.\n\nPolymorphism allows objects to take multiple forms.\n\nAbstraction hides the complexity of a program and exposes only relevant details.\n\nIn Python, a class is defined using the class keyword. The __init__ method is used to initialize objects.\n\nInstance variables are unique to each object, while class variables are shared among all instances of a class.\n\nMethods in a class are functions that define the behavior of the objects.\n\nInheritance allows a class to inherit attributes and methods from a parent class. Child classes can override or extend the functionality of the parent class.\n\nPolymorphism allows methods to behave differently based on the object that calls them.\n\nAbstraction is achieved by hiding the internal details of a class and exposing only the necessary functionality.\n\nAccess modifiers in Python include public, protected, and private. Public members are accessible from anywhere, protected members are accessible within the class and its subclasses, and private members are accessible only within the class.\n\nInheritance types in Python include single inheritance, multiple inheritance, multilevel inheritance, and hierarchical inheritance.\n\nHands-on exercises include creating classes, defining methods, and implementing inheritance and polymorphism.",
+                    "questions": "",
+                    "answers": ""
+                }
+            ]
+        }
+    ]
+}
+
+extract all of the content of the files and follow the format above. make sure to add the necessary line breaks so that it will be rendered properly when it is being displayed. also leave the questions and answers empty`;
+
+    navigator.clipboard
+      .writeText(contentToCopy)
+      .then(() => {
+        Swal.fire({
+          title: "Prompt copied!",
+          text: "Upload learning materials to be extracted in external AI and paste copied prompt",
+          icon: "success",
+        })
+      })
+      .catch((err) => {
+        Swal.fire({
+          title: "Error occured in copying prompt!",
+          text: `Error: ${err}`,
+          icon: "error",
+        })
+      });
+  }
 
   const renderExercises = () => {
     if (selectedSubject === null || selectedSubject === undefined) {
@@ -1628,6 +1754,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
               ref={fileInputRef}
             />
             <p>Upload an Excel file to add learning materials.</p>
+            <button className="learning-material-command" onClick={handleCopyCommand}>Copy learning material sample and prompt</button>
             <div className="instructor-exercises-container">
               {renderExercises()}
             </div>
