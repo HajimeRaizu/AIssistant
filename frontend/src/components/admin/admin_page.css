@@ -694,8 +694,8 @@ select {
 }
 
 @media (max-aspect-ratio: 1/1){
-    .admin-container *{
-        visibility: hidden;
+    .admin-container {
+        display: none;
     }
 }
 
