@@ -6,6 +6,7 @@
     flex-direction: column;
     height: 99dvh;
     width: 100%;
+    overflow: auto;
     background: url("../assets/pic8.jpg");
     background-repeat: no-repeat;
     background-size: cover;
@@ -14,21 +15,23 @@
 
 .aissistant{
     padding: 0dvh 10dvh 0dvh 10dvh;
-    height: inherit;
+    height: fit-content;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     flex-direction: row;
+    gap: 20px;
 }
 
 .aissistant-logo{
-    width: 50%;
-    height: 100%;
+    width: 700px;
+    height: fit-content;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-right: 20px;
 }
 
 .aissistant-icon{
@@ -68,12 +71,14 @@
 }
 
 .aissistant-info{
-    width: 45%;
+    height: fit-content;
+    width: 500px;
     display: flex;
     flex-direction: column;
     gap: 40px;
     align-self: baseline;
     margin-top: 40px;
+    padding-left: 20px;
 }
 
 .aissistant-info span{
@@ -139,10 +144,12 @@
     .aissistant-logo{
         height: fit-content;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         padding: 20px;
         width: 100%;
+        overflow: auto;
     }
 
     .aissistant-icon{
