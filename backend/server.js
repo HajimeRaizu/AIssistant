@@ -1157,14 +1157,28 @@ app.post("/api/googleLogin", async (req, res) => {
         id: newUserRef.id,
         email,
         name,
-        profileImage: profileImage || "",
+        profileImage,
         role: "student", // Default role
         createdAt: new Date().toISOString(),
       };
       await newUserRef.set(userData);
     } else {
-      // If the user exists, retrieve their data
-      userData = usersSnapshot.docs[0].data();
+      // If the user exists
+      const userDoc = usersSnapshot.docs[0];
+      userData = userDoc.data();
+      
+      // Check if any of the fields have changed
+      const updates = {};
+      if (userData.name !== name) updates.name = name;
+      if (userData.profileImage !== profileImage) updates.profileImage = profileImage;
+      
+      // If there are changes, update the user document
+      if (Object.keys(updates).length > 0) {
+        updates.updatedAt = new Date().toISOString();
+        await userDoc.ref.update(updates);
+        // Update the userData with the new values
+        userData = { ...userData, ...updates };
+      }
     }
 
     // Return the user data including their role
