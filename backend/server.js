@@ -1157,7 +1157,7 @@ app.post("/api/googleLogin", async (req, res) => {
         id: newUserRef.id,
         email,
         name,
-        profileImage,
+        profileImage: profileImage || "",
         role: "student", // Default role
         createdAt: new Date().toISOString(),
       };
