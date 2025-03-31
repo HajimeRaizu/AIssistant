@@ -551,6 +551,7 @@ const StudentPage = () => {
                 if (!isDisabled && editingChatId !== chat.id) {
                   setCurrentChatId(chat.id);
                   fetchChatHistory(chat.id);
+                  setIsCreatingNewChat(false);
                   setSelectedTab("chat");
                 }
               }}
