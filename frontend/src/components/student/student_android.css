@@ -228,7 +228,7 @@
     }
 }
 
-@media (max-aspect-ratio: 1/1){
+@media (max-aspect-ratio: 1/1) and (pointer: coarse){
     .student-message.bot, .student-message.user{
         font-size: smaller;
     }
