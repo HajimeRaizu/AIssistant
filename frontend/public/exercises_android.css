@@ -1,0 +1,246 @@
+@media (max-aspect-ratio: 1/1), (max-width: 960px) {
+    .exercises-sidebar {
+        width: 70%; /* Sidebar takes 70% of the screen width on mobile */
+        padding: 4%;
+        position: fixed; /* Position the sidebar above the content */
+        top: 0;
+        left: 0;
+        height: 100dvh; /* Full height */
+        z-index: 1000; /* Ensure it's above other content */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .exercises-sidebar.visible {
+        transform: translateX(-100%); /* Show sidebar when toggled */
+    }
+
+    .exercises-sidebar.hidden{
+        transform: translateX(0);
+    }
+
+    .exercises-sidebar-toggle{
+        display: none;
+    }
+
+    .exercises-sidebar-toggle2 {
+        display: flex;
+        position: absolute;
+        padding: 10px;
+        border: none;
+        border-radius: 0px 5px 5px 0px;
+        cursor: pointer;
+        font-family: "Host Grotesk", sans-serif;
+        position: fixed; /* Position the toggle button above the content */
+        top: 10px;
+        left: 70%;
+        transition: left 0.3s ease-in-out;
+        z-index: 1000; /* Ensure it's above the sidebar */
+    }
+
+    .exercises-sidebar-toggle2.sidebar-hidden {
+        transform: translateX(0); /* No translation when sidebar is hidden */
+    }
+
+    .exercises-sidebar-toggle2.sidebar-visible {
+        left: 0; /* Move toggle button when sidebar is visible */
+    }
+
+    .exercises-overlay.hidden {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Dark overlay effect */
+        z-index: 999; /* Below sidebar, but above content */
+    }
+
+    .exercises-content.sidebar-hidden{
+        margin-left: 0;
+    }
+
+    .exercises-content{
+        padding: 15px;
+    }
+
+    .exercises-content h1{
+        font-size: 22px;
+    }
+
+    .exercises-theme-toggle {
+        right: 10px;
+    }
+    
+    .exercises-chat-button {
+        right: 70px; /* Adjust the position to avoid overlapping with the theme toggle button */
+    }
+
+    .exercises-header{
+        margin-left: 30px;
+    }
+
+    .subtopic-content h1, .subtopic-content h3{
+        font-size: 18px;
+        padding-left: 0;
+    }
+
+    .subtopic-content span{
+        text-align: left;
+        font-size: 14px;
+    }
+
+    .subtopic-content strong{
+        font-size: 14px;
+    }
+
+    .subtopic-content pre{
+        font-size: 12px;
+    }
+
+    .back-button{
+        font-size: 14px;
+        padding: 5px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .check-answers-button{
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+        font-size: 14px;
+    }
+
+    .exercises-theme-toggle, .exercises-chat-button{
+        height: 35px;
+        width: 35px;
+    }
+
+    .userPicture, .userName{
+        display: none;
+    }
+
+    .student-profile{
+        display: flex;
+    }
+
+    .subject-box{
+        height: fit-content;
+    }
+
+    .subject-boxes {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr); /* 4 columns per row */
+        gap: 10px; /* Adjust the spacing between items */
+      }
+
+    .exercise-tutorial.true{
+        display: flex;
+        position: absolute;
+        height: 100dvh;
+        width: 100dvw;
+        z-index: 999;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding-top: 60px;
+        padding-left: 60px;
+        z-index: 1000;
+    }
+    
+    .exercise-tutorial-highlight.true{
+        display: block;
+        position: absolute;
+        height: 80px;
+        width: 80px;
+        background: rgba(255, 255, 255, 0.3);
+        box-shadow: 0px 0px 40px 20px rgba(255, 255, 255, 0.4);
+        top: -15px;
+        left: -25px;
+        z-index: 1002;
+        border-radius: 60px;
+    }
+
+    .exercise-tutorial2.true{
+        display: flex;
+        position: absolute;
+        height: 100dvh;
+        width: 100dvw;
+        z-index: 999;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding-top: 80px;
+        padding-right: 60px;
+        direction: rtl;
+        z-index: 1001;
+    }
+    
+    .exercise-tutorial-highlight2.true{
+        display: block;
+        position: absolute;
+        height: 35px;
+        width: 35px;
+        background: rgba(255, 255, 255, 0.3);
+        box-shadow: 0px 0px 40px 20px rgba(255, 255, 255, 0.4);
+        top: 15px;
+        right: 60px;
+        z-index: 1003;
+        border-radius: 60px;
+    }
+
+    .exercises-chat-button.true{
+        z-index: 1002;
+    }
+
+    .exercise-tutorial3.true{
+        display: flex;
+        position: absolute;
+        height: 100dvh;
+        width: 100dvw;
+        z-index: 999;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding-top: 80px;
+        padding-right: 30px;
+        direction: rtl;
+        z-index: 1001;
+    }
+    
+    .exercise-tutorial-highlight3.true{
+        display: block;
+        position: absolute;
+        height: 35px;
+        width: 35px;
+        background: rgba(255, 255, 255, 0.3);
+        box-shadow: 0px 0px 40px 20px rgba(255, 255, 255, 0.4);
+        top: 15px;
+        right: 20px;
+        z-index: 1003;
+        border-radius: 60px;
+    }
+
+    .exercises-theme-toggle.true{
+        z-index: 1002;
+    }
+
+    .swal2-popup{
+        width: 70dvw;
+    }
+
+    .swal2-popup *{
+        font-size: medium;
+    }
+
+    img.book{
+        height: 250px;
+        width: 300px;
+    }
+
+    .read-button{
+        font-size: 20px;
+    }
+}

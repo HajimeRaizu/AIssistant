@@ -8,6 +8,8 @@ import axios from "axios";
 import Swal from 'sweetalert2'
 import { IoIosChatboxes } from "react-icons/io";
 import book from '../assets/book-removebg-preview.png';
+import exercisesCSS from "./exercises.css";
+import exercisesAndroidCSS from "./exercises_android.css";
 
 const ExercisesPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -36,7 +38,45 @@ const ExercisesPage = () => {
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
 
+  const [currentCSS, setCurrentCSS] = useState("");
+  const [androidCSS, setAndroidCSS] = useState("");
+
   useEffect(() => {
+    // 1. Place your text file in the public folder
+    //    (e.g., public/exercises.txt)
+    fetch('/exercises.css')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('File not found');
+        }
+        return response.text();
+      })
+      .then(text => {
+        // 2. This will contain the raw file content
+        setCurrentCSS(text);
+      })
+      .catch(error => {
+        console.error('Error loading text file:', error);
+      });
+
+    fetch('/exercises_android.css')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('File not found');
+        }
+        return response.text();
+      })
+      .then(text => {
+        // 2. This will contain the raw file content
+        setAndroidCSS(text);
+      })
+      .catch(error => {
+        console.error('Error loading text file:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    console.log(currentCSS)
     window.speechSynthesis.cancel();
     const fetchUserRole = async () => {
       if (userEmail) {
@@ -357,6 +397,331 @@ const stopSpeech = () => {
     navigate("/googleLogin");
   };
 
+  const downloadOfflineVersion = async () => {
+    try {
+      // Get all necessary data
+      const offlineData = {
+        learningMaterials,
+        theme,
+        selectedSubject,
+        selectedLesson,
+        selectedSubtopic,
+        userAnswers,
+        studentId,
+        userRole,
+        userName,
+        userEmail,
+        userPicture,
+        hasSubjectCode,
+        isReading
+      };
+  
+      // Create the HTML content
+      const htmlContent = `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIsistant - Exercises (Offline)</title>
+    <style>
+      ${currentCSS}
+      ${androidCSS}
+      
+      /* Additional styles for offline version */
+    </style>
+  </head>
+  <body>
+    <div class="exercises-page ${theme}" id="app">
+      <!-- Content will be rendered here by JavaScript -->
+    </div>
+  
+    <script>
+      // Store the offline data
+      const appData = ${JSON.stringify(offlineData)};
+      
+      // Format text function (similar to React component)
+      function formatText(text, sender) {
+        if (!text) return '';
+        
+        if (sender === "bot") {
+          // Clean text for display (simplified version)
+          return text
+            .replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')
+            .replace(/\\'\\'\\'([\\s\\S]*?)\\'\\'\\'/g, '<pre><code>$1</code></pre>')
+            .replace(/###\\s*(.*?)\\n/g, '<h3>$1</h3>')
+            .replace(/\\n/g, '<br>');
+        } else {
+          return text;
+        }
+      }
+      
+      // Initialize the app
+      document.addEventListener('DOMContentLoaded', function() {
+        // Set theme from saved data
+        document.body.className = 'exercises-page ' + appData.theme;
+        document.getElementById('app').className = 'exercises-page ' + appData.theme;
+        
+        // Render the app
+        renderApp();
+      });
+      
+      // Main rendering function
+      function renderApp() {
+        const app = document.getElementById('app');
+        app.innerHTML = '';
+        
+        // Render sidebar
+        const sidebar = document.createElement('div');
+        sidebar.className = \`exercises-sidebar \${appData.theme} visible\`;
+        sidebar.innerHTML = \`
+          <div class="student-profile">
+            <img src="\${appData.userPicture}" alt="\${appData.userName}">
+            <p>\${appData.userName}</p>
+          </div>
+          <h2>Subjects</h2>
+          <div class="subject-code-input \${appData.theme}">
+            <input type="text" disabled placeholder="Subject code input disabled in offline mode">
+          </div>
+          <button class="submit-button \${appData.theme}" disabled>Submit</button>
+          \${appData.hasSubjectCode ? \`
+            <ul>
+              \${Object.keys(appData.learningMaterials).map(subjectCode => \`
+                <li class="\${appData.theme} \${appData.selectedSubject === subjectCode ? 'active' : ''}" 
+                    onclick="handleSubjectClick('\${subjectCode}')">
+                  \${appData.learningMaterials[subjectCode].subjectName}
+                </li>
+              \`).join('')}
+            </ul>
+          \` : \`
+            <p style="padding-top: 10px;">No subject IDs added yet.</p>
+          \`}
+          <button class="exercises-logout-button \${appData.theme}" disabled>Logout</button>
+        \`;
+        app.appendChild(sidebar);
+        
+        // Render main content
+        const content = document.createElement('div');
+        content.className = \`exercises-content \${appData.theme} sidebar-visible\`;
+        
+        // Render header
+        content.innerHTML = \`
+          <div class="exercises-header-container">
+            <div class="exercises-header">
+              \${appData.selectedSubject ? \`
+                <h1 class="\${appData.theme}">\${appData.learningMaterials[appData.selectedSubject].subjectName}</h1>
+              \` : ''}
+            </div>
+            <div class="exercises-header-buttons">
+              <div class="userName" style="padding-left: 10px;">\${appData.userName}</div>
+              <img src="\${appData.userPicture}" class="userPicture" alt="">
+              <button title="Toggle theme" class="exercises-theme-toggle \${appData.theme}" onclick="toggleTheme()">
+                \${appData.theme === 'dark' ? '☀️' : '🌙'}
+              </button>
+            </div>
+          </div>
+        \`;
+        
+        // Render content based on current view
+        if (!appData.selectedSubject && appData.hasSubjectCode) {
+          // Subjects view
+          const subjectsContainer = document.createElement('div');
+          subjectsContainer.className = 'subject-boxes';
+          subjectsContainer.innerHTML = \`
+            \${Object.keys(appData.learningMaterials).map(subjectCode => \`
+              <div class="subject-box \${appData.theme}" onclick="handleSubjectClick('\${subjectCode}')">
+                <div class="subject-box-header">
+                  <h3>\${appData.learningMaterials[subjectCode].subjectName}</h3>
+                </div>
+                <p>\${appData.learningMaterials[subjectCode].ownerEmail}</p>
+                <p>\${appData.learningMaterials[subjectCode].ownerName}</p>
+              </div>
+            \`).join('')}
+          \`;
+          content.appendChild(subjectsContainer);
+        } else if (appData.selectedSubject !== null && appData.selectedLesson === null) {
+          // Lessons view
+          const lessonsContainer = document.createElement('div');
+          lessonsContainer.className = 'lessons';
+          lessonsContainer.innerHTML = \`
+            <h2 class="\${appData.theme}">Lessons</h2>
+            <button class="back-button \${appData.theme}" onclick="handleBackToSubjects()">
+              Back to Subjects
+            </button>
+            <ul>
+              \${appData.learningMaterials[appData.selectedSubject].lessons.map((lesson, index) => \`
+                <li class="\${appData.theme}" onclick="handleLessonClick(\${index})">
+                  \${lesson.lessonName}
+                </li>
+              \`).join('')}
+            </ul>
+          \`;
+          content.appendChild(lessonsContainer);
+        } else if (appData.selectedLesson !== null && appData.selectedSubtopic === null) {
+          // Subtopics view
+          const subtopicsContainer = document.createElement('div');
+          subtopicsContainer.className = 'subtopics';
+          subtopicsContainer.innerHTML = \`
+            <h2 class="\${appData.theme}">Subtopics for \${appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].lessonName}</h2>
+            <button class="back-button \${appData.theme}" onclick="handleBackToLessons()">
+              Back to Lessons
+            </button>
+            <ul>
+              \${appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].subtopics.map((subtopic, index) => \`
+                <li class="\${appData.theme}" onclick="handleSubtopicClick(\${index})">
+                  \${subtopic.subtopicCode} - \${subtopic.subtopicTitle}
+                </li>
+              \`).join('')}
+            </ul>
+          \`;
+          content.appendChild(subtopicsContainer);
+        } else if (appData.selectedSubtopic !== null) {
+          // Subtopic content view
+          const subtopic = appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].subtopics[appData.selectedSubtopic];
+          const subtopicContent = document.createElement('div');
+          subtopicContent.className = \`subtopic-content \${appData.theme}\`;
+          subtopicContent.innerHTML = \`
+            <h1 class="\${appData.theme}">
+              \${subtopic.subtopicCode} - \${subtopic.subtopicTitle}
+              <button class="read-button" onclick="alert('Text-to-speech not available offline')">
+                \${appData.isReading ? '🔊' : '🔈'}
+              </button>
+            </h1>
+            <p class="line \${appData.theme}"></p>
+            <span>
+              \${formatText(subtopic.content, "bot")}
+            </span>
+            <h3>Exercises</h3>
+            <div class="exercise-container \${appData.theme}">
+              \${subtopic.questions
+                .split("\\n")
+                .filter(line => line.trim() !== "")
+                .map((line, index) => {
+                  const isNumberedQuestion = /^\\d+\\./.test(line);
+                  const answer = appData.userAnswers[index] || "";
+                  
+                  return \`
+                    <div class="exercise-text \${appData.theme}">\${line}</div>
+                    \${isNumberedQuestion ? \`
+                      <input 
+                        type="text" 
+                        value="\${answer}" 
+                        class="exercise-input \${appData.theme}" 
+                        placeholder="Your answer"
+                        disabled
+                      >
+                    \` : ''}
+                  \`;
+                }).join('')}
+            </div>
+            <div class="button-container">
+              <button class="back-button \${appData.theme}" onclick="handleBackToSubtopics()">
+                Back to Subtopics
+              </button>
+              <button class="check-answers-button \${appData.theme}" onclick="alert('Answer checking not available offline')">
+                Check Answers
+              </button>
+            </div>
+          \`;
+          content.appendChild(subtopicContent);
+        } else if (!appData.selectedSubject && !appData.hasSubjectCode) {
+          // No materials view
+          const noMaterials = document.createElement('div');
+          noMaterials.className = 'no-learning-materials';
+          noMaterials.innerHTML = \`
+            <img class="book" src="\${appData.bookImage || ''}" alt="Book">
+            <p>Ask your instructors</p>
+            <p>for available learning materials</p>
+          \`;
+          content.appendChild(noMaterials);
+        }
+        
+        app.appendChild(content);
+      }
+      
+      // Navigation functions
+      function handleSubjectClick(subjectCode) {
+        appData.selectedSubject = subjectCode;
+        appData.selectedLesson = null;
+        appData.selectedSubtopic = null;
+        renderApp();
+      }
+      
+      function handleLessonClick(lessonIndex) {
+        appData.selectedLesson = lessonIndex;
+        appData.selectedSubtopic = null;
+        renderApp();
+      }
+      
+      function handleSubtopicClick(subtopicIndex) {
+        appData.selectedSubtopic = subtopicIndex;
+        renderApp();
+      }
+      
+      function handleBackToSubjects() {
+        appData.selectedSubject = null;
+        renderApp();
+      }
+      
+      function handleBackToLessons() {
+        appData.selectedLesson = null;
+        renderApp();
+      }
+      
+      function handleBackToSubtopics() {
+        appData.selectedSubtopic = null;
+        renderApp();
+      }
+      
+      function toggleTheme() {
+        appData.theme = appData.theme === 'dark' ? 'light' : 'dark';
+        document.body.className = 'exercises-page ' + appData.theme;
+        document.getElementById('app').className = 'exercises-page ' + appData.theme;
+        localStorage.setItem('theme', appData.theme);
+        renderApp();
+      }
+      
+      // Make functions available globally
+      window.handleSubjectClick = handleSubjectClick;
+      window.handleLessonClick = handleLessonClick;
+      window.handleSubtopicClick = handleSubtopicClick;
+      window.handleBackToSubjects = handleBackToSubjects;
+      window.handleBackToLessons = handleBackToLessons;
+      window.handleBackToSubtopics = handleBackToSubtopics;
+      window.toggleTheme = toggleTheme;
+    </script>
+  </body>
+  </html>`;
+  
+      // Create and trigger download
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'AIsistant-Exercises-Offline.html';
+      document.body.appendChild(a);
+      a.click();
+      
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+  
+      Swal.fire({
+        title: 'Download Complete',
+        text: 'The offline version has been downloaded. Open it in your browser to use it offline.',
+        icon: 'success'
+      });
+    } catch (error) {
+      console.error('Error generating offline version:', error);
+      Swal.fire({
+        title: 'Download Failed',
+        text: 'An error occurred while generating the offline version.',
+        icon: 'error'
+      });
+    }
+  };
+
   const SubjectBox = ({ subject, subjectCode, ownerEmail, ownerName }) => {
     const [showOptions, setShowOptions] = useState(null);
   
@@ -441,6 +806,7 @@ const stopSpeech = () => {
           <img src={`${userPicture}`} alt={`${userName}.jpg`} />
           <p>{userName}</p>
         </div>
+        <button onClick={downloadOfflineVersion}>d</button>
         <h2>Subjects</h2>
         <div className={`subject-code-input ${theme}`}>
           <input
