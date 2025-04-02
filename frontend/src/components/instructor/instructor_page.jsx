@@ -158,6 +158,64 @@ const InstructorPage = () => {
     fetchData();
   }, []);
 
+  const formatText = (text, sender) => {
+    if (!text) return null;
+  
+    if (sender === "bot") {
+      const boldTextRegex = /\*\*(.*?)\*\*/g || /\`(.*?)\`/g; // Matches **bold** text
+      const codeBlockRegex = /'''([\s\S]*?)'''/g; // Matches ```code blocks```
+      const headingRegex = /###\s*(.*?)\n/g; // Matches ### headings
+  
+      // Split the text by code blocks first
+      const parts = text.split(codeBlockRegex);
+  
+      return parts.map((part, index) => {
+        if (index % 2 === 1) {
+          // This is a code block
+          return (
+            <pre className="instructor-code" key={index}>
+              <code>{part}</code>
+            </pre>
+          );
+        }
+  
+        // Process headings and bold text in non-code parts
+        const headingParts = part.split(headingRegex);
+        return (
+          <span key={index}>
+            {headingParts.map((headingPart, headingIndex) => {
+              if (headingIndex % 2 === 1) {
+                // This is a heading (###)
+                return <h3 key={headingIndex}>{headingPart}</h3>;
+              }
+  
+              // Process bold text in non-heading parts
+              const boldParts = headingPart.split(boldTextRegex);
+              return (
+                <span key={headingIndex}>
+                  {boldParts.map((boldPart, boldIndex) => {
+                    if (boldIndex % 2 === 1) {
+                      // This is bold text (**)
+                      return <strong key={boldIndex}>{boldPart}</strong>;
+                    }
+                    return boldPart;
+                  })}
+                </span>
+              );
+            })}
+          </span>
+        );
+      });
+    } else {
+      // For user messages, just render the text as is
+      return (
+        <span className="student-message-text" style={{ whiteSpace: 'pre-wrap' }}>
+          {text}
+        </span>
+      );
+    }
+  };
+
   const handleGenerateFAQ = async () => {
     if (isGeneratingFAQ || !selectedLanguage || !selectedWeek) return;
     setIsGeneratingFAQ(true);
@@ -866,9 +924,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             ]
         }
     ]
-}
+} 
 
-extract all of the content of the files and follow the format above. make sure to add the necessary line breaks so that it will be rendered properly when it is being displayed. also leave the questions and answers empty`;
+extract all of the content of the files and follow the format above. make sure to add the necessary line breaks so that it will be rendered properly when it is being displayed and use ###header, **bold text**, '''code snippet'''. also leave the questions and answers empty`;
 
     navigator.clipboard
       .writeText(contentToCopy)
@@ -1191,7 +1249,6 @@ extract all of the content of the files and follow the format above. make sure t
       return (
         <div className="instructor-exercise-content">
           <h2>{`${subtopic['subtopicCode']} - ${subtopic['subtopicTitle']}`}</h2>
-  
           {editingExercise ? (
             <textarea
               className="instructor-content-textarea"
@@ -1201,7 +1258,7 @@ extract all of the content of the files and follow the format above. make sure t
               }
             />
           ) : (
-            <span>{subtopic.content}</span>
+            <span>{formatText(subtopic.content, "bot")}</span>
           )}
   
           <h3>Exercises</h3>

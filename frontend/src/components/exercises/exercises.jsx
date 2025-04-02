@@ -99,6 +99,64 @@ const ExercisesPage = () => {
       setIsLoading(false);
     }
   };
+  
+  const formatText = (text, sender) => {
+    if (!text) return null;
+  
+    if (sender === "bot") {
+      const boldTextRegex = /\*\*(.*?)\*\*/g || /\`(.*?)\`/g; // Matches **bold** text
+      const codeBlockRegex = /'''([\s\S]*?)'''/g; // Matches ```code blocks```
+      const headingRegex = /###\s*(.*?)\n/g; // Matches ### headings
+  
+      // Split the text by code blocks first
+      const parts = text.split(codeBlockRegex);
+  
+      return parts.map((part, index) => {
+        if (index % 2 === 1) {
+          // This is a code block
+          return (
+            <pre key={index} className={`student-code-block ${theme}`}>
+              <code>{part}</code>
+            </pre>
+          );
+        }
+  
+        // Process headings and bold text in non-code parts
+        const headingParts = part.split(headingRegex);
+        return (
+          <span key={index}>
+            {headingParts.map((headingPart, headingIndex) => {
+              if (headingIndex % 2 === 1) {
+                // This is a heading (###)
+                return <h3 key={headingIndex}>{headingPart}</h3>;
+              }
+  
+              // Process bold text in non-heading parts
+              const boldParts = headingPart.split(boldTextRegex);
+              return (
+                <span key={headingIndex}>
+                  {boldParts.map((boldPart, boldIndex) => {
+                    if (boldIndex % 2 === 1) {
+                      // This is bold text (**)
+                      return <strong key={boldIndex}>{boldPart}</strong>;
+                    }
+                    return boldPart;
+                  })}
+                </span>
+              );
+            })}
+          </span>
+        );
+      });
+    } else {
+      // For user messages, just render the text as is
+      return (
+        <span className="student-message-text" style={{ whiteSpace: 'pre-wrap' }}>
+          {text}
+        </span>
+      );
+    }
+  };
 
   const handleTutorial = () => {
     if (tutorial) {
@@ -455,7 +513,7 @@ const ExercisesPage = () => {
             </h1>
             <p className={`line ${theme}`}></p>
             <span>
-              {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].content}
+              <p>{formatText(learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].content, "bot")}</p>
             </span>
             <h3>Exercises</h3>
             <div className={`exercise-container ${theme}`}>
