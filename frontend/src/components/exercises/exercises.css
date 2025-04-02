@@ -806,3 +806,11 @@ img.book{
     height: 250px;
     width: 300px;
 }
+
+.read-button{
+    font-size: 30px;
+    padding: 10px;
+    margin: 0px;
+    background: none;
+    border: none;
+}

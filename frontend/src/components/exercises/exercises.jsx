@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./exercises.css";
 import "./exercises_android.css";
 import { MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight, MdMoreVert } from "react-icons/md";
+import { BsVolumeUp, BsVolumeUpFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2'
@@ -27,6 +28,7 @@ const ExercisesPage = () => {
   const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [showOptions, setShowOptions] = useState(null);
+  const [isReading, setIsReading] = useState(false);
   const navigate = useNavigate();
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
@@ -35,6 +37,7 @@ const ExercisesPage = () => {
   const userPicture = localStorage.getItem("profileImage");
 
   useEffect(() => {
+    window.speechSynthesis.cancel();
     const fetchUserRole = async () => {
       if (userEmail) {
         try {
@@ -157,6 +160,45 @@ const ExercisesPage = () => {
       );
     }
   };
+
+  const readOutLoud = () => {
+    if ('speechSynthesis' in window) {
+        // Clean text by removing markdown-like formatting
+        const text = cleanText(learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].content);
+        const speech = new SpeechSynthesisUtterance(text);
+
+        speech.lang = 'en-US'; // Set language
+        speech.rate = 1; // Adjust speed if needed
+        speech.pitch = 1; // Adjust pitch if needed
+        speech.volume = 1; // Adjust volume if needed
+
+        // Stop any ongoing speech before starting a new one
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(speech);
+        setIsReading(true);
+    } else {
+        alert("Sorry, your browser doesn't support text-to-speech!");
+    }
+};
+
+// Function to clean markdown-like formatting
+const cleanText = (text) => {
+    if (!text) return '';
+
+    return text
+        .replace(/\*\*(.*?)\*\*/g, '$1') // Remove **bold** formatting
+        .replace(/`(.*?)`/g, '$1') // Remove inline `code` formatting
+        .replace(/'''([\s\S]*?)'''/g, '$1') // Remove triple backticks (```code```)
+        .replace(/###\s*(.*?)\n/g, '$1\n'); // Remove headings (### Heading)
+};
+
+
+const stopSpeech = () => {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        setIsReading(false);
+    }
+};
 
   const handleTutorial = () => {
     if (tutorial) {
@@ -510,6 +552,7 @@ const ExercisesPage = () => {
             <h1 className={theme}>
               {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicCode} -{" "}
               {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicTitle}
+              {isReading ? <button className="read-button" onClick={stopSpeech}><BsVolumeUpFill /></button> : <button className="read-button" onClick={readOutLoud}><BsVolumeUp /></button>}
             </h1>
             <p className={`line ${theme}`}></p>
             <span>
