@@ -1,4 +1,4 @@
-@media (max-aspect-ratio: 1/1) and (pointer: coarse) {
+@media (max-aspect-ratio: 1/1), (max-width: 960px) {
     .student-container{
         height: 100dvh;
     }
@@ -225,5 +225,15 @@
 
     .student-theme-toggle.true{
         z-index: 1002;
+    }
+}
+
+@media (max-aspect-ratio: 1/1){
+    .student-message.bot, .student-message.user{
+        font-size: smaller;
+    }
+
+    .student-code-block{
+        font-size: smaller;
     }
 }

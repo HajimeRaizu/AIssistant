@@ -1,4 +1,4 @@
-@media (max-aspect-ratio: 1/1) {
+@media (max-aspect-ratio: 1/1), (max-width: 960px) {
     .exercises-sidebar {
         width: 70%; /* Sidebar takes 70% of the screen width on mobile */
         padding: 4%;
@@ -82,6 +82,19 @@
     .subtopic-content h1, .subtopic-content h3{
         font-size: 18px;
         padding-left: 0;
+    }
+
+    .subtopic-content span{
+        text-align: left;
+        font-size: 14px;
+    }
+
+    .subtopic-content strong{
+        font-size: 14px;
+    }
+
+    .subtopic-content pre{
+        font-size: 12px;
     }
 
     .back-button{
@@ -225,5 +238,9 @@
     img.book{
         height: 250px;
         width: 300px;
+    }
+
+    .read-button{
+        font-size: 20px;
     }
 }
