@@ -237,3 +237,20 @@
         font-size: smaller;
     }
 }
+
+@media (max-height: 600px){
+    .student-chat-header{
+        background: transparent;
+        border-bottom: none;
+    }
+    .student-aissistant{
+        display: none;
+    }
+    .student-disclaimer{
+        display: none;
+    }
+    .student-content{
+        padding-top: 40px;
+    }
+    
+}
