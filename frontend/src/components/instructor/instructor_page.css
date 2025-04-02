@@ -909,3 +909,10 @@
     background: #4e73df;
     color: white;
 }
+
+.legend{
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}

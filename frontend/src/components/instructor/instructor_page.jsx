@@ -1811,7 +1811,13 @@ extract all of the content of the files and follow the format above. make sure t
               ref={fileInputRef}
             />
             <p>Upload an Excel file to add learning materials.</p>
-            <button className="learning-material-command" onClick={handleCopyCommand}>Copy learning material sample and prompt</button>
+            <button className="learning-material-command" onClick={handleCopyCommand}>Copy learning material prompt</button>
+            <pre className="legend">
+              <p style={{fontWeight: 'bold',}}>Learning material elements:</p>
+              <p>###Header</p>
+              <p>**Bold text**</p>
+              <p>'''Code Snippets''''</p>
+            </pre>
             <div className="instructor-exercises-container">
               {renderExercises()}
             </div>
