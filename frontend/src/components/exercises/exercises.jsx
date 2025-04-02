@@ -806,6 +806,7 @@ const stopSpeech = () => {
           <img src={`${userPicture}`} alt={`${userName}.jpg`} />
           <p>{userName}</p>
         </div>
+        {/*<button onClick={downloadOfflineVersion}>d</button>*/}
         <h2>Subjects</h2>
         <div className={`subject-code-input ${theme}`}>
           <input
