@@ -515,7 +515,7 @@ const stopSpeech = () => {
           lessonsContainer.className = 'offline-lessons';
           lessonsContainer.innerHTML = \`
             <h2 class="offline-\${appData.theme}">Lessons</h2>
-            <button class="offline-back-button \${appData.theme}" onclick="handleBackToSubjects()">
+            <button class="offline-back-button" onclick="handleBackToSubjects()">
               Back to Subjects
             </button>
             <ul>
@@ -533,7 +533,7 @@ const stopSpeech = () => {
           subtopicsContainer.className = 'offline-subtopics';
           subtopicsContainer.innerHTML = \`
             <h2 class="offline-\${appData.theme}">Subtopics for \${appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].lessonName}</h2>
-            <button class="offline-back-button \${appData.theme}" onclick="handleBackToLessons()">
+            <button class="offline-back-button" onclick="handleBackToLessons()">
               Back to Lessons
             </button>
             <ul>
@@ -562,7 +562,7 @@ const stopSpeech = () => {
               \${formatText(subtopic.content, "bot")}
             </span>
             <div class="offline-button-container">
-              <button class="offline-back-button \${appData.theme}" onclick="handleBackToSubtopics()">
+              <button class="offline-back-button" onclick="handleBackToSubtopics()">
                 Back to Subtopics
               </button>
             </div>
