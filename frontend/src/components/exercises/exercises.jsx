@@ -8,8 +8,6 @@ import axios from "axios";
 import Swal from 'sweetalert2'
 import { IoIosChatboxes } from "react-icons/io";
 import book from '../assets/book-removebg-preview.png';
-import exercisesCSS from "./exercises.css";
-import exercisesAndroidCSS from "./exercises_android.css";
 
 const ExercisesPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -44,7 +42,7 @@ const ExercisesPage = () => {
   useEffect(() => {
     // 1. Place your text file in the public folder
     //    (e.g., public/exercises.txt)
-    fetch('/exercises.css')
+    fetch('/offline_exercises.css')
       .then(response => {
         if (!response.ok) {
           throw new Error('File not found');
@@ -59,7 +57,7 @@ const ExercisesPage = () => {
         console.error('Error loading text file:', error);
       });
 
-    fetch('/exercises_android.css')
+    fetch('/offline_exercises_android.css')
       .then(response => {
         if (!response.ok) {
           throw new Error('File not found');
@@ -431,7 +429,7 @@ const stopSpeech = () => {
     </style>
   </head>
   <body>
-    <div class="exercises-page ${theme}" id="app">
+    <div class="offline-exercises-page" id="app">
       <!-- Content will be rendered here by JavaScript -->
     </div>
   
@@ -458,8 +456,8 @@ const stopSpeech = () => {
       // Initialize the app
       document.addEventListener('DOMContentLoaded', function() {
         // Set theme from saved data
-        document.body.className = 'exercises-page ' + appData.theme;
-        document.getElementById('app').className = 'exercises-page ' + appData.theme;
+        document.body.className = 'offline-exercises-page ' + appData.theme;
+        document.getElementById('app').className = 'offline-exercises-page ' + appData.theme;
         
         // Render the app
         renderApp();
@@ -472,21 +470,13 @@ const stopSpeech = () => {
         
         // Render sidebar
         const sidebar = document.createElement('div');
-        sidebar.className = \`exercises-sidebar \${appData.theme} visible\`;
+        sidebar.className = \`offline-exercises-sidebar \${appData.theme} visible\`;
         sidebar.innerHTML = \`
-          <div class="student-profile">
-            <img src="\${appData.userPicture}" alt="\${appData.userName}">
-            <p>\${appData.userName}</p>
-          </div>
           <h2>Subjects</h2>
-          <div class="subject-code-input \${appData.theme}">
-            <input type="text" disabled placeholder="Subject code input disabled in offline mode">
-          </div>
-          <button class="submit-button \${appData.theme}" disabled>Submit</button>
           \${appData.hasSubjectCode ? \`
             <ul>
               \${Object.keys(appData.learningMaterials).map(subjectCode => \`
-                <li class="\${appData.theme} \${appData.selectedSubject === subjectCode ? 'active' : ''}" 
+                <li class="offline-\${appData.theme} \${appData.selectedSubject === subjectCode ? 'active' : ''}" 
                     onclick="handleSubjectClick('\${subjectCode}')">
                   \${appData.learningMaterials[subjectCode].subjectName}
                 </li>
@@ -495,41 +485,22 @@ const stopSpeech = () => {
           \` : \`
             <p style="padding-top: 10px;">No subject IDs added yet.</p>
           \`}
-          <button class="exercises-logout-button \${appData.theme}" disabled>Logout</button>
         \`;
         app.appendChild(sidebar);
         
         // Render main content
         const content = document.createElement('div');
-        content.className = \`exercises-content \${appData.theme} sidebar-visible\`;
-        
-        // Render header
-        content.innerHTML = \`
-          <div class="exercises-header-container">
-            <div class="exercises-header">
-              \${appData.selectedSubject ? \`
-                <h1 class="\${appData.theme}">\${appData.learningMaterials[appData.selectedSubject].subjectName}</h1>
-              \` : ''}
-            </div>
-            <div class="exercises-header-buttons">
-              <div class="userName" style="padding-left: 10px;">\${appData.userName}</div>
-              <img src="\${appData.userPicture}" class="userPicture" alt="">
-              <button title="Toggle theme" class="exercises-theme-toggle \${appData.theme}" onclick="toggleTheme()">
-                \${appData.theme === 'dark' ? '☀️' : '🌙'}
-              </button>
-            </div>
-          </div>
-        \`;
+        content.className = \`offline-exercises-content \${appData.theme} sidebar-visible\`;
         
         // Render content based on current view
         if (!appData.selectedSubject && appData.hasSubjectCode) {
           // Subjects view
           const subjectsContainer = document.createElement('div');
-          subjectsContainer.className = 'subject-boxes';
+          subjectsContainer.className = 'offline-subject-boxes';
           subjectsContainer.innerHTML = \`
             \${Object.keys(appData.learningMaterials).map(subjectCode => \`
-              <div class="subject-box \${appData.theme}" onclick="handleSubjectClick('\${subjectCode}')">
-                <div class="subject-box-header">
+              <div class="offline-subject-box \${appData.theme}" onclick="handleSubjectClick('\${subjectCode}')">
+                <div class="offline-subject-box-header">
                   <h3>\${appData.learningMaterials[subjectCode].subjectName}</h3>
                 </div>
                 <p>\${appData.learningMaterials[subjectCode].ownerEmail}</p>
@@ -541,15 +512,15 @@ const stopSpeech = () => {
         } else if (appData.selectedSubject !== null && appData.selectedLesson === null) {
           // Lessons view
           const lessonsContainer = document.createElement('div');
-          lessonsContainer.className = 'lessons';
+          lessonsContainer.className = 'offline-lessons';
           lessonsContainer.innerHTML = \`
-            <h2 class="\${appData.theme}">Lessons</h2>
-            <button class="back-button \${appData.theme}" onclick="handleBackToSubjects()">
+            <h2 class="offline-\${appData.theme}">Lessons</h2>
+            <button class="offline-back-button \${appData.theme}" onclick="handleBackToSubjects()">
               Back to Subjects
             </button>
             <ul>
               \${appData.learningMaterials[appData.selectedSubject].lessons.map((lesson, index) => \`
-                <li class="\${appData.theme}" onclick="handleLessonClick(\${index})">
+                <li class="offline-\${appData.theme}" onclick="handleLessonClick(\${index})">
                   \${lesson.lessonName}
                 </li>
               \`).join('')}
@@ -559,15 +530,15 @@ const stopSpeech = () => {
         } else if (appData.selectedLesson !== null && appData.selectedSubtopic === null) {
           // Subtopics view
           const subtopicsContainer = document.createElement('div');
-          subtopicsContainer.className = 'subtopics';
+          subtopicsContainer.className = 'offline-subtopics';
           subtopicsContainer.innerHTML = \`
-            <h2 class="\${appData.theme}">Subtopics for \${appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].lessonName}</h2>
-            <button class="back-button \${appData.theme}" onclick="handleBackToLessons()">
+            <h2 class="offline-\${appData.theme}">Subtopics for \${appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].lessonName}</h2>
+            <button class="offline-back-button \${appData.theme}" onclick="handleBackToLessons()">
               Back to Lessons
             </button>
             <ul>
               \${appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].subtopics.map((subtopic, index) => \`
-                <li class="\${appData.theme}" onclick="handleSubtopicClick(\${index})">
+                <li class="offline-\${appData.theme}" onclick="handleSubtopicClick(\${index})">
                   \${subtopic.subtopicCode} - \${subtopic.subtopicTitle}
                 </li>
               \`).join('')}
@@ -578,47 +549,21 @@ const stopSpeech = () => {
           // Subtopic content view
           const subtopic = appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].subtopics[appData.selectedSubtopic];
           const subtopicContent = document.createElement('div');
-          subtopicContent.className = \`subtopic-content \${appData.theme}\`;
+          subtopicContent.className = \`offline-subtopic-content \${appData.theme}\`;
           subtopicContent.innerHTML = \`
-            <h1 class="\${appData.theme}">
+            <h1 class="offline-\${appData.theme}">
               \${subtopic.subtopicCode} - \${subtopic.subtopicTitle}
-              <button class="read-button" onclick="alert('Text-to-speech not available offline')">
+              <button class="offline-read-button" onclick="alert('Text-to-speech not available offline')">
                 \${appData.isReading ? '🔊' : '🔈'}
               </button>
             </h1>
-            <p class="line \${appData.theme}"></p>
+            <p class="offline-line \${appData.theme}"></p>
             <span>
               \${formatText(subtopic.content, "bot")}
             </span>
-            <h3>Exercises</h3>
-            <div class="exercise-container \${appData.theme}">
-              \${subtopic.questions
-                .split("\\n")
-                .filter(line => line.trim() !== "")
-                .map((line, index) => {
-                  const isNumberedQuestion = /^\\d+\\./.test(line);
-                  const answer = appData.userAnswers[index] || "";
-                  
-                  return \`
-                    <div class="exercise-text \${appData.theme}">\${line}</div>
-                    \${isNumberedQuestion ? \`
-                      <input 
-                        type="text" 
-                        value="\${answer}" 
-                        class="exercise-input \${appData.theme}" 
-                        placeholder="Your answer"
-                        disabled
-                      >
-                    \` : ''}
-                  \`;
-                }).join('')}
-            </div>
-            <div class="button-container">
-              <button class="back-button \${appData.theme}" onclick="handleBackToSubtopics()">
+            <div class="offline-button-container">
+              <button class="offline-back-button \${appData.theme}" onclick="handleBackToSubtopics()">
                 Back to Subtopics
-              </button>
-              <button class="check-answers-button \${appData.theme}" onclick="alert('Answer checking not available offline')">
-                Check Answers
               </button>
             </div>
           \`;
@@ -626,9 +571,9 @@ const stopSpeech = () => {
         } else if (!appData.selectedSubject && !appData.hasSubjectCode) {
           // No materials view
           const noMaterials = document.createElement('div');
-          noMaterials.className = 'no-learning-materials';
+          noMaterials.className = 'offline-no-learning-materials';
           noMaterials.innerHTML = \`
-            <img class="book" src="\${appData.bookImage || ''}" alt="Book">
+            <img class="offline-book" src="\${appData.bookImage || ''}" alt="Book">
             <p>Ask your instructors</p>
             <p>for available learning materials</p>
           \`;
@@ -674,8 +619,8 @@ const stopSpeech = () => {
       
       function toggleTheme() {
         appData.theme = appData.theme === 'dark' ? 'light' : 'dark';
-        document.body.className = 'exercises-page ' + appData.theme;
-        document.getElementById('app').className = 'exercises-page ' + appData.theme;
+        document.body.className = 'offline-exercises-page ' + appData.theme;
+        document.getElementById('app').className = 'offline-exercises-page ' + appData.theme;
         localStorage.setItem('theme', appData.theme);
         renderApp();
       }
@@ -692,26 +637,78 @@ const stopSpeech = () => {
   </body>
   </html>`;
   
-      // Create and trigger download
-      const blob = new Blob([htmlContent], { type: 'text/html' });
+      // Detect device type
+      const isMobileDevice = () => {
+        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+      };
+      
+      const isTabletDevice = () => {
+        return (navigator.userAgent.match(/iPad/i) || 
+               (navigator.userAgent.match(/Android/i) && 
+                !navigator.userAgent.match(/Mobile/i))) || 
+               (navigator.userAgent.match(/Kindle/i) || 
+               navigator.userAgent.match(/Tablet/i));
+      };
+      
+      const isIOS = () => {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      };
+      
+      const isPC = () => {
+        return !isMobileDevice() && !isTabletDevice() && !isIOS();
+      };
+  
+      // Create and trigger download based on device type
+      let blob, mimeType, fileName;
+      
+      if (isPC()) {
+        // For PC - download as HTML file
+        blob = new Blob([htmlContent], { type: 'text/html' });
+        mimeType = 'text/html';
+        fileName = 'AIsistant-Exercises-Offline.html';
+      } else {
+        // For mobile/tablet/iOS - download as octet-stream
+        blob = new Blob([htmlContent], { type: 'application/octet-stream' });
+        mimeType = 'application/octet-stream';
+        fileName = 'AIsistant-Exercises-Offline.html';
+      }
+      
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'AIsistant-Exercises-Offline.html';
-      document.body.appendChild(a);
-      a.click();
+      a.download = fileName;
       
-      // Cleanup
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 100);
-  
-      Swal.fire({
-        title: 'Download Complete',
-        text: 'The offline version has been downloaded. Open it in your browser to use it offline.',
-        icon: 'success'
-      });
+      // For iOS, we need to do some special handling
+      if (isIOS()) {
+        // Open in new tab for iOS
+        window.open(url, '_blank');
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+        }, 100);
+        
+        Swal.fire({
+          title: 'Download Started',
+          text: 'The file has been opened in a new tab. Use the share option in your browser to save it.',
+          icon: 'info'
+        });
+      } else {
+        // Standard download for other devices
+        document.body.appendChild(a);
+        a.click();
+        
+        // Cleanup
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 100);
+        
+        Swal.fire({
+          title: 'Download Complete',
+          text: 'The offline version has been downloaded. Open it in your browser to use it offline.',
+          icon: 'success'
+        });
+      }
     } catch (error) {
       console.error('Error generating offline version:', error);
       Swal.fire({
@@ -806,7 +803,6 @@ const stopSpeech = () => {
           <img src={`${userPicture}`} alt={`${userName}.jpg`} />
           <p>{userName}</p>
         </div>
-        {/*<button onClick={downloadOfflineVersion}>d</button>*/}
         <h2>Subjects</h2>
         <div className={`subject-code-input ${theme}`}>
           <input
@@ -819,6 +815,7 @@ const stopSpeech = () => {
         <button onClick={handleSubjectCodeSubmit} className={`submit-button ${theme}`}>
           Submit
         </button>
+        <button className={`download-button ${theme}`} onClick={downloadOfflineVersion} style={{marginTop: '10px'}}>Download Offline</button>
         {hasSubjectCode ? (
           <ul>
             {Object.keys(learningMaterials).map((subjectCode) => (

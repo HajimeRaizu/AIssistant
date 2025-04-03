@@ -1,5 +1,5 @@
 @media (max-aspect-ratio: 1/1), (max-width: 960px) {
-    .exercises-sidebar {
+    .offline-exercises-sidebar {
         width: 70%; /* Sidebar takes 70% of the screen width on mobile */
         padding: 4%;
         position: fixed; /* Position the sidebar above the content */
@@ -10,19 +10,19 @@
         transition: transform 0.3s ease-in-out;
     }
 
-    .exercises-sidebar.visible {
+    .offline-exercises-sidebar.visible {
         transform: translateX(-100%); /* Show sidebar when toggled */
     }
 
-    .exercises-sidebar.hidden{
+    .offline-exercises-sidebar.hidden{
         transform: translateX(0);
     }
 
-    .exercises-sidebar-toggle{
+    .offline-exercises-sidebar-toggle{
         display: none;
     }
 
-    .exercises-sidebar-toggle2 {
+    .offline-exercises-sidebar-toggle2 {
         display: flex;
         position: absolute;
         padding: 10px;
@@ -37,15 +37,15 @@
         z-index: 1000; /* Ensure it's above the sidebar */
     }
 
-    .exercises-sidebar-toggle2.sidebar-hidden {
+    .offline-exercises-sidebar-toggle2.sidebar-hidden {
         transform: translateX(0); /* No translation when sidebar is hidden */
     }
 
-    .exercises-sidebar-toggle2.sidebar-visible {
+    .offline-exercises-sidebar-toggle2.sidebar-visible {
         left: 0; /* Move toggle button when sidebar is visible */
     }
 
-    .exercises-overlay.hidden {
+    .offline-exercises-overlay.hidden {
         position: absolute;
         top: 0;
         left: 0;
@@ -55,49 +55,49 @@
         z-index: 999; /* Below sidebar, but above content */
     }
 
-    .exercises-content.sidebar-hidden{
+    .offline-exercises-content.sidebar-hidden{
         margin-left: 0;
     }
 
-    .exercises-content{
+    .offline-exercises-content{
         padding: 15px;
     }
 
-    .exercises-content h1{
+    .offline-exercises-content h1{
         font-size: 22px;
     }
 
-    .exercises-theme-toggle {
+    .offline-exercises-theme-toggle {
         right: 10px;
     }
     
-    .exercises-chat-button {
+    .offline-exercises-chat-button {
         right: 70px; /* Adjust the position to avoid overlapping with the theme toggle button */
     }
 
-    .exercises-header{
+    .offline-exercises-header{
         margin-left: 30px;
     }
 
-    .subtopic-content h1, .subtopic-content h3{
+    .offline-subtopic-content h1, .offline-subtopic-content h3{
         font-size: 18px;
         padding-left: 0;
     }
 
-    .subtopic-content span{
+    .offline-subtopic-content span{
         text-align: left;
         font-size: 14px;
     }
 
-    .subtopic-content strong{
+    .offline-subtopic-content strong{
         font-size: 14px;
     }
 
-    .subtopic-content pre{
+    .offline-subtopic-content pre{
         font-size: 12px;
     }
 
-    .back-button{
+    .offline-back-button{
         font-size: 14px;
         padding: 5px;
         border: none;
@@ -106,7 +106,7 @@
         margin: 0;
     }
 
-    .check-answers-button{
+    .offline-check-answers-button{
         color: white;
         padding: 10px;
         border: none;
@@ -116,30 +116,30 @@
         font-size: 14px;
     }
 
-    .exercises-theme-toggle, .exercises-chat-button{
+    .offline-exercises-theme-toggle, .offline-exercises-chat-button{
         height: 35px;
         width: 35px;
     }
 
-    .userPicture, .userName{
+    .offline-userPicture, .offline-userName{
         display: none;
     }
 
-    .student-profile{
+    .offline-student-profile{
         display: flex;
     }
 
-    .subject-box{
+    .offline-subject-box{
         height: fit-content;
     }
 
-    .subject-boxes {
+    .offline-subject-boxes {
         display: grid;
         grid-template-columns: repeat(1, 1fr); /* 4 columns per row */
         gap: 10px; /* Adjust the spacing between items */
       }
 
-    .exercise-tutorial.true{
+    .offline-exercise-tutorial.true{
         display: flex;
         position: absolute;
         height: 100dvh;
@@ -152,7 +152,7 @@
         z-index: 1000;
     }
     
-    .exercise-tutorial-highlight.true{
+    .offline-exercise-tutorial-highlight.true{
         display: block;
         position: absolute;
         height: 80px;
@@ -165,7 +165,7 @@
         border-radius: 60px;
     }
 
-    .exercise-tutorial2.true{
+    .offline-exercise-tutorial2.true{
         display: flex;
         position: absolute;
         height: 100dvh;
@@ -179,7 +179,7 @@
         z-index: 1001;
     }
     
-    .exercise-tutorial-highlight2.true{
+    .offline-exercise-tutorial-highlight2.true{
         display: block;
         position: absolute;
         height: 35px;
@@ -192,11 +192,11 @@
         border-radius: 60px;
     }
 
-    .exercises-chat-button.true{
+    .offline-exercises-chat-button.true{
         z-index: 1002;
     }
 
-    .exercise-tutorial3.true{
+    .offline-exercise-tutorial3.true{
         display: flex;
         position: absolute;
         height: 100dvh;
@@ -210,7 +210,7 @@
         z-index: 1001;
     }
     
-    .exercise-tutorial-highlight3.true{
+    .offline-exercise-tutorial-highlight3.true{
         display: block;
         position: absolute;
         height: 35px;
@@ -223,24 +223,24 @@
         border-radius: 60px;
     }
 
-    .exercises-theme-toggle.true{
+    .offline-exercises-theme-toggle.true{
         z-index: 1002;
     }
 
-    .swal2-popup{
+    .offline-swal2-popup{
         width: 70dvw;
     }
 
-    .swal2-popup *{
+    .offline-swal2-popup *{
         font-size: medium;
     }
 
-    img.book{
+    img.offline-book{
         height: 250px;
         width: 300px;
     }
 
-    .read-button{
+    .offline-read-button{
         font-size: 20px;
     }
 }

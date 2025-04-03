@@ -814,3 +814,8 @@ img.book{
     background: none;
     border: none;
 }
+
+.download-button.light{
+    color: var(--button-text-color);
+    background: rgb(62, 62, 255);
+}

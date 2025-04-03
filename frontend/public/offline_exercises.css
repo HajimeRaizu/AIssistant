@@ -1,23 +1,26 @@
 /* exercises.css */
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
 
-.exercises-page {
+.offline-exercises-page {
     display: flex;
-    height: 100dvh;
+    height: 99%;
     font-family: "Host Grotesk", sans-serif;
+    width: 99%;
+    overflow: hidden;
+    margin: 0px;
 }
 
-.exercises-page.dark {
+.offline-exercises-page.dark {
     background: var(--bg-dark);
     color: var(--text-dark);
 }
 
-.exercises-page.light {
+.offline-exercises-page.light {
     background: var(--bg-light);
     color: var(--text-light);
 }
 
-.exercises-sidebar {
+.offline-exercises-sidebar{
     width: 23dvw;
     padding: 2dvh 2dvw 2dvh 2dvw;
     display: flex;
@@ -25,111 +28,114 @@
     transition: transform 0.3s ease;
 }
 
-.exercises-sidebar.dark {
+.offline-exercises-sidebar.dark {
     background: var(--sidebar-dark);
 }
 
-.exercises-sidebar.light {
-    background: var(--sidebar-light);
+.offline-exercises-sidebar.light {
+    background: rgba(0, 0, 255, 0.1);
 }
 
-.exercises-sidebar.hidden {
+.offline-exercises-sidebar.hidden {
     transform: translateX(-100%);
 }
 
-.exercises-sidebar.visible {
+.offline-exercises-sidebar.visible {
     transform: translateX(0);
 }
 
-.exercises-sidebar h2 {
-    margin-bottom: 20px;
+.offline-exercises-sidebar h2 {
+    margin-bottom: 0px;
     font-size: 1.8rem; /* Increased font size */
 }
 
-.exercises-sidebar ul {
+.offline-exercises-sidebar ul {
     list-style: none;
-    padding: 0;
+    padding: 0px;
     overflow-y: auto;
     flex: 1;
+    margin-top: 0px;
 }
 
-.exercises-sidebar li {
+.offline-exercises-sidebar li {
     margin: 15px 0; /* Increased spacing */
     cursor: pointer;
     padding: 12px; /* Increased padding */
     border-radius: 5px;
 }
 
-.exercises-sidebar li:nth-child(3n + 1) {
+.offline-exercises-sidebar li:nth-child(3n + 1) {
     background: linear-gradient(150deg, #ff4d4dc2, #ffc6c6be), url("../assets/pic3.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
   
-.exercises-sidebar li:nth-child(3n + 2) {
+.offline-exercises-sidebar li:nth-child(3n + 2) {
     background: linear-gradient(150deg, #4d7affc2, #c0d0ffc2), url("../assets/pic3.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
   
-.exercises-sidebar li:nth-child(3n + 3) {
+.offline-exercises-sidebar li:nth-child(3n + 3) {
     background: linear-gradient(150deg, #ffcc00c0, #fff2bdc0), url("../assets/pic3.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
 
-.exercises-sidebar li.active {
+.offline-exercises-sidebar li.active {
     filter: brightness(80%);
 }
 
-.exercises-sidebar li.light.active {
+.offline-exercises-sidebar li.light.active {
     border: 2px solid black;
 }
 
-.exercises-sidebar li.dark.active {
+.offline-exercises-sidebar li.dark.active {
     border: 2px solid white;
 }
 
-.exercises-sidebar li:hover {
+.offline-exercises-sidebar li:hover {
     filter: brightness(80%);
 }
 
-.exercises-content {
+.offline-exercises-content {
     flex: 1;
     padding: 30px; /* Increased padding */
     background: var(--bg-dark);
     color: var(--text-dark);
     overflow: auto;
     transition: margin-left 0.3s ease-in-out;
+    height: 99dvh;
+    overflow: scroll;
 }
 
-.exercises-content.sidebar-hidden{
+.offline-exercises-content.sidebar-hidden{
     margin-left: -23dvw;
 }
 
-.exercises-content.light {
+.offline-exercises-content.light {
     background: var(--bg-light);
     color: var(--text-light); /* Font color in light mode */
 }
 
-.exercises-content h1 {
+.offline-exercises-content h1 {
     font-size: 2.2rem; /* Increased font size */
     color: var(--text-dark);
 }
 
-.exercises-content h1.light {
+.offline-exercises-content h1.light {
     color: var(--text-light); /* Font color in light mode */
 }
 
-.lessons {
+.offline-lessons {
     list-style: none;
     padding: 0;
 }
 
-.lessons li {
+.offline-lessons li {
     cursor: pointer;
     background: var(--tab-dark);
     color: var(--text-dark);
@@ -142,39 +148,39 @@
     justify-content: space-between;
 }
 
-.lessons li.light {
+.offline-lessons li.light {
     background: var(--tab-light);
     color: var(--text-light); /* Font color in light mode */
 }
 
-.lessons li:hover {
+.offline-lessons li:hover {
     background: var(--button-hover-dark);
 }
 
-.lessons li:hover.light {
+.offline-lessons li:hover.light {
     background: var(--button-hover-light);
 }
 
-.subtopics {
+.offline-subtopics {
     margin-top: 25px; /* Increased spacing */
 }
 
-.subtopics h2 {
+.offline-subtopics h2 {
     margin-bottom: 15px; /* Increased spacing */
     font-size: 1.8rem; /* Increased font size */
     color: var(--text-dark);
 }
 
-.subtopics h2.light {
+.offline-subtopics h2.light {
     color: var(--text-light); /* Font color in light mode */
 }
 
-.subtopics ul {
+.offline-subtopics ul {
     list-style: none;
     padding: 0;
 }
 
-.subtopics li {
+.offline-subtopics li {
     cursor: pointer;
     background: var(--tab-dark);
     color: var(--text-dark);
@@ -187,42 +193,42 @@
     justify-content: space-between;
 }
 
-.subtopics li.light {
+.offline-subtopics li.light {
     background: var(--tab-light);
     color: var(--text-light); /* Font color in light mode */
 }
 
-.subtopics li.light .subtopic-text{
+.offline-subtopics li.light .subtopic-text{
     color: var(--text-light);
 }
 
-.subtopics li:hover {
+.offline-subtopics li:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.subtopics li .subtopic-icon {
+.offline-subtopics li .subtopic-icon {
     font-size: 1.5rem; /* Increased font size */
     color: var(--message-user-dark);
     margin-right: 15px; /* Increased spacing */
 }
 
-.subtopics li .subtopic-icon.light {
+.offline-subtopics li .subtopic-icon.light {
     color: var(--message-user-light);
 }
 
-.subtopics li .subtopic-text {
+.offline-subtopics li .subtopic-text {
     flex: 1;
     font-size: 1.2rem; /* Increased font size */
     color: var(--text-dark);
 }
 
-.subtopics li .subtopic-text.light {
+.offline-subtopics li .subtopic-text.light {
     color: var(--text-light); /* Font color in light mode */
 }
 
 /* Theme Toggle Button */
-.exercises-theme-toggle {
+.offline-exercises-theme-toggle {
     align-self: center;
     display: flex;
     align-items: center;
@@ -235,21 +241,21 @@
     font-size: large;
 }
 
-.exercises-theme-toggle.dark {
+.offline-exercises-theme-toggle.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.exercises-theme-toggle.light {
+.offline-exercises-theme-toggle.light {
     background: var(--button-light);
     color: var(--text-light); /* Font color in light mode */
 }
 
-.theme-toggle:hover.dark {
+.offline-theme-toggle:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.theme-toggle:hover.light {
+.offline-theme-toggle:hover.light {
     background: var(--button-hover-light);
 }
 
@@ -258,68 +264,73 @@ code {
 }
 
 /* Additional styles for subtopic content */
-.subtopic-content {
+.offline-subtopic-content {
     padding: 30px; /* Increased padding */
     background: var(--bg-dark);
     color: var(--text-dark);
+    overflow: scroll;
 }
 
-.subtopic-content.light {
+.offline-subtopic-content::-webkit-scrollbar, .offline-lessons::-webkit-scrollbar, .offline-subtopics::-webkit-scrollbar{
+    display: none;
+}
+
+.offline-subtopic-content.light {
     background: var(--bg-light);
     color: var(--text-light);
 }
 
-.subtopic-content span{
+.offline-subtopic-content span{
     white-space: pre-line;
     font-size: 18px;
     text-align: justify;
 }
 
-.subtopic-content strong{
+.offline-subtopic-content strong{
     font-size: 20px;
 }
 
 
-.subtopic-content pre{
+.offline-subtopic-content pre{
     font-size: large;
 }
 
-.subtopic-content h2, .subtopic-content h3, .subtopic-content h4 {
+.offline-subtopic-content h2, .subtopic-content h3, .subtopic-content h4 {
     margin: 15px 0px 15px 0px; /* Increased spacing */
     font-size: 28px;
 }
 
-.subtopic-content .introduction p, .subtopic-content .main-content p {
+.offline-subtopic-content .introduction p, .subtopic-content .main-content p {
     margin-bottom: 20px; /* Increased spacing */
     font-size: 1.1rem; /* Increased font size */
 }
 
-.subtopic-content .lesson-objectives ul, .subtopic-content .main-content ul {
+.offline-subtopic-content .lesson-objectives ul, .subtopic-content .main-content ul {
     margin-left: 25px; /* Increased spacing */
     margin-bottom: 20px; /* Increased spacing */
     font-size: 1.2rem; /* Increased font size */
 }
 
-.subtopic-content .exercises {
+.offline-subtopic-content .exercises {
     margin-top: 30px; /* Increased spacing */
 }
 
-.subtopic-content .exercises h4 {
+.offline-subtopic-content .exercises h4 {
     margin-bottom: 15px; /* Increased spacing */
     font-size: 1.5rem; /* Increased font size */
 }
 
-.subtopic-content .exercises ul {
+.offline-subtopic-content .exercises ul {
     list-style: none;
     padding: 0;
 }
 
-.subtopic-content .exercises li {
+.offline-subtopic-content .exercises li {
     margin: 15px 0; /* Increased spacing */
     font-size: 1.2rem; /* Increased font size */
 }
 
-.subtopic-content.dark .exercises input[type="text"], .subtopic-content.dark .exercises textarea {
+.offline-subtopic-content.dark .exercises input[type="text"], .subtopic-content.dark .exercises textarea {
     width: 100%;
     padding: 12px; /* Increased padding */
     border-radius: 5px;
@@ -329,11 +340,11 @@ code {
     font-size: 1.1rem; /* Increased font size */
 }
 
-.subtopic-content.dark .exercises input[type="text"]::placeholder, .subtopic-content.dark .exercises textarea::placeholder {
+.offline-subtopic-content.dark .exercises input[type="text"]::placeholder, .subtopic-content.dark .exercises textarea::placeholder {
     color: var(--text-dark);
 }
 
-.subtopic-content.light .exercises input[type="text"], .subtopic-content.light .exercises textarea {
+.offline-subtopic-content.light .exercises input[type="text"], .subtopic-content.light .exercises textarea {
     border: 1px solid var(--tab-light);
     background: rgba(0, 0, 0, 0.1);
     color: var(--text-light);
@@ -343,11 +354,11 @@ code {
     font-size: 1.1rem; /* Increased font size */
 }
 
-.subtopic-content.light .exercises input[type="text"]::placeholder, .subtopic-content.light .exercises textarea::placeholder {
+.offline-subtopic-content.light .exercises input[type="text"]::placeholder, .subtopic-content.light .exercises textarea::placeholder {
     color: var(--text-light);
 }
 
-.subtopic-content.dark .exercises button {
+.offline-subtopic-content.dark .exercises button {
     padding: 12px 25px; /* Increased padding */
     border: none;
     border-radius: 5px;
@@ -357,7 +368,7 @@ code {
     font-size: 1.1rem; /* Increased font size */
 }
 
-.subtopic-content.light .exercises button {
+.offline-subtopic-content.light .exercises button {
     padding: 12px 25px; /* Increased padding */
     border: none;
     border-radius: 5px;
@@ -367,21 +378,21 @@ code {
     font-size: 1.1rem; /* Increased font size */
 }
 
-.subtopic-content.dark .exercises button:hover {
+.offline-subtopic-content.dark .exercises button:hover {
     background: var(--button-hover-dark);
 }
 
-.subtopic-content.light .exercises button:hover {
+.offline-subtopic-content.light .exercises button:hover {
     background: var(--button-hover-light);
 }
 
-.line.dark {
+.offline-line.dark {
     border-bottom: 2px solid white;
     width: 100%;
     margin-bottom: 20px;
 }
 
-.line.light {
+.offline-line.light {
     border-bottom: 2px solid black;
     width: 100%;
     margin-bottom: 20px;
@@ -402,7 +413,7 @@ button {
   }
    
 /* Back Button Styling */
-.back-button {
+.offline-back-button {
     padding: 10px 20px;
     border: none;
     cursor: pointer;
@@ -412,70 +423,70 @@ button {
 }
 
 /* Dark Theme Specific Styles */
-.back-button.dark {
+.offline-back-button.dark {
     color: white;
     background: transparent;
 }
 
 /* Light Theme Specific Styles */
-.back-button.light {
+.offline-back-button.light {
     color: black;
     background: transparent;
 }
 
-.back-button:hover{
+.offline-back-button:hover{
     text-decoration: underline;
 }
   
   /* Button container for back buttons */
-.button-container {
+.offline-button-container {
     display: flex;
     justify-content: flex-start;
     margin-top: 20px;
 }
   
   /* Dark and light theme variables */
-.exercises-page.dark {
+.offline-exercises-page.dark {
     --button-bg-color: #444;
     --button-hover-bg-color: #555;
     --button-text-color: #fff;
 }
   
-.exercises-page.light {
+.offline-exercises-page.light {
     --button-bg-color: #007bff;
     --button-hover-bg-color: #0056b3;
     --button-text-color: #fff;
 }
 
-.exercise-snippet.light{
+.offline-exercise-snippet.light{
     background: rgb(182, 182, 182);
     color: black;
 }
 
-.exercise-snippet.dark{
+.offline-exercise-snippet.dark{
     background: rgb(43, 43, 43);
     color: white;
 }
 
-.exercise-input.light{
+.offline-exercise-input.light{
     color: black;
     background: rgb(209, 209, 209);
 }
 
-.exercise-input.light::placeholder{
+.offline-exercise-input.light::placeholder{
     color:  black;
 }
 
-.exercise-input.dark{
+.offline-exercise-input.dark{
     color: white;
     background: rgb(51, 51, 51);
 }
 
-.exercise-input.dark::placeholder{
+.offline-exercise-input.dark::placeholder{
     color:  white;
 }
 
-.check-answers-button {
+.offline-check-answers-button {
     background: #4caf50; /* Green */
     color: white;
     padding: 10px 20px;
@@ -485,18 +496,18 @@ button {
     margin-left: 10px;
 }
   
-.check-answers-button.dark {
+.offline-check-answers-button.dark {
     background: #45a049; /* Darker green for dark theme */
 }
 
-.exercise-text {
+.offline-exercise-text {
     white-space: pre-line; /* Ensures line breaks are respected */
     margin-bottom: 10px; /* Adds space between the question and the input field */
     font-size: 14px;
     text-align: justify;
 }
   
-.exercise-input {
+.offline-exercise-input {
     margin-top: 5px;
     border: none;
     border-radius: 5px;
@@ -508,21 +519,21 @@ button {
     width: 35dvh;
 }
 
-.exercises-header-container{
+.offline-exercises-header-container{
     display: flex;
     align-items: center;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.exercises-header{
+.offline-exercises-header{
     display: flex;
     flex-direction: row;
     justify-content: center;
     right: 0;
 }
 
-.exercises-header-buttons{
+.offline-exercises-header-buttons{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -530,7 +541,7 @@ button {
     padding: 0;
 }
 
-.exercises-chat-button {
+.offline-exercises-chat-button {
     align-self: center;
     display: flex;
     align-items: center;
@@ -546,25 +557,25 @@ button {
     font-size: large;
 }
 
-.exercises-chat-button.dark {
+.offline-exercises-chat-button.dark {
     background: var(--button-dark);
     color: var(--text-dark);
 }
 
-.exercises-chat-button.light {
+.offline-exercises-chat-button.light {
     background: var(--button-light);
     color: var(--text-light);
 }
 
-.exercises-chat-button:hover.dark {
+.offline-exercises-chat-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.exercises-chat-button:hover.light {
+.offline-exercises-chat-button:hover.light {
     background: var(--button-hover-light);
 }
 
-.exercises-logout-button {
+.offline-exercises-logout-button {
     font-family: "Host Grotesk", sans-serif;
     display: block;
     width: 100%;
@@ -577,25 +588,25 @@ button {
     bottom: 0;
 }
 
-.exercises-logout-button.dark {
+.offline-exercises-logout-button.dark {
     background: #b43e3e;
     color: var(--text-dark);
 }
 
-.exercises-logout-button.light {
+.offline-exercises-logout-button.light {
     background: #9e4d4d;
     color: var(--text-dark);
 }
 
-.exercises-logout-button:hover.dark {
+.offline-exercises-logout-button:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.exercises-logout-button:hover.light {
+.offline-exercises-logout-button:hover.light {
     background: var(--button-hover-light);
 }
 
-.loading-container {
+.offline-loading-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -603,7 +614,7 @@ button {
     font-size: 1.5rem;
   }
 
-.subject-code-input input {
+.offline-subject-code-input input {
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid var(--tab-dark);
@@ -611,30 +622,30 @@ button {
     font-family: "Host Grotesk", sans-serif;
 }
 
-.subject-code-input input.dark {
+.offline-subject-code-input input.dark {
     background: var(--input-dark);
     color: var(--text-dark);
 }
 
-.subject-code-input input.light {
+.offline-subject-code-input input.light {
     background: var(--input-light);
     color: var(--text-light);
 }
 
-.submit-button.light{
+.offline-submit-button.light{
     background: rgb(127, 228, 127);
 }
 
-.submit-button.dark{
+.offline-submit-button.dark{
     background: rgb(48, 116, 48);
     color: white;
 }
 
-.exercises-sidebar-toggle2{
+.offline-exercises-sidebar-toggle2{
     display: none;
 }
 
-.exercises-sidebar-toggle {
+.offline-exercises-sidebar-toggle {
     position: absolute;
     top: 0px;
     left: 23dvw;
@@ -647,87 +658,87 @@ button {
     z-index: 1000;
 }
 
-.exercises-sidebar-toggle.sidebar-hidden {
+.offline-exercises-sidebar-toggle.sidebar-hidden {
     transform: translateX(-23dvw);
 }
 
-.exercises-sidebar-toggle.dark {
+.offline-exercises-sidebar-toggle.dark {
     background: var(--sidebar-dark);
     color: var(--text-dark);
 }
 
-.exercises-sidebar-toggle.light {
+.offline-exercises-sidebar-toggle.light {
     background: var(--sidebar-light);
     color: var(--text-light);
 }
 
-.exercises-sidebar-toggle:hover.dark {
+.offline-exercises-sidebar-toggle:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.exercises-sidebar-toggle:hover.light {
+.offline-exercises-sidebar-toggle:hover.light {
     background: var(--button-hover-light);
 }
 
-.exercises-sidebar-toggle2.dark {
+.offline-exercises-sidebar-toggle2.dark {
     background: var(--sidebar-dark);
     color: var(--text-dark);
 }
 
-.exercises-sidebar-toggle2.light {
+.offline-exercises-sidebar-toggle2.light {
     background: var(--sidebar-light);
     color: var(--text-light);
 }
 
-.exercises-sidebar-toggle2:hover.dark {
+.offline-exercises-sidebar-toggle2:hover.dark {
     background: var(--button-hover-dark);
 }
 
-.exercises-sidebar-toggle2:hover.light {
+.offline-exercises-sidebar-toggle2:hover.light {
     background: var(--button-hover-light);
 }
 
-.userPicture{
+.offline-userPicture{
     width: 42px;
     height: 42px;
     border-radius: 20px;
 }
 
-.exercise-tutorial{
+.offline-exercise-tutorial{
     display: none;
 }
 
-.exercise-tutorial2{
+.offline-exercise-tutorial2{
     display: none;
 }
 
-.exercise-tutorial3{
+.offline-exercise-tutorial3{
     display: none;
 }
 
-.exercise-tutorial-highlight{
+.offline-exercise-tutorial-highlight{
     display: none;
 }
 
-.exercise-tutorial-highlight2{
+.offline-exercise-tutorial-highlight2{
     display: none;
 }
 
-.exercise-tutorial-highlight3{
+.offline-exercise-tutorial-highlight3{
     display: none;
 }
 
-.exercises-profile{
+.offline-exercises-profile{
     display: none;
 }
 
-.subject-boxes {
+.offline-subject-boxes {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 3 columns per row */
     gap: 10px; /* Adjust the spacing between items */
 }
   
-.subject-box {
+.offline-subject-box {
     border: 1px solid #ccc;
     padding: 15px;
     margin: 10px;
@@ -737,39 +748,39 @@ button {
     height: 150px;
 }
   
-.subject-box:nth-child(3n + 1) {
+.offline-subject-box:nth-child(3n + 1) {
     background: linear-gradient(150deg, #ff4d4dc2, #ffc6c6be), url("../assets/pic3.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
   
-.subject-box:nth-child(3n + 2) {
+.offline-subject-box:nth-child(3n + 2) {
     background: linear-gradient(150deg, #4d7affc2, #c0d0ffc2), url("../assets/pic3.jpg"); /* Blue */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
   
-.subject-box:nth-child(3n + 3) {
+.offline-subject-box:nth-child(3n + 3) {
     background: linear-gradient(150deg, #ffcc00c0, #fff2bdc0), url("../assets/pic3.jpg"); /* Yellow */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
   
-.subject-box-header {
+.offline-subject-box-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
   
-.subject-box-options {
+.offline-subject-box-options {
     cursor: pointer;
     padding: 5px;
 }
   
-.subject-box-options-menu {
+.offline-subject-box-options-menu {
     z-index: 5;
     position: absolute;
     right: 0;
@@ -781,7 +792,7 @@ button {
     z-index: 1;
 }
   
-.subject-box-options-menu button {
+.offline-subject-box-options-menu button {
     background: none;
     border: none;
     cursor: pointer;
@@ -790,11 +801,11 @@ button {
     text-align: left;
 }
   
-.subject-box-options-menu button:hover {
+.offline-subject-box-options-menu button:hover {
     background: #f0f0f0;
 }  
 
-.no-learning-materials{
+.offline-no-learning-materials{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -807,7 +818,7 @@ img.book{
     width: 300px;
 }
 
-.read-button{
+.offline-read-button{
     font-size: 30px;
     padding: 10px;
     margin: 0px;
