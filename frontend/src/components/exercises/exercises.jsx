@@ -637,17 +637,33 @@ const stopSpeech = () => {
   </body>
   </html>`;
   
-      // Create and trigger download based on device type
-      let blob, mimeType, fileName;
-      
-      blob = new Blob([htmlContent], { type: 'text/html' });
-      mimeType = 'text/html';
-      fileName = 'AIssistant-Exercises-Offline.html';
-      
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
+      // Create blob with HTML type
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create download link
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'AIssistant-Exercises-Offline.html';
+    
+    // Append to body (required for Firefox)
+    document.body.appendChild(a);
+    
+    // Trigger the download
+    a.click();
+    
+    // Clean up
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+    
+    // Optional: Show success message
+    Swal.fire({
+      title: 'Download Started',
+      text: 'The offline version is being downloaded.',
+      icon: 'success'
+    });
       
     } catch (error) {
       console.error('Error generating offline version:', error);
