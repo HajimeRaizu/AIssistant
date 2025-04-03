@@ -637,78 +637,18 @@ const stopSpeech = () => {
   </body>
   </html>`;
   
-      // Detect device type
-      const isMobileDevice = () => {
-        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
-      };
-      
-      const isTabletDevice = () => {
-        return (navigator.userAgent.match(/iPad/i) || 
-               (navigator.userAgent.match(/Android/i) && 
-                !navigator.userAgent.match(/Mobile/i))) || 
-               (navigator.userAgent.match(/Kindle/i) || 
-               navigator.userAgent.match(/Tablet/i));
-      };
-      
-      const isIOS = () => {
-        return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      };
-      
-      const isPC = () => {
-        return !isMobileDevice() && !isTabletDevice() && !isIOS();
-      };
-  
       // Create and trigger download based on device type
       let blob, mimeType, fileName;
       
-      if (isPC()) {
-        // For PC - download as HTML file
-        blob = new Blob([htmlContent], { type: 'text/html' });
-        mimeType = 'text/html';
-        fileName = 'AIssistant-Exercises-Offline.html';
-      } else {
-        // For mobile/tablet/iOS - download as octet-stream
-        blob = new Blob([htmlContent], { type: 'application/octet-stream' });
-        mimeType = 'application/octet-stream';
-        fileName = 'AIssistant-Exercises-Offline';
-      }
+      blob = new Blob([htmlContent], { type: 'text/html' });
+      mimeType = 'text/html';
+      fileName = 'AIssistant-Exercises-Offline.html';
       
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = fileName;
       
-      // For iOS, we need to do some special handling
-      if (isIOS()) {
-        // Open in new tab for iOS
-        window.open(url, '_blank');
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-        }, 100);
-        
-        Swal.fire({
-          title: 'Download Started',
-          text: 'The file has been opened in a new tab. Use the share option in your browser to save it.',
-          icon: 'info'
-        });
-      } else {
-        // Standard download for other devices
-        document.body.appendChild(a);
-        a.click();
-        
-        // Cleanup
-        setTimeout(() => {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 100);
-        
-        Swal.fire({
-          title: 'Download Complete',
-          text: 'The offline version has been downloaded. Open it in your browser to use it offline.',
-          icon: 'success'
-        });
-      }
     } catch (error) {
       console.error('Error generating offline version:', error);
       Swal.fire({
