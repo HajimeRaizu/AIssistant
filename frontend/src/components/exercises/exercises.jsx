@@ -669,8 +669,8 @@ const stopSpeech = () => {
         fileName = 'AIsistant-Exercises-Offline.html';
       } else {
         // For mobile/tablet/iOS - download as octet-stream
-        blob = new Blob([htmlContent], { type: 'application/octet-stream' });
-        mimeType = 'application/octet-stream';
+        blob = new Blob([htmlContent], { type: 'text/html' });
+        mimeType = 'text/html';
         fileName = 'AIsistant-Exercises-Offline.html';
       }
       
