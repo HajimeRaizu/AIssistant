@@ -553,9 +553,6 @@ const stopSpeech = () => {
           subtopicContent.innerHTML = \`
             <h1 class="offline-\${appData.theme}">
               \${subtopic.subtopicCode} - \${subtopic.subtopicTitle}
-              <button class="offline-read-button" onclick="alert('Text-to-speech not available offline')">
-                \${appData.isReading ? '🔊' : '🔈'}
-              </button>
             </h1>
             <p class="offline-line \${appData.theme}"></p>
             <span>
