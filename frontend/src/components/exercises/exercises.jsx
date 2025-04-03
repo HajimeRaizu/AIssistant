@@ -868,7 +868,7 @@ const stopSpeech = () => {
             <h1 className={theme}>
               {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicCode} -{" "}
               {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicTitle}
-              {isReading ? <button className="read-button" onClick={stopSpeech}><BsVolumeUpFill /></button> : <button className="read-button" onClick={readOutLoud}><BsVolumeUp /></button>}
+              {isReading ? <button className={`read-button ${theme}`} onClick={stopSpeech}><BsVolumeUpFill /></button> : <button className="read-button" onClick={readOutLoud}><BsVolumeUp /></button>}
             </h1>
             <p className={`line ${theme}`}></p>
             <span>
