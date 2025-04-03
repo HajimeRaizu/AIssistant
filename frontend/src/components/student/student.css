@@ -439,7 +439,6 @@
     align-self: flex-start;
     overflow: hidden;
     width: 100%;
-    user-select: none;
 }
 
 .student-bot-response.dark {
@@ -615,7 +614,6 @@ textarea:focus {
 }
 
 .student-pre {
-    user-select: none;
     font-size: large;
     padding: 10px;
     border-radius: 5px;
