@@ -400,7 +400,7 @@ const stopSpeech = () => {
       // Get all necessary data
       const offlineData = {
         learningMaterials,
-        theme,
+        theme: "light",
         selectedSubject,
         selectedLesson,
         selectedSubtopic,
