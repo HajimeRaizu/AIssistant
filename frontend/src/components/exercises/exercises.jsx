@@ -420,7 +420,7 @@ const stopSpeech = () => {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIsistant - Exercises (Offline)</title>
+    <title>AIssistant - Exercises (Offline)</title>
     <style>
       ${currentCSS}
       ${androidCSS}
@@ -666,12 +666,12 @@ const stopSpeech = () => {
         // For PC - download as HTML file
         blob = new Blob([htmlContent], { type: 'text/html' });
         mimeType = 'text/html';
-        fileName = 'AIsistant-Exercises-Offline.html';
+        fileName = 'AIssistant-Exercises-Offline.html';
       } else {
         // For mobile/tablet/iOS - download as octet-stream
-        blob = new Blob([htmlContent], { type: 'text/html' });
-        mimeType = 'text/html';
-        fileName = 'AIsistant-Exercises-Offline.html';
+        blob = new Blob([htmlContent], { type: 'application/octet-stream' });
+        mimeType = 'application/octet-stream';
+        fileName = 'AIssistant-Exercises-Offline';
       }
       
       const url = URL.createObjectURL(blob);
