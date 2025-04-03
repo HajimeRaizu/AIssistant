@@ -346,6 +346,11 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    user-select: none;
+}
+
+.student-message.bot *{
+    user-select: none;
 }
 
 .student-message.user p{
