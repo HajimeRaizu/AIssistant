@@ -822,6 +822,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
 
   const handleCopyCommand = () =>{
     const contentToCopy = `
+extract all of the content of the files and follow the format below as reference. make sure to add the necessary line breaks so that it will be rendered properly when it is being displayed and use ###header, **bold text**, '''code snippet'''. also leave the questions and answers empty and make sure that the subject names and content are based on the files
 {
     "subjectName": "Intermediate Python Programming",
     "lessons": [
@@ -924,9 +925,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             ]
         }
     ]
-} 
-
-extract all of the content of the files and follow the format above. make sure to add the necessary line breaks so that it will be rendered properly when it is being displayed and use ###header, **bold text**, '''code snippet'''. also leave the questions and answers empty`;
+}`;
 
     navigator.clipboard
       .writeText(contentToCopy)
