@@ -386,6 +386,19 @@ const AdminPage = () => {
     }));
 };
 
+function getDefaultGraphData() {
+  // Return an array with default values (e.g., 7 days with 0 queries)
+  return [
+      { name: 'Mon', queries: 0 },
+      { name: 'Tue', queries: 0 },
+      { name: 'Wed', queries: 0 },
+      { name: 'Thu', queries: 0 },
+      { name: 'Fri', queries: 0 },
+      { name: 'Sat', queries: 0 },
+      { name: 'Sun', queries: 0 }
+  ];
+}
+
 const handleEditUser = async (user, newRole) => {
   if (isUpdatingRole) return; // Prevent multiple simultaneous updates
   setIsUpdatingRole(true);
@@ -671,8 +684,9 @@ const handleEditUser = async (user, newRole) => {
             <div className="graph-container">
               <div style={{ display: 'flex', gap: '3%', alignItems: 'center' }}>
                 <ResponsiveContainer className='line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
-                  <LineChart className='line'
-                    data={getGraphData()}
+                  <LineChart 
+                    className='line'
+                    data={getGraphData().length > 0 ? getGraphData() : getDefaultGraphData()}
                     margin={{
                       top: 10,
                       right: 30,
@@ -681,11 +695,10 @@ const handleEditUser = async (user, newRole) => {
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" padding={{ left: 10, right: 10 }}>
-                    </XAxis>
+                    <XAxis dataKey="name" padding={{ left: 10, right: 10 }} />
                     <YAxis
                       tickFormatter={(value) => (value === 0 ? "" : Math.floor(value))}
-                      domain={[0, "dataMax"]}
+                      domain={[0, 10]}  // Fixed domain (0 to 10) to ensure Y-axis labels appear
                       allowDecimals={false}
                     >
                       <Label
@@ -696,7 +709,13 @@ const handleEditUser = async (user, newRole) => {
                       />
                     </YAxis>
                     <Tooltip />
-                    <Line type="monotone" dataKey="queries" stroke="rgb(101, 134, 145)" strokeWidth={3} activeDot={{ r: 8 }} />
+                    <Line 
+                      type="monotone" 
+                      dataKey="queries" 
+                      stroke="rgb(101, 134, 145)" 
+                      strokeWidth={3} 
+                      activeDot={{ r: 8 }} 
+                    />
                   </LineChart>
                 </ResponsiveContainer>
                 <ResponsiveContainer className='pie-graph' width="25%" height={300} style={{ display: 'flex', alignItems: 'center', paddingBottom: '20px'}}>

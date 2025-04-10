@@ -424,6 +424,19 @@ const InstructorPage = () => {
     }));
   };
 
+  function getDefaultGraphData() {
+    // Return an array with default values (e.g., 7 days with 0 queries)
+    return [
+        { name: 'Mon', queries: 0 },
+        { name: 'Tue', queries: 0 },
+        { name: 'Wed', queries: 0 },
+        { name: 'Thu', queries: 0 },
+        { name: 'Fri', queries: 0 },
+        { name: 'Sat', queries: 0 },
+        { name: 'Sun', queries: 0 }
+    ];
+}
+
   const groupPromptsByWeek = () => {
     const allMessages = queryData.map(message => ({
       timestamp: new Date(message.timestamp),
@@ -1721,31 +1734,36 @@ format reference (number of lessons depend on the content of files):
               <div style={{ display: 'flex', gap: '3%', alignItems: 'center' }}>
                 <ResponsiveContainer className='instructor-line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
                   <LineChart className='instructor-line'
-                    data={getGraphData()}
+                    data={getGraphData().length > 0 ? getGraphData() : getDefaultGraphData()}
                     margin={{
-                      top: 10,
-                      right: 30,
-                      left: 0,
-                      bottom: 0,
+                        top: 10,
+                        right: 30,
+                        left: 0,
+                        bottom: 0,
                     }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" padding={{ left: 10, right: 10 }}>
-                    </XAxis>
-                    <YAxis
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" padding={{ left: 10, right: 10 }} />
+                  <YAxis
                       tickFormatter={(value) => (value === 0 ? "" : Math.floor(value))}
-                      domain={[0, "dataMax"]}
+                      domain={[0, 20]}  // Fixed domain from 0 to 10 (adjust max as needed)
                       allowDecimals={false}
-                    >
+                  >
                       <Label
-                        value="Number of Queries"
-                        angle={-90}
-                        position="insideLeft"
-                        style={{ textAnchor: "middle" }}
+                          value="Number of Queries"
+                          angle={-90}
+                          position="insideLeft"
+                          style={{ textAnchor: "middle" }}
                       />
-                    </YAxis>
-                    <Tooltip />
-                    <Line type="monotone" dataKey="queries" stroke="rgb(101, 134, 145)" strokeWidth={3} activeDot={{ r: 8 }} />
+                  </YAxis>
+                  <Tooltip />
+                  <Line 
+                      type="monotone" 
+                      dataKey="queries" 
+                      stroke="rgb(101, 134, 145)" 
+                      strokeWidth={3} 
+                      activeDot={{ r: 8 }} 
+                  />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
