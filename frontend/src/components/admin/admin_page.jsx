@@ -683,9 +683,6 @@ const handleEditUser = async (user, newRole) => {
                   <LineChart 
                     className='line'
                     data={getGraphData().length > 0 ? getGraphData() : getDefaultGraphData()}
-                  <LineChart 
-                    className='line'
-                    data={getGraphData().length > 0 ? getGraphData() : getDefaultGraphData()}
                     margin={{
                       top: 10,
                       right: 30,
@@ -695,10 +692,8 @@ const handleEditUser = async (user, newRole) => {
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" padding={{ left: 10, right: 10 }} />
-                    <XAxis dataKey="name" padding={{ left: 10, right: 10 }} />
                     <YAxis
                       tickFormatter={(value) => (value === 0 ? "" : Math.floor(value))}
-                      domain={[0, 10]}  // Fixed domain (0 to 10) to ensure Y-axis labels appear
                       domain={[0, 10]}  // Fixed domain (0 to 10) to ensure Y-axis labels appear
                       allowDecimals={false}
                     >
@@ -710,13 +705,6 @@ const handleEditUser = async (user, newRole) => {
                       />
                     </YAxis>
                     <Tooltip />
-                    <Line 
-                      type="monotone" 
-                      dataKey="queries" 
-                      stroke="rgb(101, 134, 145)" 
-                      strokeWidth={3} 
-                      activeDot={{ r: 8 }} 
-                    />
                     <Line 
                       type="monotone" 
                       dataKey="queries" 
