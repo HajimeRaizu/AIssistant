@@ -959,7 +959,7 @@ const StudentPage = () => {
                     <div className={`student-message ${message.sender} ${theme}`}>
                       {formatMessageText(message.text, message.sender)}
                       {message.edited && (
-                        <span className="student-edited-indicator">(edited)</span>
+                        <span className={`student-edited-indicator ${theme}`}>(edited)</span>
                       )}
                     </div>
                   )}

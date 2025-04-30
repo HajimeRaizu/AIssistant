@@ -1487,9 +1487,13 @@
 
 .student-edited-indicator {
   font-size: 0.8em;
-  color: #888;
+  color: #4e4e4e;
   margin-left: 8px;
   font-style: italic;
+}
+
+.student-edited-indicator.dark{
+    color: #cacaca;
 }
 
 .student-edit-prompt {
