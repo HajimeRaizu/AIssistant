@@ -100,6 +100,7 @@ const LoginGoogle = () => {
             onSuccess={handleGoogleLoginSuccess}
             onError={handleGoogleLoginError}
             scope="email profile"
+            hosted_domain="nemsu.edu.ph"
           />
         </div>
       </div>

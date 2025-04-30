@@ -243,4 +243,16 @@
     .read-button{
         font-size: 20px;
     }
+
+    .attachments-list {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 15px;
+        margin-top: 10px;
+    }
+    
+    .add-subject-form.dark{
+        width: 90%;
+        background: rgb(50, 50, 50);
+    }
 }

@@ -61,7 +61,7 @@
 }
 
 .exercises-sidebar li:nth-child(3n + 1) {
-    background: linear-gradient(150deg, #ff4d4dc2, #ffc6c6be), url("../assets/pic3.jpg");
+    background: linear-gradient(150deg, #4d7affc2, #c0d0ffc2), url("../assets/pic3.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -75,7 +75,7 @@
 }
   
 .exercises-sidebar li:nth-child(3n + 3) {
-    background: linear-gradient(150deg, #ffcc00c0, #fff2bdc0), url("../assets/pic3.jpg");
+    background: linear-gradient(150deg, #4d7affc2, #c0d0ffc2), url("../assets/pic3.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -738,7 +738,7 @@ button {
 }
   
 .subject-box:nth-child(3n + 1) {
-    background: linear-gradient(150deg, #ff4d4dc2, #ffc6c6be), url("../assets/pic3.jpg");
+    background: linear-gradient(150deg, #4d7affc2, #c0d0ffc2), url("../assets/pic3.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -752,7 +752,7 @@ button {
 }
   
 .subject-box:nth-child(3n + 3) {
-    background: linear-gradient(150deg, #ffcc00c0, #fff2bdc0), url("../assets/pic3.jpg"); /* Yellow */
+    background: linear-gradient(150deg, #4d7affc2, #c0d0ffc2), url("../assets/pic3.jpg"); /* Yellow */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -827,3 +827,252 @@ img.book{
     color: var(--button-text-color);
     background: rgb(62, 62, 255);
 }
+
+/* Quill content styles */
+.quill{
+    background: none;
+}
+
+.subtopic-quill-content {
+    margin: 20px 0;
+  }
+  
+  .subtopic-quill-content .ql-container {
+    border: none !important;
+  }
+  
+  .subtopic-quill-content .ql-editor {
+    padding: 0 !important;
+  }
+  
+  /* Attachments section */
+  .attachments-section {
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 5px;
+  }
+
+  .attachment-link {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .attachment-link svg {
+    margin-right: 8px;
+  }
+  
+  .attachment-size {
+    font-size: 0.8em;
+    margin-right: 10px;
+    color: #777;
+  }
+  
+  /* File viewer modal */
+  .file-viewer-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+  }
+  
+  .file-viewer-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    direction: rtl;
+  }
+  
+  .file-viewer-controls h3 {
+    margin: 0;
+    color: white;
+    flex-grow: 1;
+    text-align: center;
+  }
+  
+  .close-viewer, .download-file-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px 10px;
+  }
+  
+  .file-viewer-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .no-preview {
+    color: white;
+    text-align: center;
+  }
+  
+  .no-preview a {
+    color: #4dabf7;
+    margin-left: 10px;
+    text-decoration: none;
+  }
+  
+  /* Attachments section */
+.attachments-section {
+    margin: 20px 0;
+  }
+  
+  .attachments-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+  }
+  
+  .attachment-item {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .attachment-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .attachment-item.light {
+    background: #f9f9f9;
+  }
+  
+  .attachment-item.dark {
+    background: #2d2d2d;
+    border-color: #444;
+  }
+  
+  .attachment-preview {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  
+  .attachment-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .attachment-name {
+    flex-grow: 1;
+    padding-left: 10px;
+    font-weight: 500;
+  }
+  
+  .attachment-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .attachment-size {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .dark .attachment-size {
+    color: #aaa;
+  }
+  
+  .attachment-download {
+    color: #1976d2;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .dark .attachment-download {
+    color: #4dabf7;
+  }
+  
+  /* File type indicators */
+  .file-type-indicator {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+  
+  .pdf-indicator {
+    background: #ffebee;
+    color: #d32f2f;
+  }
+  
+  .doc-indicator {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  .other-indicator {
+    background: #e8f5e9;
+    color: #388e3c;
+  }
+
+  .add-subject-modal{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1010;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .add-subject-form{
+    height: fit-content;
+    width: 400px;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+  }
+
+  .add-subject-form.dark{
+    background: rgb(40, 40, 40);
+  }
+
+  .add-subject-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .add-subject-cancel-button.light{
+    background: rgb(226, 78, 78);
+  }
+
+  .add-subject-cancel-button.dark{
+    background: rgb(184, 58, 58);
+    color: white;
+  }

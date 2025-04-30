@@ -15,6 +15,8 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 const __filename = fileURLToPath(import.meta.url);
+const tempStorage = multer.memoryStorage();
+const uploadTemp = multer({ storage: tempStorage });
 const __dirname = path.dirname(__filename);
 
 const type = process.env.FIREBASE_TYPE;
@@ -356,15 +358,15 @@ app.post("/api/ai", async (req, res) => {
       for (let i = newContext.length - 1; i >= 0; i--) {
         const message = newContext[i];
 
-        if (message.role === "user" && userCount < 2) {
+        if (message.role === "user" && userCount < 4) {
           latestInteractions.unshift(message);
           userCount++;
-        } else if (message.role === "assistant" && assistantCount < 2) {
+        } else if (message.role === "assistant" && assistantCount < 4) {
           latestInteractions.unshift(message);
           assistantCount++;
         }
 
-        if (userCount === 2 && assistantCount === 2) {
+        if (userCount === 4 && assistantCount === 4) {
           break;
         }
       }
@@ -485,16 +487,16 @@ app.post("/api/ai", async (req, res) => {
     for (let i = newContext.length - 1; i >= 0; i--) {
       const message = newContext[i];
 
-      if (message.role === "user" && userCount < 2) {
+      if (message.role === "user" && userCount < 4) {
         latestInteractions.unshift(message);
         userCount++;
-      } else if (message.role === "assistant" && assistantCount < 2) {
+      } else if (message.role === "assistant" && assistantCount < 4) {
         latestInteractions.unshift(message);
         assistantCount++;
       }
 
       // Stop once we have 2 user-assistant pairs
-      if (userCount === 2 && assistantCount === 2) {
+      if (userCount === 2 && assistantCount === 4) {
         break;
       }
     }
@@ -504,6 +506,113 @@ app.post("/api/ai", async (req, res) => {
   } catch (error) {
     console.error("Hugging Face API Error:", error.response ? error.response.data : error.message);
     res.status(500).json({ error: "Failed to generate response from Qwen model" });
+  }
+});
+
+// Edit a prompt and regenerate subsequent responses
+app.put("/api/editPrompt", async (req, res) => {
+  const { chatId, messageId, editedPrompt, userId } = req.body;
+
+  try {
+    const chatRef = db.collection("chats").doc(chatId);
+    const chatDoc = await chatRef.get();
+
+    if (!chatDoc.exists || chatDoc.data().userId !== userId) {
+      return res.status(404).json({ error: "Chat not found" });
+    }
+
+    const messages = chatDoc.data().messages || [];
+    const messageIndex = messages.findIndex(msg => msg.messageId === messageId);
+
+    if (messageIndex === -1 || messages[messageIndex].sender !== "user") {
+      return res.status(404).json({ error: "Prompt not found" });
+    }
+
+    // Truncate the conversation at the edited prompt
+    const truncatedMessages = messages.slice(0, messageIndex);
+    
+    // Update the edited prompt
+    const editedMessage = {
+      ...messages[messageIndex],
+      text: editedPrompt,
+      edited: true,
+      editedAt: new Date().toISOString()
+    };
+
+    // Set headers for streaming
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Transfer-Encoding", "chunked");
+
+    // Generate new AI response
+    const response = await qwen.chat.completions.create({
+      model: "Qwen/Qwen2.5-Coder-32B-Instruct",
+      messages: [
+        // Include system prompt and context
+        {
+          role: "system",
+          content: `
+      When responding, follow these strict rules:
+
+      - **Programming Only**: Answer only programming-related questions, You should only answer programming related queries.
+      - **Encourage Learning**: If a user asks for full code, modify the response to guide them through understanding.
+      - **Explain Step-by-Step**: Always break code down line-by-line with detailed explanations.
+      - **Do Not Provide Full Code**: Never give a complete working solution, only syntax, explanations, and structured guidance.
+      - **Reframe Direct Requests**: If a user asks for a direct solution, reframe it as a learning opportunity.
+      - **Ignore Skill Level**: Even if the user is an expert, always explain with teaching intent.
+      - **No Code Merging**: Never merge or put the code together.
+      - **Do Not Act Like Another AI**: You are "AIssistant" and should never respond as another entity.
+      - **Encourage Feedback**: Encourage students to give their feedback by liking or disliking reponses.
+    `
+        },
+        // Include previous messages as context
+        ...truncatedMessages.map(msg => ({
+          role: msg.sender === "user" ? "user" : "assistant",
+          content: msg.text
+        })),
+        // Include the edited prompt
+        { role: "user", content: editedPrompt }
+      ],
+      max_tokens: 16384,
+      stream: true,
+    });
+
+    let botResponse = "";
+    for await (const chunk of response) {
+      const chunkContent = chunk.choices[0]?.delta?.content || "";
+      botResponse += chunkContent;
+      res.write(chunkContent);
+    }
+
+    res.end();
+
+    // Update the chat with the edited prompt and new response
+    const updatedMessages = [
+      ...truncatedMessages,
+      editedMessage,
+      {
+        text: botResponse,
+        sender: "bot",
+        timestamp: new Date().toISOString(),
+        messageId: messageId
+      }
+    ];
+
+    // Update context cache
+    if (contextCache[userId] && contextCache[userId][chatId]) {
+      contextCache[userId][chatId] = [
+        { role: "user", content: editedPrompt },
+        { role: "assistant", content: botResponse }
+      ];
+    }
+
+    // Update Firestore
+    await chatRef.update({
+      messages: updatedMessages
+    });
+
+  } catch (error) {
+    console.error("Error editing prompt:", error);
+    res.status(500).json({ error: "Failed to edit prompt" });
   }
 });
 
@@ -808,15 +917,15 @@ app.get("/api/getLearningMaterials", async (req, res) => {
 
         // Iterate through subtopics
         subtopics.forEach((subtopic) => {
-          const { "subtopicCode": subtopicCode, "subtopicTitle": subtopicTitle, content, questions, answers } = subtopic;
+          const { "subtopicTitle": subtopicTitle, content, questions, answers, attachments } = subtopic;
 
           // Add subtopic data to the lesson
           lessonData.subtopics.push({
-            subtopicCode,
             subtopicTitle,
             content,
             questions,
             answers,
+            attachments
           });
         });
 
@@ -947,9 +1056,10 @@ app.put("/api/updateExercise/:subjectCode/:lessonIndex/:subtopicIndex", async (r
 });
 
 // Delete a subject
+// Update this endpoint in server.js
 app.delete("/api/deleteSubject/:subjectCode", async (req, res) => {
   const { subjectCode } = req.params;
-  const { instructorEmail } = req.query; // Get instructorEmail from query params
+  const { instructorEmail } = req.query;
 
   try {
     const subjectRef = db.collection("learningMaterials").doc(subjectCode);
@@ -959,7 +1069,29 @@ app.delete("/api/deleteSubject/:subjectCode", async (req, res) => {
       return res.status(404).json({ error: "Subject not found or unauthorized" });
     }
 
-    await subjectRef.delete(); // Delete the document
+    const subjectData = doc.data();
+    
+    // Get all attachments from all subtopics in all lessons
+    const attachmentsToDelete = [];
+    const lessons = subjectData.lessons || [];
+    
+    for (const lesson of lessons) {
+      const subtopics = lesson.subtopics || [];
+      for (const subtopic of subtopics) {
+        if (subtopic.attachments && subtopic.attachments.length > 0) {
+          attachmentsToDelete.push(...subtopic.attachments);
+        }
+      }
+    }
+
+    // Delete all attachments from storage
+    /*if (attachmentsToDelete.length > 0) {
+      await deleteAttachmentsFromStorage(attachmentsToDelete);
+    }*/
+
+    // Delete the subject document
+    await subjectRef.delete();
+    
     res.status(200).json({ message: "Subject deleted successfully" });
   } catch (error) {
     console.error("Error deleting subject:", error);
@@ -967,6 +1099,7 @@ app.delete("/api/deleteSubject/:subjectCode", async (req, res) => {
   }
 });
 
+// Update this endpoint in server.js
 app.delete("/api/deleteLesson/:subjectCode/:lessonIndex", async (req, res) => {
   const { subjectCode, lessonIndex } = req.params;
 
@@ -985,6 +1118,22 @@ app.delete("/api/deleteLesson/:subjectCode/:lessonIndex", async (req, res) => {
       return res.status(404).json({ error: "Lesson not found" });
     }
 
+    // Get all attachments from all subtopics in this lesson
+    const attachmentsToDelete = [];
+    const subtopics = lessons[lessonIndex].subtopics || [];
+    
+    for (const subtopic of subtopics) {
+      if (subtopic.attachments && subtopic.attachments.length > 0) {
+        attachmentsToDelete.push(...subtopic.attachments);
+      }
+    }
+
+    // Delete all attachments from storage
+    /*if (attachmentsToDelete.length > 0) {
+      await deleteAttachmentsFromStorage(attachmentsToDelete);
+    }*/
+
+    // Remove the lesson
     lessons.splice(lessonIndex, 1);
     await subjectRef.update({ lessons });
 
@@ -995,6 +1144,7 @@ app.delete("/api/deleteLesson/:subjectCode/:lessonIndex", async (req, res) => {
   }
 });
 
+// Update this endpoint in server.js
 app.delete("/api/deleteSubtopic/:subjectCode/:lessonIndex/:subtopicIndex", async (req, res) => {
   const { subjectCode, lessonIndex, subtopicIndex } = req.params;
 
@@ -1013,6 +1163,16 @@ app.delete("/api/deleteSubtopic/:subjectCode/:lessonIndex/:subtopicIndex", async
       return res.status(404).json({ error: "Lesson or subtopic not found" });
     }
 
+    // Get attachments before deleting
+    const subtopic = lessons[lessonIndex].subtopics[subtopicIndex];
+    const attachments = subtopic.attachments || [];
+
+    // Delete attachments from storage
+    /*if(attachments.length > 0) {
+      await deleteAttachmentsFromStorage(attachments);
+    }*/
+
+    // Remove the subtopic
     lessons[lessonIndex].subtopics.splice(subtopicIndex, 1);
     await subjectRef.update({ lessons });
 
@@ -1304,7 +1464,7 @@ app.put("/api/addLesson/:subjectCode", async (req, res) => {
 
 app.put("/api/addSubtopic/:subjectCode/:lessonIndex", async (req, res) => {
   const { subjectCode, lessonIndex } = req.params;
-  const { subtopicCode, subtopicTitle, content, questions, answers } = req.body;
+  const { subtopicTitle, content, questions, answers, attachments } = req.body;
 
   try {
     const subjectRef = db.collection("learningMaterials").doc(subjectCode);
@@ -1321,19 +1481,24 @@ app.put("/api/addSubtopic/:subjectCode/:lessonIndex", async (req, res) => {
       return res.status(404).json({ error: "Lesson not found" });
     }
 
-    // Add the new subtopic to the subtopics array
-    lessons[lessonIndex].subtopics.push({
-      subtopicCode,
+    // Add the new subtopic without attachments first
+    const newSubtopic = {
       subtopicTitle,
       content,
       questions,
       answers,
-    });
+      attachments: attachments || []
+    };
 
+    lessons[lessonIndex].subtopics.push(newSubtopic);
+    
     // Update the subject document in Firestore
     await subjectRef.update({ lessons });
 
-    res.status(200).json({ message: "Subtopic added successfully!" });
+    res.status(200).json({ 
+      message: "Subtopic added successfully!",
+      subtopicIndex: lessons[lessonIndex].subtopics.length - 1 // Return the new subtopic index
+    });
   } catch (error) {
     console.error("Error adding subtopic:", error);
     res.status(500).json({ error: "Failed to add subtopic" });
@@ -1342,7 +1507,7 @@ app.put("/api/addSubtopic/:subjectCode/:lessonIndex", async (req, res) => {
 
 app.put("/api/updateSubtopic/:subjectCode/:lessonIndex/:subtopicIndex", async (req, res) => {
   const { subjectCode, lessonIndex, subtopicIndex } = req.params;
-  const { subtopicCode, subtopicTitle, content, questions, answers } = req.body;
+  const { subtopicTitle, content, questions, answers } = req.body;
 
   try {
     const subjectRef = db.collection("learningMaterials").doc(subjectCode);
@@ -1359,7 +1524,6 @@ app.put("/api/updateSubtopic/:subjectCode/:lessonIndex/:subtopicIndex", async (r
       return res.status(404).json({ error: "Lesson or subtopic not found" });
     }
 
-    lessons[lessonIndex].subtopics[subtopicIndex].subtopicCode = subtopicCode;
     lessons[lessonIndex].subtopics[subtopicIndex].subtopicTitle = subtopicTitle;
     lessons[lessonIndex].subtopics[subtopicIndex].content = content;
     lessons[lessonIndex].subtopics[subtopicIndex].questions = questions;
@@ -1591,6 +1755,238 @@ app.get("/api/checkFeedback", async (req, res) => {
   }
 });
 
+app.post("/api/uploadAttachment", upload.single('file'), async (req, res) => {
+  const { subjectCode, lessonName, subtopicName, lessonIndex, subtopicIndex } = req.body;
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  // Check file size (50MB limit)
+  if (file.size > 50 * 1024 * 1024) {
+    return res.status(400).json({ error: "File size exceeds 50MB limit" });
+  }
+
+  try {
+    // Generate unique filename
+    const fileExt = path.extname(file.originalname);
+    const fileName = `${file.originalname}`;
+    const filePath = `attachments/${subjectCode}/${lessonName}/${subtopicName}/${fileName}`;
+
+    // Upload to Supabase storage
+    const { data, error } = await supabase.storage
+      .from('learning-materials') // Your bucket name
+      .upload(filePath, file.buffer, {
+        contentType: file.mimetype,
+        upsert: false
+      });
+
+    if (error) throw error;
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('learning-materials')
+      .getPublicUrl(filePath);
+
+    // Add reference to Firestore
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    const subjectDoc = await subjectRef.get();
+
+    if (!subjectDoc.exists) {
+      return res.status(404).json({ error: "Subject not found" });
+    }
+
+    const subjectData = subjectDoc.data();
+    const lessons = subjectData.lessons || [];
+
+    if (!lessons[lessonIndex] || !lessons[lessonIndex].subtopics[subtopicIndex]) {
+      return res.status(404).json({ error: "Lesson or subtopic not found" });
+    }
+
+    // Initialize attachments array if it doesn't exist
+    if (!lessons[lessonIndex].subtopics[subtopicIndex].attachments) {
+      lessons[lessonIndex].subtopics[subtopicIndex].attachments = [];
+    }
+
+    // Add new attachment
+    lessons[lessonIndex].subtopics[subtopicIndex].attachments.push({
+      name: file.originalname,
+      url: urlData.publicUrl,
+      path: filePath,
+      size: file.size,
+      type: file.mimetype,
+      uploadedAt: new Date().toISOString()
+    });
+
+    // Update Firestore
+    await subjectRef.update({ lessons });
+
+    res.status(200).json({ 
+      message: "File uploaded successfully",
+      attachment: {
+        name: file.originalname,
+        url: urlData.publicUrl
+      }
+    });
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    res.status(500).json({ error: "Failed to upload file" });
+  }
+});
+
+// Add this endpoint to delete attachments
+app.delete("/api/deleteAttachment/:subjectCode/:lessonIndex/:lessonName/:subtopicIndex/:subtopicTitle/:attachmentIndex/:attachmentName", async (req, res) => {
+  const { 
+    subjectCode, 
+    lessonIndex, 
+    lessonName, 
+    subtopicIndex, 
+    subtopicTitle, 
+    attachmentIndex, 
+    attachmentName 
+  } = req.params;
+
+  try {
+    // Initialize Supabase client
+    const supabaseAnon = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_ANON_KEY
+    );
+
+    // Construct storage path (decode URI components if needed)
+    const storagePath = `attachments/${subjectCode}/${decodeURIComponent(lessonName)}/${decodeURIComponent(subtopicTitle)}/${decodeURIComponent(attachmentName)}`;
+
+    // 1. Delete from Supabase storage
+    const { error: storageError } = await supabaseAnon.storage
+      .from('learning-materials')
+      .remove([storagePath]);
+
+    if (storageError) throw storageError;
+
+    // Convert indices to numbers
+    const lessonIdx = parseInt(lessonIndex);
+    const subtopicIdx = parseInt(subtopicIndex);
+    const attachmentIdx = parseInt(attachmentIndex);
+
+    // 2. Update Firestore
+    const subjectRef = db.collection("learningMaterials").doc(subjectCode);
+    const subjectDoc = await subjectRef.get();
+
+    if (!subjectDoc.exists) {
+      return res.status(404).json({ error: "Subject not found" });
+    }
+
+    const subjectData = subjectDoc.data();
+    const lessons = subjectData.lessons || [];
+
+    if (!lessons[lessonIdx] || !lessons[lessonIdx].subtopics[subtopicIdx]) {
+      return res.status(404).json({ error: "Lesson or subtopic not found" });
+    }
+
+    const attachments = lessons[lessonIdx].subtopics[subtopicIdx].attachments || [];
+    if (!attachments[attachmentIdx]) {
+      return res.status(404).json({ error: "Attachment not found" });
+    }
+
+    // Remove the attachment from the array
+    attachments.splice(attachmentIdx, 1);
+    
+    // Update Firestore
+    await subjectRef.update({ 
+      lessons: lessons 
+    });
+
+    res.status(200).json({ message: "Attachment deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting attachment:", error);
+    res.status(500).json({ 
+      error: "Failed to delete attachment",
+      details: error.message 
+    });
+  }
+});
+
+// Endpoint for uploading temporary attachments
+app.post("/api/uploadTempAttachment", uploadTemp.single('file'), async (req, res) => {
+  const file = req.file;
+  if (!file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  try {
+    // Generate unique filename
+    const fileExt = path.extname(file.originalname);
+    const fileName = `temp_${Date.now()}${fileExt}`;
+    const filePath = `temp/${fileName}`;
+
+    // Upload to Supabase storage
+    const { error } = await supabase.storage
+      .from('learning-materials')
+      .upload(filePath, file.buffer, {
+        contentType: file.mimetype,
+        upsert: false
+      });
+
+    if (error) throw error;
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('learning-materials')
+      .getPublicUrl(filePath);
+
+    res.status(200).json({
+      name: file.originalname,
+      url: urlData.publicUrl,
+      path: filePath,
+      size: file.size,
+      type: file.mimetype
+    });
+  } catch (error) {
+    console.error("Error uploading temporary file:", error);
+    res.status(500).json({ error: "Failed to upload file" });
+  }
+});
+
+// Endpoint for deleting temporary attachments
+app.delete("/api/deleteTempAttachment", async (req, res) => {
+  const { path } = req.body;
+  if (!path) {
+    return res.status(400).json({ error: "Path is required" });
+  }
+
+  try {
+    // Delete from Supabase storage
+    const { error } = await supabase.storage
+      .from('learning-materials')
+      .remove([path]);
+
+    if (error) throw error;
+
+    res.status(200).json({ message: "File deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting temporary file:", error);
+    res.status(500).json({ error: "Failed to delete file" });
+  }
+});
+
+// Add this function to server.js
+const deleteAttachmentsFromStorage = async (attachments) => {
+  try {
+    if (!attachments || attachments.length === 0) return;
+    
+    const paths = attachments.map(attachment => attachment.path);
+    const { error } = await supabase.storage
+      .from('learning-materials')
+      .remove(paths);
+      
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error deleting attachments from storage:", error);
+    throw error;
+  }
+};
+
 const testSimilaritySearch = async (studentPrompt) => {
   try {
     // Generate embeddings for the student prompt
@@ -1621,7 +2017,6 @@ const testSimilaritySearch = async (studentPrompt) => {
 };
 
 //testSimilaritySearch("I want a code that prints hello world in java 10 times using for loop");
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

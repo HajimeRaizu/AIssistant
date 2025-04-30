@@ -8,6 +8,10 @@ import axios from "axios";
 import Swal from 'sweetalert2'
 import { IoIosChatboxes } from "react-icons/io";
 import book from '../assets/book-removebg-preview.png';
+import { FaPaperclip, FaTrash } from "react-icons/fa";
+import { RiDownload2Fill } from "react-icons/ri";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const ExercisesPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -29,6 +33,10 @@ const ExercisesPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [showOptions, setShowOptions] = useState(null);
   const [isReading, setIsReading] = useState(false);
+  const [viewingAttachment, setViewingAttachment] = useState(null);
+  const [attachmentType, setAttachmentType] = useState('');
+  const [addNewSubject, setAddNewSubject] = useState(true);
+  const [isAdding, setAddingNewSubject] = useState(false);
   const navigate = useNavigate();
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
@@ -221,13 +229,15 @@ const ExercisesPage = () => {
 
 // Function to clean markdown-like formatting
 const cleanText = (text) => {
-    if (!text) return '';
+  if (!text) return '';
 
-    return text
-        .replace(/\*\*(.*?)\*\*/g, '$1') // Remove **bold** formatting
-        .replace(/`(.*?)`/g, '$1') // Remove inline `code` formatting
-        .replace(/'''([\s\S]*?)'''/g, '$1') // Remove triple backticks (```code```)
-        .replace(/###\s*(.*?)\n/g, '$1\n'); // Remove headings (### Heading)
+  // Remove all HTML tags
+  const cleaned = text.replace(/<[^>]*>/g, '');
+
+  // Decode HTML entities like &nbsp; &amp; etc. (optional)
+  const textArea = document.createElement('textarea');
+  textArea.innerHTML = cleaned;
+  return textArea.value.trim();
 };
 
 
@@ -314,6 +324,7 @@ const stopSpeech = () => {
   };  
 
   const handleSubjectCodeSubmit = async () => {
+    setAddingNewSubject(true);
     if (!subjectId || !studentId) {
       Swal.fire({
         title: "Error!",
@@ -351,6 +362,8 @@ const stopSpeech = () => {
       });
     } finally {
       setSubjectId("");
+      setAddingNewSubject(false);
+      setAddNewSubject(false)
     }
   };
 
@@ -393,283 +406,6 @@ const stopSpeech = () => {
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userName");
     navigate("/googleLogin");
-  };
-
-  const downloadOfflineVersion = async () => {
-    try {
-      // Get all necessary data
-      const offlineData = {
-        learningMaterials,
-        theme: "light",
-        selectedSubject,
-        selectedLesson,
-        selectedSubtopic,
-        userAnswers,
-        studentId,
-        userRole,
-        userName,
-        userEmail,
-        userPicture,
-        hasSubjectCode,
-        isReading
-      };
-  
-      // Create the HTML content
-      const htmlContent = `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIssistant - Exercises (Offline)</title>
-    <style>
-      ${currentCSS}
-      ${androidCSS}
-      
-      /* Additional styles for offline version */
-    </style>
-  </head>
-  <body>
-    <div class="offline-exercises-page" id="app">
-      <!-- Content will be rendered here by JavaScript -->
-    </div>
-  
-    <script>
-      // Store the offline data
-      const appData = ${JSON.stringify(offlineData)};
-      
-      // Format text function (similar to React component)
-      function formatText(text, sender) {
-        if (!text) return '';
-        
-        if (sender === "bot") {
-          // Clean text for display (simplified version)
-          return text
-            .replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')
-            .replace(/\\'\\'\\'([\\s\\S]*?)\\'\\'\\'/g, '<pre><code>$1</code></pre>')
-            .replace(/###\\s*(.*?)\\n/g, '<h3>$1</h3>')
-            .replace(/\\n/g, '<br>');
-        } else {
-          return text;
-        }
-      }
-      
-      // Initialize the app
-      document.addEventListener('DOMContentLoaded', function() {
-        // Set theme from saved data
-        document.body.className = 'offline-exercises-page ' + appData.theme;
-        document.getElementById('app').className = 'offline-exercises-page ' + appData.theme;
-        
-        // Render the app
-        renderApp();
-      });
-      
-      // Main rendering function
-      function renderApp() {
-        const app = document.getElementById('app');
-        app.innerHTML = '';
-        
-        // Render sidebar
-        const sidebar = document.createElement('div');
-        sidebar.className = \`offline-exercises-sidebar \${appData.theme} visible\`;
-        sidebar.innerHTML = \`
-          <h2>Subjects</h2>
-          \${appData.hasSubjectCode ? \`
-            <ul>
-              \${Object.keys(appData.learningMaterials).map(subjectCode => \`
-                <li class="offline-\${appData.theme} \${appData.selectedSubject === subjectCode ? 'active' : ''}" 
-                    onclick="handleSubjectClick('\${subjectCode}')">
-                  \${appData.learningMaterials[subjectCode].subjectName}
-                </li>
-              \`).join('')}
-            </ul>
-          \` : \`
-            <p style="padding-top: 10px;">No subject IDs added yet.</p>
-          \`}
-        \`;
-        app.appendChild(sidebar);
-        
-        // Render main content
-        const content = document.createElement('div');
-        content.className = \`offline-exercises-content \${appData.theme} sidebar-visible\`;
-        
-        // Render content based on current view
-        if (!appData.selectedSubject && appData.hasSubjectCode) {
-          // Subjects view
-          const subjectsContainer = document.createElement('div');
-          subjectsContainer.className = 'offline-subject-boxes';
-          subjectsContainer.innerHTML = \`
-            \${Object.keys(appData.learningMaterials).map(subjectCode => \`
-              <div class="offline-subject-box \${appData.theme}" onclick="handleSubjectClick('\${subjectCode}')">
-                <div class="offline-subject-box-header">
-                  <h3>\${appData.learningMaterials[subjectCode].subjectName}</h3>
-                </div>
-                <p>\${appData.learningMaterials[subjectCode].ownerEmail}</p>
-                <p>\${appData.learningMaterials[subjectCode].ownerName}</p>
-              </div>
-            \`).join('')}
-          \`;
-          content.appendChild(subjectsContainer);
-        } else if (appData.selectedSubject !== null && appData.selectedLesson === null) {
-          // Lessons view
-          const lessonsContainer = document.createElement('div');
-          lessonsContainer.className = 'offline-lessons';
-          lessonsContainer.innerHTML = \`
-            <h2 class="offline-\${appData.theme}">Lessons</h2>
-            <button class="offline-back-button" onclick="handleBackToSubjects()">
-              Back to Subjects
-            </button>
-            <ul>
-              \${appData.learningMaterials[appData.selectedSubject].lessons.map((lesson, index) => \`
-                <li class="offline-\${appData.theme}" onclick="handleLessonClick(\${index})">
-                  \${lesson.lessonName}
-                </li>
-              \`).join('')}
-            </ul>
-          \`;
-          content.appendChild(lessonsContainer);
-        } else if (appData.selectedLesson !== null && appData.selectedSubtopic === null) {
-          // Subtopics view
-          const subtopicsContainer = document.createElement('div');
-          subtopicsContainer.className = 'offline-subtopics';
-          subtopicsContainer.innerHTML = \`
-            <h2 class="offline-\${appData.theme}">Subtopics for \${appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].lessonName}</h2>
-            <button class="offline-back-button" onclick="handleBackToLessons()">
-              Back to Lessons
-            </button>
-            <ul>
-              \${appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].subtopics.map((subtopic, index) => \`
-                <li class="offline-\${appData.theme}" onclick="handleSubtopicClick(\${index})">
-                  \${subtopic.subtopicCode} - \${subtopic.subtopicTitle}
-                </li>
-              \`).join('')}
-            </ul>
-          \`;
-          content.appendChild(subtopicsContainer);
-        } else if (appData.selectedSubtopic !== null) {
-          // Subtopic content view
-          const subtopic = appData.learningMaterials[appData.selectedSubject].lessons[appData.selectedLesson].subtopics[appData.selectedSubtopic];
-          const subtopicContent = document.createElement('div');
-          subtopicContent.className = \`offline-subtopic-content \${appData.theme}\`;
-          subtopicContent.innerHTML = \`
-            <h1 class="offline-\${appData.theme}">
-              \${subtopic.subtopicCode} - \${subtopic.subtopicTitle}
-            </h1>
-            <p class="offline-line \${appData.theme}"></p>
-            <span>
-              \${formatText(subtopic.content, "bot")}
-            </span>
-            <div class="offline-button-container">
-              <button class="offline-back-button" onclick="handleBackToSubtopics()">
-                Back to Subtopics
-              </button>
-            </div>
-          \`;
-          content.appendChild(subtopicContent);
-        } else if (!appData.selectedSubject && !appData.hasSubjectCode) {
-          // No materials view
-          const noMaterials = document.createElement('div');
-          noMaterials.className = 'offline-no-learning-materials';
-          noMaterials.innerHTML = \`
-            <img class="offline-book" src="\${appData.bookImage || ''}" alt="Book">
-            <p>Ask your instructors</p>
-            <p>for available learning materials</p>
-          \`;
-          content.appendChild(noMaterials);
-        }
-        
-        app.appendChild(content);
-      }
-      
-      // Navigation functions
-      function handleSubjectClick(subjectCode) {
-        appData.selectedSubject = subjectCode;
-        appData.selectedLesson = null;
-        appData.selectedSubtopic = null;
-        renderApp();
-      }
-      
-      function handleLessonClick(lessonIndex) {
-        appData.selectedLesson = lessonIndex;
-        appData.selectedSubtopic = null;
-        renderApp();
-      }
-      
-      function handleSubtopicClick(subtopicIndex) {
-        appData.selectedSubtopic = subtopicIndex;
-        renderApp();
-      }
-      
-      function handleBackToSubjects() {
-        appData.selectedSubject = null;
-        renderApp();
-      }
-      
-      function handleBackToLessons() {
-        appData.selectedLesson = null;
-        renderApp();
-      }
-      
-      function handleBackToSubtopics() {
-        appData.selectedSubtopic = null;
-        renderApp();
-      }
-      
-      function toggleTheme() {
-        appData.theme = appData.theme === 'dark' ? 'light' : 'dark';
-        document.body.className = 'offline-exercises-page ' + appData.theme;
-        document.getElementById('app').className = 'offline-exercises-page ' + appData.theme;
-        localStorage.setItem('theme', appData.theme);
-        renderApp();
-      }
-      
-      // Make functions available globally
-      window.handleSubjectClick = handleSubjectClick;
-      window.handleLessonClick = handleLessonClick;
-      window.handleSubtopicClick = handleSubtopicClick;
-      window.handleBackToSubjects = handleBackToSubjects;
-      window.handleBackToLessons = handleBackToLessons;
-      window.handleBackToSubtopics = handleBackToSubtopics;
-      window.toggleTheme = toggleTheme;
-    </script>
-  </body>
-  </html>`;
-  
-      // Create blob with HTML type
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    
-    // Create download link
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'AIssistant-Exercises-Offline.html';
-    
-    // Append to body (required for Firefox)
-    document.body.appendChild(a);
-    
-    // Trigger the download
-    a.click();
-    
-    // Clean up
-    setTimeout(() => {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }, 100);
-    
-    // Optional: Show success message
-    Swal.fire({
-      title: 'Download Started',
-      text: 'The offline version is being downloaded.',
-      icon: 'success'
-    });
-      
-    } catch (error) {
-      console.error('Error generating offline version:', error);
-      Swal.fire({
-        title: 'Download Failed',
-        text: 'An error occurred while generating the offline version.',
-        icon: 'error'
-      });
-    }
   };
 
   const SubjectBox = ({ subject, subjectCode, ownerEmail, ownerName }) => {
@@ -725,6 +461,46 @@ const stopSpeech = () => {
     return <div className={`loading-container ${theme}`}>Loading...</div>;
   }
 
+  const QUILL_MODULES = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['link', 'code-block'],
+    ],
+  };
+  
+  const QUILL_FORMATS = [
+    'header',
+    'bold', 'italic', 'underline',
+    'list', 'bullet',
+    'link', 'code-block'
+  ];
+
+  const getFileType = (fileName) => {
+    const extension = fileName.split('.').pop().toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+      return 'image';
+    }
+    if (extension === 'pdf') {
+      return 'pdf';
+    }
+    if (extension === 'docx') {
+      return 'docx';
+    }
+    if (['ppt', 'pptx'].includes(extension)) {
+      return 'ppt';
+    }
+    return 'other';
+  };
+
+  const handlePreviewAttachment = (attachment, e) => {
+    e.preventDefault();
+    const type = getFileType(attachment.name);
+    setAttachmentType(type);
+    setViewingAttachment(attachment);
+  };
+
   return (
     <div className={`exercises-page ${theme}`}>
       <div className={`exercise-tutorial-highlight ${tutorial}`} onClick={handleTutorial}></div>
@@ -757,18 +533,9 @@ const stopSpeech = () => {
           <p>{userName}</p>
         </div>
         <h2>Subjects</h2>
-        <div className={`subject-code-input ${theme}`}>
-          <input
-            type="text"
-            value={subjectId}
-            onChange={(e) => setSubjectId(e.target.value)}
-            placeholder="Enter learning material code"
-          />
-        </div>
-        <button onClick={handleSubjectCodeSubmit} className={`submit-button ${theme}`}>
-          Submit
+        <button onClick={() => {setAddNewSubject(true)}} className={`submit-button ${theme}`}>
+          Add Subject
         </button>
-        <button className={`download-button ${theme}`} onClick={downloadOfflineVersion} style={{marginTop: '10px'}}>Download Offline</button>
         {hasSubjectCode ? (
           <ul>
             {Object.keys(learningMaterials).map((subjectCode) => (
@@ -834,6 +601,7 @@ const stopSpeech = () => {
                   key={index}
                   className={`${theme}`}
                   onClick={() => handleLessonClick(index)}
+                  style={{background: 'linear-gradient(190deg, #4d7affc2, #c0d0ffc2)'}}
                 >
                   {lesson.lessonName}
                 </li>
@@ -855,8 +623,9 @@ const stopSpeech = () => {
                   key={index}
                   className={`${theme}`}
                   onClick={() => handleSubtopicClick(index)}
+                  style={{background: 'linear-gradient(190deg, #4d7affc2, #c0d0ffc2)'}}
                 >
-                  {`${subtopic.subtopicCode} - ${subtopic.subtopicTitle}`}
+                  {`${subtopic.subtopicTitle}`}
                 </li>
               ))}
             </ul>
@@ -866,14 +635,144 @@ const stopSpeech = () => {
         {hasSubjectCode && selectedSubtopic !== null && (
           <div className={`subtopic-content ${theme}`}>
             <h1 className={theme}>
-              {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicCode} -{" "}
               {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicTitle}
               {isReading ? <button className={`read-button ${theme}`} onClick={stopSpeech}><BsVolumeUpFill /></button> : <button className="read-button" onClick={readOutLoud}><BsVolumeUp /></button>}
             </h1>
             <p className={`line ${theme}`}></p>
-            <span>
-              <p>{formatText(learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].content, "bot")}</p>
-            </span>
+            
+            {/* Replace the content display with ReactQuill */}
+            <div className={`subtopic-quill-content ${theme}`}>
+            <div className={`subtopic-content ${theme}`} dangerouslySetInnerHTML={{ __html: learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].content }} />
+            </div>
+
+            {/* Attachments section */}
+            {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].attachments?.length > 0 && (
+              <div className={`attachments-section ${theme}`}>
+                <h3>Attachments</h3>
+                <div className="attachments-list">
+                  {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].attachments?.map((attachment, index) => {
+                    // Determine file type and preview availability
+                    const fileType = attachment.name.split('.').pop().toLowerCase();
+                    const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileType);
+                    const isPDF = fileType === 'pdf';
+                    return (
+                      <div
+                        key={index}
+                        className={`attachment-item ${theme}`}
+                        onClick={(e) => handlePreviewAttachment(attachment, e)}
+                      >
+                        <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+                          {/* Preview thumbnail */}
+                          <div style={{ width: '40px', height: '40px', flexShrink: 0 }}>
+                            {isImage ? (
+                              <img 
+                                src={attachment.url} 
+                                alt="Preview" 
+                                style={{ 
+                                  width: '100%', 
+                                  height: '100%', 
+                                  objectFit: 'cover',
+                                  borderRadius: '3px'
+                                }}
+                              />
+                            ) : isPDF ? (
+                              <div style={{
+                                width: '100%',
+                                height: '100%',
+                                background: '#ffebee',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: '3px'
+                              }}>
+                                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#d32f2f' }}>PDF</span>
+                              </div>
+                            ) : (
+                              <div style={{
+                                width: '100%',
+                                height: '100%',
+                                background: '#e3f2fd',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: '3px'
+                              }}>
+                                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#1976d2' }}>
+                                  {fileType.toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* File name */}
+                          <div 
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              flexGrow: 1,
+                              paddingLeft: '10px'
+                            }}
+                          >
+                            <span style={{ fontWeight: '500' }}>{attachment.name}</span>
+                          </div>
+                        </div>
+                    
+                        <div style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          width: '100%'
+                        }}>
+                          {/* File size */}
+                          <span className="attachment-size" style={{ fontSize: '12px', color: '#666' }}>
+                            {(attachment.size / 1024 / 1024).toFixed(2)} MB
+                          </span>
+                    
+                          {/* Download button */}
+                          <a
+                            href="#"
+                            onClick={async (e) => {
+                              e.stopPropagation(); // Stop parent onClick
+                              e.preventDefault();  // Stop default <a> behavior
+
+                              try {
+                                const response = await fetch(attachment.url);
+                                const blob = await response.blob();
+                                const url = window.URL.createObjectURL(blob);
+
+                                const downloadLink = document.createElement('a');
+                                downloadLink.href = url;
+                                downloadLink.download = attachment.name;
+                                document.body.appendChild(downloadLink);
+                                downloadLink.click();
+                                document.body.removeChild(downloadLink);
+
+                                window.URL.revokeObjectURL(url); // Clean up blob URL
+                              } catch (error) {
+                                console.error('Download failed:', error);
+                                alert('Failed to download file.');
+                              }
+                            }}
+                            style={{
+                              padding: '5px',
+                              color: '#1976d2',
+                              cursor: 'pointer',
+                              fontSize: '24px'
+                            }}
+                            title="Download"
+                          >
+                            <RiDownload2Fill />
+                          </a>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Rest of the existing code... */}
             <h3>Exercises</h3>
             <div className={`exercise-container ${theme}`}>
               {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].questions
@@ -931,6 +830,130 @@ const stopSpeech = () => {
           </div>
         )}
       </div>
+
+      {/* File Viewer Modal */}
+        {viewingAttachment && (
+          <div className={`file-viewer-modal ${theme}`} onClick={() => setViewingAttachment(null)}>
+            <div className="file-viewer-controls">
+              <button 
+                className={`close-viewer ${theme}`} 
+                onClick={() => setViewingAttachment(null)}
+              >
+                &times;
+              </button>
+              <button
+                className={`download-file-button ${theme}`}
+                onClick={async () => {
+                  try {
+                    const response = await fetch(viewingAttachment.url);
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = viewingAttachment.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                  } catch (error) {
+                    console.error("Download failed:", error);
+                    Swal.fire({
+                      title: "Download Failed",
+                      text: "Failed to download file",
+                      icon: "error"
+                    });
+                  }
+                }}
+              >
+                <RiDownload2Fill />
+              </button>
+              <h3>{viewingAttachment.name}</h3>
+            </div>
+            <div className="file-viewer-content">
+              {attachmentType === 'pdf' && (
+                <iframe 
+                  src={`https://docs.google.com/gview?url=${encodeURIComponent(viewingAttachment.url)}&embedded=true`}
+                  width="100%" 
+                  height="90%"
+                  frameBorder="0"
+                />
+              )}
+              
+              {attachmentType === 'image' && (
+                <img 
+                  src={viewingAttachment.url} 
+                  alt={viewingAttachment.name} 
+                  style={{ maxWidth: '100%', maxHeight: '90%' }} 
+                />
+              )}
+              
+              {(attachmentType === 'docx' || attachmentType === 'ppt') && (
+                <iframe
+                  src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(viewingAttachment.url)}`}
+                  width="100%"
+                  height="90%"
+                  frameBorder="0"
+                />
+              )}
+              
+              {attachmentType === 'other' && (
+                <div className={`no-preview ${theme}`}>
+                  No preview available for this file type. 
+                  <a href="#"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      try {
+                        const response = await fetch(viewingAttachment.url);
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = viewingAttachment.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                      } catch (error) {
+                        console.error("Download failed:", error);
+                        Swal.fire({
+                          title: "Download Failed",
+                          text: "Failed to download file",
+                          icon: "error"
+                        });
+                      }
+                    }}
+                  >
+                    Download
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {addNewSubject && (<div className="add-subject-modal">
+          <div className={`add-subject-form ${theme}`}>
+            <h1 style={{marginBottom: '20px'}}>Add Subject</h1>
+            <div className={`subject-code-input ${theme}`}>
+              <input
+                type="text"
+                value={subjectId}
+                onChange={(e) => setSubjectId(e.target.value)}
+                placeholder="Enter learning material code"
+              />
+            </div>
+              <div className="add-subject-buttons">
+                <button onClick={handleSubjectCodeSubmit} className={`submit-button ${theme}`}>
+                  {isAdding ? "Adding...":"Submit"}
+                </button>
+                <button onClick={() => {setAddNewSubject(false); setSubjectId("")}} className={`add-subject-cancel-button ${theme}`}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>)}
     </div>
   );
 };

@@ -11,7 +11,11 @@ import { MdDelete } from "react-icons/md";
 import { FaFileDownload } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { IoIosSave } from "react-icons/io";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import { FaPaperclip, FaTrash } from "react-icons/fa";
+import { RiDownload2Fill } from "react-icons/ri";
+import { FaArrowLeft } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import {
   LineChart,
   Label,
@@ -28,6 +32,8 @@ import {
   Sector,
   Cell,
 } from 'recharts';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const InstructorPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -53,6 +59,10 @@ const InstructorPage = () => {
   const [editingLesson, setEditingLesson] = useState(null);
   const [editingSubtopic, setEditingSubtopic] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [attachments, setAttachments] = useState([]);
+  const [uploadingFiles, setUploadingFiles] = useState([]);
+  const [viewingAttachment, setViewingAttachment] = useState(null);
+  const [attachmentType, setAttachmentType] = useState('');
 
   const [showCreateSubjectModal, setShowCreateSubjectModal] = useState(false);
   const [showCreateLessonModal, setShowCreateLessonModal] = useState(false);
@@ -68,7 +78,6 @@ const InstructorPage = () => {
     subtopics: [],
   });
   const [newSubtopic, setNewSubtopic] = useState({
-    subtopicCode: "",
     subtopicTitle: "",
     content: "",
     questions: "",
@@ -84,6 +93,13 @@ const InstructorPage = () => {
   const userPicture = localStorage.getItem("profileImage");
   const [selectedWeek, setSelectedWeek] = useState("");
   const [weeklyPrompts, setWeeklyPrompts] = useState({});
+  const [uploadingFile, setUploadingFile] = useState(false);
+
+  const [reusing, setReusing] = useState(false);
+  const [reusingSubject, setReusingSubject] = useState(null);
+  const [reusingLesson, setReusingLesson] = useState(null);
+  const [reusingSubtopic, setReusingSubtopic] = useState("");
+  const [reusingSubtopicIndex, setReusingSubtopicIndex] = useState(-1);
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -164,7 +180,7 @@ const InstructorPage = () => {
     if (sender === "bot") {
       const boldTextRegex = /\*\*(.*?)\*\*/g || /\`(.*?)\`/g; // Matches **bold** text
       const codeBlockRegex = /'''([\s\S]*?)'''/g; // Matches ```code blocks```
-      const headingRegex = /###\s*(.*?)\n/g; // Matches ### headings
+      const headingRegex = /###\s*(.*?)/g; // Matches ### headings
   
       // Split the text by code blocks first
       const parts = text.split(codeBlockRegex);
@@ -423,6 +439,15 @@ const InstructorPage = () => {
         queries: groupedData[label]
     }));
   };
+
+  function getDefaultGraphData() {
+    // Return an array with default values (e.g., 7 days with 0 queries)
+    return [
+        { name: 'Week 1', queries: 0 },
+        { name: 'Week 2', queries: 0 },
+        { name: 'Week 3', queries: 0 },
+    ];
+}
 
   const groupPromptsByWeek = () => {
     const allMessages = queryData.map(message => ({
@@ -776,6 +801,117 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
     }
   };
 
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    // Check file size (50MB limit)
+    if (file.size > 50 * 1024 * 1024) {
+      Swal.fire({
+        title: "File too large",
+        text: "Maximum file size is 50MB",
+        icon: "error",
+      });
+      return;
+    }
+  
+    setUploadingFile(true);
+  
+    try {
+      const formatString = (str) => str.replace(/\s+/g, '_');
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("subjectCode", selectedSubject);
+      formData.append("lessonIndex", selectedLesson)
+      formData.append("subtopicIndex", selectedSubtopic)
+      formData.append(
+        "lessonName", 
+        formatString(learningMaterials[selectedSubject].lessons[selectedLesson].lessonName)
+      );
+      formData.append(
+        "subtopicName", 
+        formatString(learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicTitle)
+      );
+  
+      const response = await axios.post(`${base_url}/api/uploadAttachment`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      Swal.fire({
+        title: "Success",
+        text: "File uploaded successfully!",
+        icon: "success",
+      });
+  
+      // Refresh learning materials
+      const instructorEmail = localStorage.getItem("userEmail");
+      const updatedResponse = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
+        params: { instructorEmail },
+      });
+      setLearningMaterials(updatedResponse.data);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Failed to upload file",
+        icon: "error",
+      });
+    } finally {
+      setUploadingFile(false);
+      event.target.value = ""; // Reset file input
+    }
+  };
+  
+  // Add this function to handle file deletion
+  const handleDeleteAttachment = async (attachmentIndex, attachmentName) => {
+    try {
+      const formatString = (str) => str.replace(/\s+/g, '_');
+      const lessonName = formatString(learningMaterials[selectedSubject].lessons[selectedLesson].lessonName);
+      const subtopicName = formatString(learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicTitle);
+      
+      // Make sure all parameters are properly encoded
+      await axios.delete(
+        `${base_url}/api/deleteAttachment/${
+          encodeURIComponent(selectedSubject)
+        }/${
+          encodeURIComponent(selectedLesson)
+        }/${
+          encodeURIComponent(lessonName)
+        }/${
+          encodeURIComponent(selectedSubtopic)
+        }/${
+          encodeURIComponent(subtopicName)
+        }/${
+          encodeURIComponent(attachmentIndex)
+        }/${
+          encodeURIComponent(attachmentName)
+        }`
+      );
+  
+      Swal.fire({
+        title: "Success",
+        text: "Attachment deleted successfully!",
+        icon: "success",
+      });
+  
+      // Refresh learning materials
+      const instructorEmail = localStorage.getItem("userEmail");
+      const updatedResponse = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
+        params: { instructorEmail },
+      });
+      setLearningMaterials(updatedResponse.data);
+    } catch (error) {
+      console.error("Error deleting attachment:", error);
+      Swal.fire({
+        title: "Error",
+        text: error.response?.data?.error || "Failed to delete attachment",
+        icon: "error",
+      });
+    }
+  };
+
   const handleDownloadLearningMaterials = async (subjectCode) => {
     try {
       const instructorEmail = localStorage.getItem("userEmail");
@@ -820,130 +956,46 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
     }
   };
 
-  const handleCopyCommand = () =>{
-    const contentToCopy = `
-extract all of the content of the files and follow the format below as reference. make sure to add the necessary line breaks so that it will be rendered properly when it is being displayed and use ###header, **bold text**, '''code snippet'''. also leave the questions and answers empty and make sure that the subject names and content are based on the files
-{
-    "subjectName": "Intermediate Python Programming",
-    "lessons": [
-        {
-            "lessonName": "Lesson 1",
-            "subtopics": [
-                {
-                    "subtopicCode": 1,
-                    "subtopicTitle": "Introduction to Python",
-                    "content": "Python is an interpreted, object-oriented, high-level programming language.\nPython has a simple syntax similar to English language.\nPython is portable.\nPython codes have fewer lines.\nIt was created by Guido van Rossum and released in 1991.\n\nPython is easy to understand and can be used to create:\n- Web Applications\n- Data Science and Data Visualization\n- Machine Learning\n- Script for Vulnerability Testing\n- Embedded Systems and IoT\n- Job Scheduling and Automation\n- Computer Vision and Image Processing\n\nPython IDEs include VS Code, PyCharm, Sublime Text, Spyder, and more.\n\nCompanies using Python include Facebook, Dropbox, Mozilla, Firefox, Google, and YouTube.\n\nPython is popular due to its simplicity, high salary potential, and versatility in various fields such as web development, data science, and artificial intelligence.\n\nPython requirements include Python 3.11.0 or later, an interpreter, and a text editor like Sublime or VS Code. IDEs like Anaconda or PyCharm are optional.\n\nPython code can be executed via IDLE, command line, or Python shell.\n\nPython identifiers are names used to identify variables, functions, classes, modules, or other objects. They start with a letter or underscore and can contain letters, underscores, and digits. Python is case-sensitive.\n\nPython reserved words include 'and', 'as', 'assert', 'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'False', 'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'None', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'True', 'try', 'while', 'with', and 'yield'.\n\nPython uses indentation to indicate code blocks. Multi-line statements can be created using the line continuation character (\\).\n\nPython supports single, double, and triple quotes for string literals. Comments start with a # and are ignored by the Python interpreter.\n\nVariables in Python are containers for storing data values. They are created when a value is assigned to them. Variable names are case-sensitive and must start with a letter or underscore.\n\nPython data types include numeric (int, float, complex), string (str), sequence (list, tuple, range), binary (bytes, bytearray, memoryview), mapping (dict), boolean (bool), set (set, frozenset), and NoneType.\n\nPython variables refer to objects, not memory locations. Multiple variables can refer to the same object.\n\nEscape sequences in Python include \\\\ for backslash, \\n for new line, \\r for carriage return, \\t for tab, and \\b for backspace.\n\nOutput in Python can be displayed using the print() function. Variables can be combined with text using the + operator or formatted using str.format(), f-strings, or data type placeholders.\n\nCasting in Python allows converting one data type into another. Arithmetic operators include +, -, *, /, %, //, and **. Comparison operators include ==, !=, <, <=, >, and >=. Logical operators include not, or, and and.\n\nThe input() function in Python accepts user input.",
-                    "questions": "",
-                    "answers": ""
-                }
-            ]
-        },
-        {
-            "lessonName": "Lesson 2",
-            "subtopics": [
-                {
-                    "subtopicCode": 2,
-                    "subtopicTitle": "Strings and Math Built-in Functions",
-                    "content": "Strings are sequences of characters interpreted as text.\nStrings can be accessed using positive or negative index numbers.\nString placeholders can be used with format() or % for formatting.\nString formatting functions include upper(), lower(), capitalize(), title(), split(), replace(), and len().\n\nNumber formatting functions include round(), ceil(), floor(), and pow().\n\nPython math built-in functions include math.ceil(), math.factorial(), math.pi, and math.e.\n\nMathematical constants in Python include math.pi (3.141592653589793) and math.e (2.718281828459045).\n\nNumber formatting can be done using % for limiting decimal places, format(), or round().\n\nPython conditions can be used with math functions like round(), ceil(), floor(), and pow().",
-                    "questions": "",
-                    "answers": ""
-                }
-            ]
-        },
-        {
-            "lessonName": "Lesson 3",
-            "subtopics": [
-                {
-                    "subtopicCode": 3,
-                    "subtopicTitle": "Control Structures",
-                    "content": "Control structures in Python allow for the execution of statements based on conditions.\n\nTypes of control structures:\n1. Sequence: Statements are executed sequentially.\n2. Selection: Provides a choice between two alternatives based on a condition.\n3. Iteration: Allows repetition of instructions or statements in a loop body.\n\nSelection structures include if, if...else, and if...elif...else statements.\n\nComparison operators include ==, !=, <, <=, >, and >=.\n\nLogical operators include not, or, and and.\n\nNested if statements allow for multiple levels of condition checking.\n\nShort-hand if statements can be written in a single line using the syntax <if-expression> if <condition> else <else-expression>.\n\nCompound conditions involve multiple conditional expressions combined using and/or.\n\nBuilt-in methods for strings include isupper(), islower(), isdigit(), and isalpha().\n\nPractice exercises include checking employee years in service and office, and calculating discounts for an online store.",
-                    "questions": "",
-                    "answers": ""
-                }
-            ]
-        },
-        {
-            "lessonName": "Lesson 4",
-            "subtopics": [
-                {
-                    "subtopicCode": 4,
-                    "subtopicTitle": "Iteration",
-                    "content": "Iteration allows the repetition of instructions or statements in a loop body.\n\nTypes of loops in Python:\n1. while loop: Repeats a statement or group of statements while a condition is true.\n2. for loop: Executes a code block multiple times, often used for traversing arrays.\n3. Nested loops: Loops inside other loops.\n\nLoop control statements include break, continue, and pass.\n\nCommon loop applications include accumulating totals, validating user entry, and iterating through sequences.\n\nThe while loop continues as long as the condition is true. The for loop is used when the number of iterations is known.\n\nInfinite loops occur when the loop condition is always true. The break statement terminates the loop immediately.\n\nThe range() function generates a sequence of numbers and is often used with for loops.\n\nThe enumerate() function adds a counter to an iterable and returns it as an enumerate object.\n\nLoop control statements like continue skip the current iteration, while pass does nothing and is used as a placeholder.\n\nHands-on exercises include traversing a list to determine if numbers are odd or even, adding two numbers with user input, and creating a word bank program.",
-                    "questions": "",
-                    "answers": ""
-                }
-            ]
-        },
-        {
-            "lessonName": "Lesson 5",
-            "subtopics": [
-                {
-                    "subtopicCode": 5,
-                    "subtopicTitle": "Functions",
-                    "content": "Functions are blocks of organized, reusable code used to perform a single, related action.\n\nFunctions provide better modularity and code reusability.\n\nFunctions help reduce duplicate code, make programs easier to read and debug, and allow for code reuse.\n\nFunctions in Python are defined using the def keyword, followed by the function name and parentheses.\n\nFunction arguments can be positional, keyword, default, or arbitrary.\n\nFunctions can return values using the return statement.\n\nPython has built-in functions like print(), input(), type(), float(), and int(), as well as user-defined functions.\n\nFunction names must start with a letter or underscore and should be lowercase. They can contain numbers but should not start with one.\n\nFunctions can accept multiple parameters and return multiple values.\n\nFunctions can accept interactive user input using the input() function.\n\nGlobal and local variables in functions: Global variables are defined outside the function and can be accessed inside the function. Local variables are defined inside the function and are not accessible outside.\n\nRecursion is when a function calls itself.\n\nThe ternary operator allows for quick conditional definitions.\n\nFunctions can be called with keyword arguments, and default argument values can be set.\n\nMutable objects as default argument values should be used carefully, as they are evaluated only once.\n\nThe pass statement is used as a placeholder for future code.\n\nHands-on exercises include writing a program with user-defined functions and a menu within a while loop.",
-                    "questions": "",
-                    "answers": ""
-                }
-            ]
-        },
-        {
-            "lessonName": "Lesson 6",
-            "subtopics": [
-                {
-                    "subtopicCode": 6,
-                    "subtopicTitle": "Introduction to Tkinter",
-                    "content": "Tkinter is the standard GUI library for Python. Python when combined with Tkinter provides a fast and easy way to create GUI applications. Tkinter provides a powerful object-oriented interface to the Tk GUI toolkit.\n\nCreating a GUI application using Tkinter involves the following steps:\n1. Import the Tkinter module.\n2. Create the GUI application main window.\n3. Add one or more widgets to the GUI application.\n4. Enter the main event loop to take action against each event triggered by the user.\n\nTkinter widgets include Button, Canvas, Checkbutton, Entry, Frame, Label, Listbox, Menubutton, Menu, Message, Radiobutton, Scale, Scrollbar, Text, Toplevel, Spinbox, PanedWindow, LabelFrame, and tkMessageBox.\n\nStandard attributes in Tkinter include dimensions, colors, fonts, anchors, relief styles, bitmaps, and cursors.\n\nGeometry management in Tkinter is done using the pack(), grid(), and place() methods.\n\nThe pack() method organizes widgets in blocks before placing them in the parent widget.\n\nThe grid() method organizes widgets in a table-like structure in the parent widget.\n\nThe place() method organizes widgets by placing them in a specific position in the parent widget.\n\nTkinter also provides modules like tkinter.simpledialog, tkinter.filedialog, and tkinter.colorchooser for common dialogs.\n\nThe ttk module provides themed widgets with a modern look and feel across platforms.\n\nEvent handling in Tkinter involves binding events to callback functions using the bind() method or the command parameter in widget constructors.\n\nTkinter supports rendering images using the PhotoImage method.\n\nA simple calculator can be created using Tkinter by defining functions for button clicks, clearing the input field, and evaluating expressions.",
-                    "questions": "",
-                    "answers": ""
-                },
-                {
-                    "subtopicCode": 6.1,
-                    "subtopicTitle": "Introduction to Tkinter (Detailed)",
-                    "content": "Tkinter is the standard GUI library for Python. It provides a fast and easy way to create GUI applications.\n\nTo create a window in Tkinter:\n1. Import the tkinter module as tk.\n2. Create an instance of the tk.Tk class to create the application window.\n3. Call the mainloop() method to keep the window visible.\n\nWidgets in Tkinter include Label, Button, Entry, and more. Widgets are created using the syntax: widget = WidgetName(master, **options).\n\nThe title of the window can be changed using the title() method.\n\nThe size and location of the window can be controlled using the geometry() method.\n\nThe resizable() method can prevent the window from being resized.\n\nTransparency of the window can be set using the attributes() method with the '-alpha' option.\n\nBackground color of the window can be set using the configure() method.\n\nLabels can be added to the window using the Label widget. Fonts for labels can be set using the font keyword argument.\n\nImages can be displayed in Tkinter using the PhotoImage method.\n\nWindow stacking order can be controlled using the attributes() method with the '-topmost' option, and the lift() and lower() methods.\n\nThe default icon of the window can be changed using the iconbitmap() method.\n\nThe ttk module provides themed widgets with a modern look and feel across platforms. It includes widgets like Button, Checkbutton, Entry, Frame, Label, LabelFrame, Menubutton, PanedWindow, Radiobutton, Scale, Scrollbar, Combobox, Notebook, Progressbar, Separator, Sizegrip, and Treeview.\n\nEvent handling in Tkinter involves binding events to callback functions using the bind() method or the command parameter in widget constructors.\n\nA simple login form can be created using Tkinter by adding labels, entry fields, and buttons.",
-                    "questions": "",
-                    "answers": ""
-                },
-                {
-                    "subtopicCode": 6.2,
-                    "subtopicTitle": "Tkinter Geometry Manager",
-                    "content": "Tkinter uses geometry managers to organize widgets on a window. The three geometry managers are pack, grid, and place.\n\nThe pack geometry manager organizes widgets in blocks before placing them on the container widget. It has options like side, expand, fill, ipadx, ipady, padx, pady, and anchor.\n\nThe side parameter determines the direction of the widgets in the pack layout. Options include 'top', 'bottom', 'left', and 'right'.\n\nThe expand parameter determines whether the widget should expand to occupy any extra spaces allocated to the container.\n\nThe fill parameter determines if a widget will occupy the available space. Options include 'x', 'y', 'both', and 'none'.\n\nThe ipadx and ipady parameters create internal paddings for widgets.\n\nThe padx and pady parameters allow you to specify external padding to be added horizontally and vertically.\n\nThe anchor parameter allows you to anchor the widget to the edge of the allocated space.\n\nThe place geometry manager allows you to specify the exact placement of a widget using either absolute or relative positioning.\n\nThe grid geometry manager uses the concepts of rows and columns to arrange the widgets. It allows you to configure the rows and columns using the columnconfigure() and rowconfigure() methods.\n\nThe sticky option in the grid geometry manager specifies which edge of the cell the widget should stick to.\n\nPadding between cells of a grid can be added using the padx and pady options.\n\nA login screen can be designed using the grid geometry manager by configuring the grid and positioning the widgets.",
-                    "questions": "",
-                    "answers": ""
-                }
-            ]
-        },
-        {
-            "lessonName": "Lesson 7",
-            "subtopics": [
-                {
-                    "subtopicCode": 7,
-                    "subtopicTitle": "Introduction to OOP in Python",
-                    "content": "Object-oriented programming (OOP) is a method of structuring a program by bundling related properties and behaviors into individual objects.\n\nOOP is based on the concept of classes and objects. A class is like a blueprint for creating objects, and an object is an instance of a class.\n\nOOP helps reduce complexity and increase reusability through encapsulation, inheritance, polymorphism, and abstraction.\n\nEncapsulation allows you to group functions and variables together.\n\nInheritance allows a class to inherit properties and methods from another class.\n\nPolymorphism allows objects to take multiple forms.\n\nAbstraction hides the complexity of a program and exposes only relevant details.\n\nIn Python, a class is defined using the class keyword. The __init__ method is used to initialize objects.\n\nInstance variables are unique to each object, while class variables are shared among all instances of a class.\n\nMethods in a class are functions that define the behavior of the objects.\n\nInheritance allows a class to inherit attributes and methods from a parent class. Child classes can override or extend the functionality of the parent class.\n\nPolymorphism allows methods to behave differently based on the object that calls them.\n\nAbstraction is achieved by hiding the internal details of a class and exposing only the necessary functionality.\n\nAccess modifiers in Python include public, protected, and private. Public members are accessible from anywhere, protected members are accessible within the class and its subclasses, and private members are accessible only within the class.\n\nInheritance types in Python include single inheritance, multiple inheritance, multilevel inheritance, and hierarchical inheritance.\n\nHands-on exercises include creating classes, defining methods, and implementing inheritance and polymorphism.",
-                    "questions": "",
-                    "answers": ""
-                }
-            ]
-        }
-    ]
-}`;
+  const QUILL_MODULES = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['link', 'code-block'],
+    ],
+  };
+  
+  const QUILL_FORMATS = [
+    'header',
+    'bold', 'italic', 'underline',
+    'list', 'bullet',
+    'link', 'code-block'
+  ];
 
-    navigator.clipboard
-      .writeText(contentToCopy)
-      .then(() => {
-        Swal.fire({
-          title: "Prompt copied!",
-          text: "Upload learning materials to be extracted in external AI and paste copied prompt",
-          icon: "success",
-        })
-      })
-      .catch((err) => {
-        Swal.fire({
-          title: "Error occured in copying prompt!",
-          text: `Error: ${err}`,
-          icon: "error",
-        })
-      });
-  }
+  const getFileType = (fileName) => {
+    const extension = fileName.split('.').pop().toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+      return 'image';
+    }
+    if (extension === 'pdf') {
+      return 'pdf';
+    }
+    if (extension === 'docx') {
+      return 'docx';
+    }
+    if (['ppt', 'pptx'].includes(extension)) {
+      return 'ppt';
+    }
+    return 'other';
+  };
+  
+  const handlePreviewAttachment = (attachment, e) => {
+    e.preventDefault(); // Add this line
+    const type = getFileType(attachment.name);
+    setAttachmentType(type);
+    setViewingAttachment(attachment);
+  };
+  
 
   const renderExercises = () => {
     if (selectedSubject === null || selectedSubject === undefined) {
@@ -1054,6 +1106,9 @@ extract all of the content of the files and follow the format below as reference
           <button className="add-lesson" onClick={() => setShowCreateLessonModal(true)}>
             Add Lesson
           </button>
+          <button className="instructor-back-to-subjects-button" onClick={handleBackToSubjects}>
+              Back to Subjects
+            </button>
           <div>
             {lessons.map((lesson, index) => (
               <div onClick={() => setSelectedLesson(index)} key={`lesson-${index}`} className="instructor-exercise-lesson">
@@ -1125,9 +1180,6 @@ extract all of the content of the files and follow the format below as reference
                 </div>
               </div>
             ))}
-            <button className="instructor-back-to-subjects-button" onClick={handleBackToSubjects}>
-              Back to Subjects
-            </button>
           </div>
         </div>
       );
@@ -1140,24 +1192,17 @@ extract all of the content of the files and follow the format below as reference
           <button className="add-subtopic" onClick={() => setShowCreateSubtopicModal(true)}>
             Add Subtopic
           </button>
+          <button className="add-subtopic" onClick={() => setReusing(true)}>
+            Reuse material
+          </button>
+          <button className="instructor-back-to-lessons-button" onClick={handleBackToLessons}>
+            Back to Lessons
+          </button>
           <div>
             {subtopics.map((subtopic, index) => (
               <div onClick={() => setSelectedSubtopic(index)} key={`subtopic-${index}`} className="instructor-exercise-subtopic">
                 {editingSubtopic === index ? (
                   <div className="input-fields">
-                    <input
-                      className="subtopic-code"
-                      type="text"
-                      value={subtopic.subtopicCode}
-                      onChange={(e) => {
-                        const updatedMaterials = { ...learningMaterials };
-                        updatedMaterials[selectedSubject].lessons[selectedLesson].subtopics[index].subtopicCode = e.target.value;
-                        setLearningMaterials(updatedMaterials);
-                      }}
-                      onClick={(e) =>{
-                        e.stopPropagation();
-                      }}
-                    />
                     <input
                       className="subtopic-name"
                       type="text"
@@ -1174,7 +1219,7 @@ extract all of the content of the files and follow the format below as reference
                   </div>
                 ) : (
                   <div>
-                    {`${subtopic['subtopicCode']} - ${subtopic['subtopicTitle']}`}
+                    {`${subtopic['subtopicTitle']}`}
                   </div>
                 )}
                 <div className="control-buttons">
@@ -1185,11 +1230,11 @@ extract all of the content of the files and follow the format below as reference
                         onClick={(e) => {
                           e.stopPropagation();
                           handleEditSubtopic(selectedSubject, selectedLesson, index, {
-                            subtopicCode: subtopic.subtopicCode,
                             subtopicTitle: subtopic.subtopicTitle,
                             content: subtopic.content,
                             questions: subtopic.questions,
                             answers: subtopic.answers,
+                            attachments: subtopic.attachments,
                           });
                           setEditingSubtopic(null);
                         }}
@@ -1235,88 +1280,251 @@ extract all of the content of the files and follow the format below as reference
                 </div>
               </div>
             ))}
-            <button className="instructor-back-to-lessons-button" onClick={handleBackToLessons}>
-              Back to Lessons
-            </button>
           </div>
         </div>
       );
     } else {
       const subtopic =
         learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic];
-  
+    
       return (
-        <div className="instructor-exercise-content">
-          <h2>{`${subtopic['subtopicCode']} - ${subtopic['subtopicTitle']}`}</h2>
-          {editingExercise ? (
-            <textarea
-              className="instructor-content-textarea"
-              value={editingExercise.content}
-              onChange={(e) =>
-                setEditingExercise({ ...editingExercise, content: e.target.value })
-              }
-            />
-          ) : (
-            <span>{formatText(subtopic.content, "bot")}</span>
-          )}
-  
-          <h3>Exercises</h3>
-          {editingExercise ? (
-            <textarea
-              className="instructor-exercise-textarea"
-              value={editingExercise.questions}
-              onChange={(e) =>
-                setEditingExercise({ ...editingExercise, questions: e.target.value })
-              }
-            />
-          ) : (
-            <span>{subtopic.questions}</span>
-          )}
-  
-          <h3>Answers</h3>
-          {editingExercise ? (
-            <textarea
-              className="instructor-exercise-textarea"
-              value={editingExercise.answers}
-              onChange={(e) =>
-                setEditingExercise({ ...editingExercise, answers: e.target.value })
-              }
-            />
-          ) : (
-            <span>{subtopic.answers}</span>
-          )}
-  
-          <div className="instructor-content-buttons">
+        <>
+        <div className="instructor-content-buttons">
+              {editingExercise ? (
+                <div className="instructor-e-buttons">
+                  <button title='Save' className="instructor-save-edit-button" onClick={handleSaveExercise}>
+                    <IoIosSave />
+                  </button>
+                  <button title='Cancel' className="instructor-cancel-edit-button" onClick={() => setEditingExercise(null)}>
+                    <MdCancel />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="instructor-edit-subtopic-button"
+                  onClick={() => {
+                    handleEditExercise({
+                      docId: selectedSubject,
+                      content: subtopic.content,
+                      questions: subtopic.questions,
+                      answers: subtopic.answers,
+                    });
+                  }}
+                  title='Edit'
+                >
+                  <FaEdit />
+                </button>
+              )}
+              <button className="instructor-back-to-lessons-button" onClick={handleBackToSubtopics}>Back to Subtopics</button>
+            </div>
+          <div className="instructor-exercise-content">
             {editingExercise ? (
-              <div className="instructor-e-buttons">
-                <button title='Save' className="instructor-save-button" onClick={handleSaveExercise} style={{background: '#46cb4b'}}>
-                <IoIosSave />
-                </button>
-                <button title='Cancel' className="instructor-cancel-button" onClick={() => setEditingExercise(null)} style={{background: 'rgb(255, 88, 88)'}}>
-                <MdCancel />
-                </button>
-              </div>
+              <>
+                <ReactQuill
+                  theme="snow"
+                  value={editingExercise.content}
+                  onChange={(content) => setEditingExercise({...editingExercise, content})}
+                  modules={QUILL_MODULES}
+                  formats={QUILL_FORMATS}
+                />
+                <div className="instructor-attachments-section">
+                  <h3>Attachments</h3>
+                  <div className="instructor-attachments-list">
+                    {subtopic.attachments?.map((attachment, index) => (
+                      <div key={index} className="instructor-attachment-item">
+                        <div
+                          className="instructor-attachment-link"
+                          onClick={(e) => handlePreviewAttachment(attachment, e)}
+                        >
+                          <FaPaperclip /> {attachment.name}
+                        </div>
+                        <span className="instructor-attachment-size">
+                          {(attachment.size / 1024 / 1024).toFixed(2)} MB
+                        </span>
+                        <button
+                          className="instructor-delete-attachment"
+                          onClick={() => handleDeleteAttachment(index, attachment.name)}
+                          title="Delete attachment"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="instructor-upload-attachment">
+                    <label className="instructor-upload-button">
+                      {uploadingFile ? "Uploading..." : "Add Attachment"}
+                      <input
+                        type="file"
+                        onChange={handleFileUpload}
+                        disabled={uploadingFile}
+                        style={{ display: "none" }}
+                      />
+                    </label>
+                    <span className="instructor-upload-hint">Max 50MB per file</span>
+                  </div>
+                </div>
+                <h3>Exercises</h3>
+                <textarea
+                  className="instructor-exercise-textarea"
+                  value={editingExercise.questions}
+                  onChange={(e) =>
+                    setEditingExercise({ ...editingExercise, questions: e.target.value })
+                  }
+                />
+                <h3>Answers</h3>
+                <textarea
+                  className="instructor-exercise-textarea"
+                  value={editingExercise.answers}
+                  onChange={(e) =>
+                    setEditingExercise({ ...editingExercise, answers: e.target.value })
+                  }
+                />
+              </>
             ) : (
-              <button
-                onClick={() => {
-                  handleEditExercise({
-                    docId: selectedSubject,
-                    content: subtopic.content,
-                    questions: subtopic.questions,
-                    answers: subtopic.answers,
-                  });
-                }}
-                title='Edit'
-                style={{ background: '#53b2ff' }}
-              >
-                <FaEdit />
-              </button>
+              <>
+                <div className="instructor-content-display" dangerouslySetInnerHTML={{ __html: subtopic.content }} />
+                <div className="instructor-attachments-list" style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px'}}>
+                {subtopic.attachments?.map((attachment, index) => {
+                  // Determine file type and preview availability
+                  const fileType = attachment.name.split('.').pop().toLowerCase();
+                  const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileType);
+                  const isPDF = fileType === 'pdf';
+                  return (
+                    <div
+                      key={index}
+                      className="instructor-attachment-item"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '10px',
+                        padding: '15px',
+                        border: '1px solid #ddd',
+                        borderRadius: '5px',
+                        marginBottom: '10px',
+                        background: '#f9f9f9',
+                        cursor: 'pointer' // Add cursor pointer to indicate clickable area
+                      }}
+                      onClick={(e) => handlePreviewAttachment(attachment, e)}
+                    >
+                      <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+                        {/* Preview thumbnail */}
+                        <div style={{ width: '40px', height: '40px', flexShrink: 0 }}>
+                          {isImage ? (
+                            <img 
+                              src={attachment.url} 
+                              alt="Preview" 
+                              style={{ 
+                                width: '100%', 
+                                height: '100%', 
+                                objectFit: 'cover',
+                                borderRadius: '3px'
+                              }}
+                            />
+                          ) : isPDF ? (
+                            <div style={{
+                              width: '100%',
+                              height: '100%',
+                              background: '#ffebee',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              borderRadius: '3px'
+                            }}>
+                              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#d32f2f' }}>PDF</span>
+                            </div>
+                          ) : (
+                            <div style={{
+                              width: '100%',
+                              height: '100%',
+                              background: '#e3f2fd',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              borderRadius: '3px'
+                            }}>
+                              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#1976d2' }}>
+                                {fileType.toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* File name */}
+                        <div 
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            flexGrow: 1,
+                            paddingLeft: '10px'
+                          }}
+                        >
+                          <span style={{ fontWeight: '500' }}>{attachment.name}</span>
+                        </div>
+                      </div>
+                  
+                      <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        width: '100%'
+                      }}>
+                        {/* File size */}
+                        <span className="instructor-attachment-size" style={{ fontSize: '12px', color: '#666' }}>
+                          {(attachment.size / 1024 / 1024).toFixed(2)} MB
+                        </span>
+                  
+                        {/* Download button */}
+                        <a
+                          href="#"
+                          onClick={async (e) => {
+                            e.stopPropagation(); // Stop parent onClick
+                            e.preventDefault();  // Stop default <a> behavior
+
+                            try {
+                              const response = await fetch(attachment.url);
+                              const blob = await response.blob();
+                              const url = window.URL.createObjectURL(blob);
+
+                              const downloadLink = document.createElement('a');
+                              downloadLink.href = url;
+                              downloadLink.download = attachment.name;
+                              document.body.appendChild(downloadLink);
+                              downloadLink.click();
+                              document.body.removeChild(downloadLink);
+
+                              window.URL.revokeObjectURL(url); // Clean up blob URL
+                            } catch (error) {
+                              console.error('Download failed:', error);
+                              alert('Failed to download file.');
+                            }
+                          }}
+                          style={{
+                            padding: '5px',
+                            color: '#1976d2',
+                            cursor: 'pointer',
+                            fontSize: '24px'
+                          }}
+                          title="Download"
+                        >
+                          <RiDownload2Fill />
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+                </div>
+                <h3>Exercises</h3>
+                <div className="instructor-content-display" dangerouslySetInnerHTML={{ __html: subtopic.questions }} />
+                <h3>Answers</h3>
+                <div className="instructor-content-display" dangerouslySetInnerHTML={{ __html: subtopic.answers }} />
+              </>
             )}
-            <button onClick={handleBackToSubtopics}>Back to Subtopics</button>
-            <button onClick={handleBackToLessons}>Back to Lessons</button>
-            <button onClick={handleBackToSubjects}>Back to Subjects</button>
           </div>
-        </div>
+        </>
       );
     }
   };
@@ -1365,8 +1573,8 @@ extract all of the content of the files and follow the format below as reference
 
   const renderCreateSubjectModal = () => {
     return (
-      <div className="instructor-create-material-modal">
-        <div className="instructor-modal-content">
+      <div className="instructor-create-material-modal" onClick={() => setShowCreateSubjectModal(false)}>
+        <div className="instructor-modal-content1" onClick={(e) => {e.stopPropagation()}}>
           <h2>Create New Subject</h2>
           <div className="instructor-create-material-form">
             <label>Subject Name:</label>
@@ -1447,8 +1655,8 @@ extract all of the content of the files and follow the format below as reference
 
   const renderCreateLessonModal = () => {
     return (
-      <div className="instructor-create-lesson-modal">
-        <div className="instructor-modal-content">
+      <div className="instructor-create-lesson-modal" onClick={() => {setShowCreateLessonModal(false)}}>
+        <div className="instructor-modal-content1" onClick={(e) => {e.stopPropagation()}}>
           <h2>Create New Lesson</h2>
           <div className="instructor-create-lesson-form">
             <label>Lesson Name:</label>
@@ -1519,37 +1727,219 @@ extract all of the content of the files and follow the format below as reference
     }
   };
 
-  const handleAddSubtopic = () => {
-    setNewLesson((prev) => ({
-      ...prev,
-      subtopics: [...prev.subtopics, newSubtopic],
-    }));
-    setNewSubtopic({
-      subtopicCode: "",
-      subtopicTitle: "",
-      content: "",
-      questions: "",
-      answers: "",
-    });
+  const reuseSubtopic = async () => {
+    try {
+      const instructorEmail = localStorage.getItem("userEmail");
+      
+      // First create the subtopic without attachments
+      const createResponse = await axios.put(
+        `${base_url}/api/addSubtopic/${selectedSubject}/${selectedLesson}`,
+        {
+          subtopicTitle: reusingSubtopic.subtopicTitle,
+          content: reusingSubtopic.content,
+          questions: reusingSubtopic.questions,
+          answers: reusingSubtopic.answers,
+          attachments: reusingSubtopic.attachments || []
+        },
+        {
+          params: { instructorEmail },
+        }
+      );
+  
+      // Refresh learning materials
+      const updatedResponse = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
+        params: { instructorEmail },
+      });
+      setLearningMaterials(updatedResponse.data);
+  
+      // Show success notification
+      Swal.fire({
+        title: "Success",
+        text: "Material reused successfully!",
+        icon: "success",
+      });
+  
+      // Close the reuse modal and reset states
+      setReusing(false);
+      setReusingSubject(null);
+      setReusingLesson(null);
+      setReusingSubtopic("");
+  
+      // Navigate to the new subtopic
+      setSelectedSubtopic(createResponse.data.subtopicIndex);
+    } catch (error) {
+      console.error("Failed to reuse material:", error);
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to reuse material",
+        icon: "error",
+      });
+    }
+  }
+
+  const handleSaveSubtopic = async () => {
+    try {
+      const instructorEmail = localStorage.getItem("userEmail");
+      
+      // First create the subtopic without attachments
+      const createResponse = await axios.put(
+        `${base_url}/api/addSubtopic/${selectedSubject}/${selectedLesson}`,
+        {
+          subtopicTitle: newSubtopic.subtopicTitle,
+          content: newSubtopic.content,
+          questions: newSubtopic.questions,
+          answers: newSubtopic.answers
+        },
+        {
+          params: { instructorEmail },
+        }
+      );
+  
+      const subtopicIndex = createResponse.data.subtopicIndex;
+  
+      // Now upload each attachment
+      const uploadedAttachments = [];
+      for (const attachment of attachments) {
+        const formData = new FormData();
+        const file = await fetch(attachment.url)
+          .then(r => r.blob())
+          .then(blob => new File([blob], attachment.name, { type: attachment.type }));
+  
+        formData.append("file", file);
+        formData.append("subjectCode", selectedSubject);
+        formData.append("lessonIndex", selectedLesson);
+        formData.append("subtopicIndex", subtopicIndex);
+        formData.append(
+          "lessonName", 
+          learningMaterials[selectedSubject].lessons[selectedLesson].lessonName.replace(/\s+/g, '_')
+        );
+        formData.append(
+          "subtopicName", 
+          newSubtopic.subtopicTitle.replace(/\s+/g, '_')
+        );
+  
+        const uploadResponse = await axios.post(
+          `${base_url}/api/uploadAttachment`, 
+          formData, 
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+  
+        uploadedAttachments.push(uploadResponse.data.attachment);
+      }
+  
+      // Update learning materials in state
+      const updatedResponse = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
+        params: { instructorEmail },
+      });
+      setLearningMaterials(updatedResponse.data);
+  
+      Swal.fire({
+        title: "Success",
+        text: "Subtopic created successfully!",
+        icon: "success",
+      });
+      
+      setShowCreateSubtopicModal(false);
+      setNewSubtopic({
+        subtopicTitle: "",
+        content: "",
+        questions: "",
+        answers: "",
+      });
+      setAttachments([]);
+      
+      // Navigate to the new subtopic
+      setSelectedSubtopic(subtopicIndex);
+    } catch (error) {
+      console.error("Failed to create subtopic:", error);
+      Swal.fire({
+        title: "Failed",
+        text: "Failed to create subtopic",
+        icon: "error",
+      });
+    }
   };
 
   const renderCreateSubtopicModal = () => {
+    const handleNewFileUpload = async (event) => {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+  
+      const newUploadingFiles = [...uploadingFiles];
+      const newAttachments = [...attachments];
+  
+      for (const file of files) {
+        // Check file size (50MB limit)
+        if (file.size > 50 * 1024 * 1024) {
+          Swal.fire({
+            title: "File too large",
+            text: "Maximum file size is 50MB",
+            icon: "error",
+          });
+          continue;
+        }
+  
+        const fileId = Date.now().toString();
+        const updatedUploadingFiles = [...newUploadingFiles, { id: fileId, name: file.name }];
+  
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+  
+          const response = await axios.post(`${base_url}/api/uploadTempAttachment`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+  
+          newAttachments.push({
+            id: fileId,
+            name: file.name,
+            url: response.data.url,
+            path: response.data.path,
+            size: file.size,
+            type: file.type,
+          });
+        } catch (error) {
+          console.error("Error uploading file:", error);
+          Swal.fire({
+            title: "Error",
+            text: `Failed to upload ${file.name}`,
+            icon: "error",
+          });
+        } finally {
+          // Filter out the uploaded file from uploadingFiles
+          const filteredUploadingFiles = newUploadingFiles.filter(f => f.id !== fileId);
+          setUploadingFiles(filteredUploadingFiles);
+        }
+      }
+  
+      setUploadingFiles(newUploadingFiles);
+      setAttachments(newAttachments);
+      event.target.value = ""; // Reset file input
+    };
+  
+    const handleRemoveNewAttachment = (index) => {
+      const attachmentToRemove = attachments[index];
+      setAttachments(attachments.filter((_, i) => i !== index));
+      
+      // Delete from temporary storage if needed
+      axios.delete(`${base_url}/api/deleteTempAttachment`, {
+        data: { path: attachmentToRemove.path }
+      }).catch(error => {
+        console.error("Error deleting temporary attachment:", error);
+      });
+    };
+  
     return (
-      <div className="instructor-create-subtopic-modal">
-        <div className="instructor-modal-content">
+      <div className="instructor-create-subtopic-modal" onClick={() => setShowCreateSubtopicModal(false)}>
+        <div className="instructor-modal-content" onClick={(e) => {e.stopPropagation()}}>
           <h2>Create New Subtopic</h2>
           <div className="instructor-create-subtopic-form">
-            <label>Subtopic Code:</label>
-            <input
-              type="text"
-              value={newSubtopic.subtopicCode}
-              onChange={(e) =>
-                setNewSubtopic({ ...newSubtopic, subtopicCode: e.target.value })
-              }
-              onClick={(e) =>{
-                e.stopPropagation();
-              }}
-            />
             <label>Subtopic Title:</label>
             <input
               type="text"
@@ -1557,16 +1947,14 @@ extract all of the content of the files and follow the format below as reference
               onChange={(e) =>
                 setNewSubtopic({ ...newSubtopic, subtopicTitle: e.target.value })
               }
-              onClick={(e) =>{
-                e.stopPropagation();
-              }}
             />
             <label>Content:</label>
-            <textarea
+            <ReactQuill
+              theme="snow"
               value={newSubtopic.content}
-              onChange={(e) =>
-                setNewSubtopic({ ...newSubtopic, content: e.target.value })
-              }
+              onChange={(content) => setNewSubtopic({...newSubtopic, content})}
+              modules={QUILL_MODULES}
+              formats={QUILL_FORMATS}
             />
             <label>Questions:</label>
             <textarea
@@ -1582,70 +1970,67 @@ extract all of the content of the files and follow the format below as reference
                 setNewSubtopic({ ...newSubtopic, answers: e.target.value })
               }
             />
+            <div className="instructor-attachments-section">
+              <h3>Attachments</h3>
+              <div className="instructor-attachments-list">
+                {attachments.map((attachment, index) => (
+                  <div key={attachment.id} className="instructor-attachment-item">
+                    <div
+                      className="instructor-attachment-link"
+                      onClick={(e) => handlePreviewAttachment(attachment, e)}
+                    >
+                      <FaPaperclip /> {attachment.name}
+                    </div>
+                    <span className="instructor-attachment-size">
+                      {(attachment.size / 1024 / 1024).toFixed(2)} MB
+                    </span>
+                    <button
+                      className="instructor-delete-attachment"
+                      onClick={() => handleRemoveNewAttachment(index)}
+                      title="Remove attachment"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                ))}
+                {uploadingFiles.map(file => (
+                  <div key={file.id} className="instructor-attachment-item">
+                    <span><FaPaperclip /> {file.name} (Uploading...)</span>
+                  </div>
+                ))}
+              </div>
+              <div className="instructor-upload-attachment">
+                <label className="instructor-upload-button">
+                  Add Attachments
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleNewFileUpload}
+                    style={{ display: "none" }}
+                  />
+                </label>
+                <span className="instructor-upload-hint">Max 50MB per file</span>
+              </div>
+            </div>
           </div>
           <div className="instructor-modal-actions">
             <button onClick={handleSaveSubtopic}>Save</button>
-            <button onClick={() => setShowCreateSubtopicModal(false)}>Cancel</button>
+            <button onClick={() => {
+              // Clean up any temporary files
+              attachments.forEach(attachment => {
+                if (attachment.path && attachment.path.startsWith('temp/')) {
+                  axios.delete(`${base_url}/api/deleteTempAttachment`, {
+                    data: { path: attachment.path }
+                  }).catch(console.error);
+                }
+              });
+              setAttachments([]);
+              setShowCreateSubtopicModal(false);
+            }}>Cancel</button>
           </div>
         </div>
       </div>
     );
-  };
-
-  const handleSaveSubtopic = async () => {
-    try {
-      const instructorEmail = localStorage.getItem("userEmail");
-  
-      const newSubtopicData = {
-        subtopicCode: newSubtopic.subtopicCode,
-        subtopicTitle: newSubtopic.subtopicTitle,
-        content: newSubtopic.content,
-        questions: newSubtopic.questions,
-        answers: newSubtopic.answers,
-      };
-  
-      const response = await axios.put(
-        `${base_url}/api/addSubtopic/${selectedSubject}/${selectedLesson}`,
-        newSubtopicData,
-        {
-          params: { instructorEmail },
-        }
-      );
-  
-      if (response.status === 200) {
-        Swal.fire({
-          title: "Success",
-          text: "Subtopic created successfully!",
-          icon: "success",
-        })
-        setShowCreateSubtopicModal(false);
-        setNewSubtopic({
-          subtopicCode: "",
-          subtopicTitle: "",
-          content: "",
-          questions: "",
-          answers: "",
-        });
-  
-        const updatedResponse = await axios.get(`${base_url}/api/getInstructorLearningMaterials`, {
-          params: { instructorEmail },
-        });
-        setLearningMaterials(updatedResponse.data);
-      } else {
-        Swal.fire({
-          title: "Failed",
-          text: "Failed to create subtopic",
-          icon: "error",
-        })
-      }
-    } catch (error) {
-      console.error("Failed to create subtopic:", error);
-      Swal.fire({
-        title: "Failed",
-        text: "Failed to create subtopic",
-        icon: "error",
-      })
-    }
   };
 
   const handleConfirmDeleteAction = () => {
@@ -1683,7 +2068,10 @@ extract all of the content of the files and follow the format below as reference
         </button>
         <button 
           className={`instructor-tab ${activeTab === 'learning-materials' ? 'active' : ''}`}
-          onClick={() => setActiveTab('learning-materials')}
+          onClick={() => {
+            setActiveTab('learning-materials');
+            handleBackToSubjects();
+          }}
         >
           <LuBookMarked />
           Learning Materials
@@ -1697,7 +2085,17 @@ extract all of the content of the files and follow the format below as reference
         </button>
       </div>
       <div className="instructor-content">
-        <div className="admin-header">
+        <div className="instructor-header">
+        {activeTab === 'learning-materials' ?
+        <h1 style={{display: 'flex', alignItems: 'center'}}><LuBookMarked />
+          {!selectedSubject && "Subjects"}
+          {selectedSubject && selectedLesson === null && "Lessons"}
+          {selectedSubject && selectedLesson !== null && selectedSubtopic === null && "Subtopics"}
+          {selectedSubject && selectedLesson !== null && selectedSubtopic !== null && learningMaterials[selectedSubject]?.lessons[selectedLesson]?.subtopics[selectedSubtopic]?.subtopicTitle}
+        </h1>
+        :
+        <h1 style={{display: 'flex', alignItems: 'center'}}><MdOutlineDashboard />Dashboard</h1>
+        }
           <div className="admin-pf-border">
             <img src={userPicture} className="admin-pfp" alt="" />
             <p className="admin-user-name">{userName}</p>
@@ -1705,7 +2103,6 @@ extract all of the content of the files and follow the format below as reference
         </div>
         {activeTab === 'dashboard' ? (
           <div className="instructor-dashboard-tab">
-            <h1><MdOutlineDashboard />Dashboard</h1>
             <div className="instructor-statistics">
               <div className="instructor-statistics-box queries">
                 <h3><MdOutlineQuestionAnswer className='instructor-statistics-box-icon' />Total Queries</h3>
@@ -1720,31 +2117,36 @@ extract all of the content of the files and follow the format below as reference
               <div style={{ display: 'flex', gap: '3%', alignItems: 'center' }}>
                 <ResponsiveContainer className='instructor-line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
                   <LineChart className='instructor-line'
-                    data={getGraphData()}
+                    data={getGraphData().length > 0 ? getGraphData() : getDefaultGraphData()}
                     margin={{
-                      top: 10,
-                      right: 30,
-                      left: 0,
-                      bottom: 0,
+                        top: 10,
+                        right: 30,
+                        left: 0,
+                        bottom: 0,
                     }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" padding={{ left: 10, right: 10 }}>
-                    </XAxis>
-                    <YAxis
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" padding={{ left: 10, right: 10 }} />
+                  <YAxis
                       tickFormatter={(value) => (value === 0 ? "" : Math.floor(value))}
-                      domain={[0, "dataMax"]}
+                      domain={[0, 20]}  // Fixed domain from 0 to 10 (adjust max as needed)
                       allowDecimals={false}
-                    >
+                  >
                       <Label
-                        value="Number of Queries"
-                        angle={-90}
-                        position="insideLeft"
-                        style={{ textAnchor: "middle" }}
+                          value="Number of Queries"
+                          angle={-90}
+                          position="insideLeft"
+                          style={{ textAnchor: "middle" }}
                       />
-                    </YAxis>
-                    <Tooltip />
-                    <Line type="monotone" dataKey="queries" stroke="rgb(101, 134, 145)" strokeWidth={3} activeDot={{ r: 8 }} />
+                  </YAxis>
+                  <Tooltip />
+                  <Line 
+                      type="monotone" 
+                      dataKey="queries" 
+                      stroke="rgb(101, 134, 145)" 
+                      strokeWidth={3} 
+                      activeDot={{ r: 8 }} 
+                  />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -1801,22 +2203,14 @@ extract all of the content of the files and follow the format below as reference
           </div>
         ) : (
           <div className="instructor-manage-learning-materials-tab">
-            <h1><LuBookMarked />Manage Learning Materials</h1>
-            <input
+            {/*<input
               style={{width: 'fit-content'}}
               type="file" 
               accept=".json" 
               onChange={handleUploadLearningMaterials} 
               ref={fileInputRef}
             />
-            <p>Upload an Excel file to add learning materials.</p>
-            <button className="learning-material-command" onClick={handleCopyCommand}>Copy learning material prompt</button>
-            <pre className="legend">
-              <p style={{fontWeight: 'bold',}}>Learning material elements:</p>
-              <p>###Header</p>
-              <p>**Bold text**</p>
-              <p>'''Code Snippets''''</p>
-            </pre>
+            <p>Upload an Excel file to add learning materials.</p>*/}
             <div className="instructor-exercises-container">
               {renderExercises()}
             </div>
@@ -1826,8 +2220,8 @@ extract all of the content of the files and follow the format below as reference
 
       {showSubjectConfirmModal && (
         <div className="instructor-confirmation-modal">
-          <div className="instructor-modal-content">
-            <p>Are you sure you want to delete this {itemToDelete.type}?</p>
+          <div className="instructor-modal-content1">
+            <h3 style={{paddingBottom: '20px'}}>Are you sure you want to delete this {itemToDelete.type}?</h3>
             <div className="instructor-modal-actions">
               <button onClick={handleConfirmDeleteAction}>Yes</button>
               <button onClick={() => setShowSubjectConfirmModal(false)}>No</button>
@@ -1839,6 +2233,142 @@ extract all of the content of the files and follow the format below as reference
       {showCreateSubjectModal && renderCreateSubjectModal()}
       {showCreateLessonModal && renderCreateLessonModal()}
       {showCreateSubtopicModal && renderCreateSubtopicModal()}
+
+      {/* File Viewer Modal */}
+      {viewingAttachment && (
+        <div className="instructor-file-viewer-modal" onClick={() => setViewingAttachment(null)}>
+          <div className="instructor-file-viewer-controls">
+            <button 
+              className="instructor-close-viewer" 
+              onClick={() => setViewingAttachment(null)}
+            >
+              &times;
+            </button>
+            <button
+              className="instructor-download-file-button"
+              onClick={async () => {
+                try {
+                  const response = await fetch(viewingAttachment.url);
+                  const blob = await response.blob();
+                  const url = window.URL.createObjectURL(blob);
+                  
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = viewingAttachment.name; // Optional: Set filename
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  window.URL.revokeObjectURL(url);
+                } catch (error) {
+                  console.error("Download failed:", error);
+                  alert("Download failed. Please try again.");
+                }
+              }}
+            >
+              <RiDownload2Fill />
+            </button>
+            <h3 style={{color: 'white'}}>{viewingAttachment.name}</h3>
+          </div>
+          <div className="instructor-file-viewer-content">
+            
+            {attachmentType === 'pdf' && (
+              <iframe 
+                src={`https://docs.google.com/gview?url=${encodeURIComponent(viewingAttachment.url)}&embedded=true`}
+                width="100%" 
+                height="90%"
+                frameBorder="0"
+              />
+            )}
+            
+            {attachmentType === 'image' && (
+              <img 
+                src={viewingAttachment.url} 
+                alt={viewingAttachment.name} 
+                style={{ maxWidth: '100%', maxHeight: '90%' }} 
+              />
+            )}
+            
+            {(attachmentType === 'docx' || attachmentType === 'ppt') && (
+              <iframe
+                src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(viewingAttachment.url)}`}
+                width="100%"
+                height="90%"
+                frameBorder="0"
+              />
+            )}
+            
+            {attachmentType === 'other' && (
+              <div className="instructor-no-preview">
+                No preview available for this file type. 
+                <a href="#"
+                  onClick={async () => {
+                    try {
+                      const response = await fetch(viewingAttachment.url);
+                      const blob = await response.blob();
+                      const url = window.URL.createObjectURL(blob);
+                      
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = viewingAttachment.name; // Optional: Set filename
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                      window.URL.revokeObjectURL(url);
+                    } catch (error) {
+                      console.error("Download failed:", error);
+                      alert("Download failed. Please try again.");
+                    }
+                  }}
+                >
+                  Download
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {reusing && (
+        <div className="reuse-subtopic-modal" onClick={() => {setReusing(false)}}>
+          <div className="reuse-form" onClick={(e) => {e.stopPropagation();}}>
+            <div className="reuse-header">
+              {!reusingSubject && (
+                <h3>Subjects</h3>
+              )}
+              {reusingSubject && !reusingLesson && (<div style={{display: 'flex', alignItems: 'center'}}>
+                <button onClick={() => {setReusingSubject(null)}}><FaArrowLeft /></button>
+                <h3>Lessons (Select Lesson)</h3>
+              </div>)}
+              {reusingSubject && reusingLesson && (<div style={{display: 'flex', alignItems: 'center'}}>
+                <button onClick={() => {setReusingLesson(null); setReusingSubtopic("")}}><FaArrowLeft /></button>
+                <h3>Select material</h3>
+              </div>)}
+              <button style={{fontSize: 'xx-large'}} onClick={() => {setReusingSubject(null); setReusingLesson(null); setReusingSubtopic(null); setReusing(false);}}><IoMdClose /></button>
+            </div>
+            <div className="reuse-body">
+              {!reusingSubject && <>{Object.keys(learningMaterials).map((subject) => (
+                <div className="reuse-subject-items" onClick={() => {setReusingSubject(learningMaterials[subject].subjectCode)}}>
+                  {learningMaterials[subject].subjectName}
+                </div>
+              ))}</>}
+              {reusingSubject && !reusingLesson && <>{Object.keys(learningMaterials[reusingSubject].lessons).map((lesson) => (
+                <div className="reuse-subject-items" onClick={() => {setReusingLesson(lesson)}}>
+                  {learningMaterials[reusingSubject].lessons[lesson].lessonName}
+                </div>
+              ))}</>}
+              {reusingSubject && reusingLesson && <>{Object.keys(learningMaterials[reusingSubject].lessons[reusingLesson].subtopics).map((subtopic, subtopicIndex) => (
+                <div className={`reuse-subject-items ${reusingSubtopic.subtopicTitle === learningMaterials[reusingSubject].lessons[reusingLesson].subtopics[subtopic].subtopicTitle && reusingSubtopicIndex === subtopicIndex ? 'selected' : ''}`} onClick={() => {setReusingSubtopic(learningMaterials[reusingSubject].lessons[reusingLesson].subtopics[subtopic]); setReusingSubtopicIndex(subtopicIndex)}}>
+                  {learningMaterials[reusingSubject].lessons[reusingLesson].subtopics[subtopic].subtopicTitle}
+                </div>
+              ))}</>}
+            </div>
+            <div className="reuse-buttons" style={{display: 'flex', direction: 'rtl', alignItems: 'center'}}>
+              {reusingSubject && reusingLesson && reusingSubtopic === "" && <button disabled>Reuse</button>}
+              {reusingSubject && reusingLesson && reusingSubtopic !== "" && <button onClick={() => reuseSubtopic()}>Reuse</button>}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

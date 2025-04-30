@@ -10,6 +10,13 @@ import { FaEdit } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { LuSave } from "react-icons/lu";
 import { BiLike, BiDislike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
+import { FaPaperclip } from "react-icons/fa6";
+import Prism from 'prismjs';
+import 'prismjs/themes/prism.css'; // Default light theme
+// Import additional languages as needed
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-java';
 
 const StudentPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -35,8 +42,11 @@ const StudentPage = () => {
   const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
   const [editingChatId, setEditingChatId] = useState(null);
   const [newChatName, setNewChatName] = useState("");
+  const [editingMessageId, setEditingMessageId] = useState(null);
+  const [editedPrompt, setEditedPrompt] = useState("");
   const navigate = useNavigate();
   const textareaRef = useRef(null);
+  const editTextareaRef = useRef(null);
   const chatBodyRef = useRef(null);
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
@@ -197,6 +207,82 @@ const StudentPage = () => {
     }
   };
 
+  const handleStartEdit = (messageId, currentText) => {
+    setEditingMessageId(messageId);
+    setEditedPrompt(currentText);
+  };
+  
+  const handleCancelEditMessage = () => {
+    setEditingMessageId(null);
+    setEditedPrompt("");
+  };
+  
+  const handleSaveEdit = async () => {
+    if (!editedPrompt.trim()) return;
+  
+    try {
+      setIsDisabled(true);
+      setIsTyping(true);
+  
+      const response = await fetch(`${base_url}/api/editPrompt`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chatId: currentChatId,
+          messageId: editingMessageId,
+          editedPrompt: editedPrompt,
+          userId: userId,
+        }),
+      });
+  
+      const reader = response.body.getReader();
+      let botText = "";
+  
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+  
+        const chunk = new TextDecoder().decode(value);
+        botText += chunk;
+  
+        const messageIndex = messages.findIndex(msg => msg.messageId === editingMessageId);
+        const updatedMessages = [
+          ...messages.slice(0, messageIndex),
+          {
+            ...messages[messageIndex],
+            text: editedPrompt,
+            edited: true,
+            editedAt: new Date().toLocaleString()
+          },
+          { 
+            text: botText, 
+            sender: "bot", 
+            timestamp: new Date().toLocaleString(),
+            messageId: `bot_${Date.now()}`
+          }
+        ];
+        setMessages(updatedMessages);
+      }
+    } catch (error) {
+      console.error("Failed to edit prompt:", error);
+    } finally {
+      // Reset all relevant states
+      setEditingMessageId(null);
+      setEditedPrompt("");
+      setIsTyping(false);
+      setIsDisabled(false);
+      
+      // Focus back on the main input field
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+        }
+      }, 0);
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
@@ -265,40 +351,76 @@ const StudentPage = () => {
     if (!text) return null;
   
     if (sender === "bot") {
-      const boldTextRegex = /\*\*(.*?)\*\*/g; // Matches **bold** text
-      const codeBlockRegex = /```([\s\S]*?)```/g; // Matches ```code blocks```
-      const headingRegex = /###\s*(.*?)\n/g; // Matches ### headings
+      const boldTextRegex = /\*\*(.*?)\*\*/g;
+      const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/g; // Modified to capture language
+      const headingRegex = /###\s*(.*?)\n/g;
   
-      // Split the text by code blocks first
-      const parts = text.split(codeBlockRegex);
+      // Process code blocks with language detection
+      const parts = [];
+      let lastIndex = 0;
+      let match;
+      
+      while ((match = codeBlockRegex.exec(text)) !== null) {
+        // Add text before the code block
+        if (match.index > lastIndex) {
+          parts.push({
+            type: 'text',
+            content: text.substring(lastIndex, match.index)
+          });
+        }
+        
+        // Add the code block
+        parts.push({
+          type: 'code',
+          language: match[1] || 'javascript', // Default to javascript if no language specified
+          content: match[2]
+        });
+        
+        lastIndex = match.index + match[0].length;
+      }
+      
+      // Add remaining text after last code block
+      if (lastIndex < text.length) {
+        parts.push({
+          type: 'text',
+          content: text.substring(lastIndex)
+        });
+      }
   
       return parts.map((part, index) => {
-        if (index % 2 === 1) {
-          // This is a code block
+        if (part.type === 'code') {
+          // Syntax highlight the code
+          const highlightedCode = Prism.highlight(
+            part.content,
+            Prism.languages[part.language] || Prism.languages.javascript,
+            part.language
+          );
+          
           return (
             <pre key={index} className={`student-code-block ${theme}`}>
-              <code>{part}</code>
+              <code 
+                className={`language-${part.language}`}
+                dangerouslySetInnerHTML={{ __html: highlightedCode }}
+                style={{textShadow: 'none', color: theme === 'light' ? 'black' : 'white'}}
+              />
             </pre>
           );
         }
   
-        // Process headings and bold text in non-code parts
-        const headingParts = part.split(headingRegex);
+        // Process text parts (headings and bold text)
+        const headingParts = part.content.split(headingRegex);
         return (
           <span key={index} className="student-message-text" style={{ whiteSpace: 'pre-wrap' }}>
             {headingParts.map((headingPart, headingIndex) => {
               if (headingIndex % 2 === 1) {
-                // This is a heading (###)
                 return <h3 key={headingIndex}>{headingPart}</h3>;
               }
   
-              // Process bold text in non-heading parts
               const boldParts = headingPart.split(boldTextRegex);
               return (
                 <span key={headingIndex}>
                   {boldParts.map((boldPart, boldIndex) => {
                     if (boldIndex % 2 === 1) {
-                      // This is bold text (**)
                       return <strong key={boldIndex}>{boldPart}</strong>;
                     }
                     return boldPart;
@@ -310,7 +432,7 @@ const StudentPage = () => {
         );
       });
     } else {
-      // For user messages, just render the text as is
+      // For user messages
       return (
         <span className="student-message-text" style={{ whiteSpace: 'pre-wrap' }}>
           {text}
@@ -788,63 +910,110 @@ const StudentPage = () => {
               <p className="student-disclaimer">This chat will respond to any programming language.</p>
             </div>
             <div className={`student-chat-body ${theme}`} ref={chatBodyRef}>
-              {messages.map((message, index) => (
-                <div className={`student-message-pfp ${message.sender}`} key={index}>
-                  <img className="sender-image" src={`${message.sender === 'user' ? userPicture : logo}`} alt="sender.jpg" />
-                  <div className={`student-message ${message.sender}`}>
+            {messages.map((message, index) => (
+              <div className={`student-message-pfp ${message.sender}`} key={index}>
+                <img className="sender-image" src={`${message.sender === 'user' ? userPicture : logo}`} alt="sender.jpg" />
+                <div className={`student-message ${message.sender}`}>
+                  {message.sender === 'user' && editingMessageId === message.messageId ? (
+                    <div className={`student-edit-container ${theme}`}>
+                      <textarea
+                        ref={editTextareaRef}
+                        value={editedPrompt}
+                        onChange={(e) => {
+                          const textarea = editTextareaRef.current; // Changed variable name
+                          if (!textarea) return;
+
+                          const value = e.target.value;
+                          const cursorPosition = textarea.selectionStart;
+
+                          setEditedPrompt(value);
+
+                          textarea.style.height = "auto";
+                          textarea.style.height = `${textarea.scrollHeight}px`;
+
+                          setTimeout(() => {
+                            textarea.setSelectionRange(cursorPosition, cursorPosition);
+                          }, 0);
+                        }}
+                        className={`student-edit-textarea ${theme}`}
+                        autoFocus
+                      />
+                      <div className={`student-edit-actions ${theme}`}>
+                        <button 
+                          onClick={handleSaveEdit}
+                          className={`student-save-edit ${theme}`}
+                          disabled={isDisabled}
+                        >
+                          Ask
+                        </button>
+                        <button
+                          onClick={handleCancelEditMessage}
+                          className={`student-cancel-edit-message ${theme}`}
+                          disabled={isDisabled}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
                     <div className={`student-message ${message.sender} ${theme}`}>
-                      {message.sender === "user" ? (
-                        <p>{formatMessageText(message.text, message.sender)}</p>
+                      {formatMessageText(message.text, message.sender)}
+                      {message.edited && (
+                        <span className="student-edited-indicator">(edited)</span>
+                      )}
+                    </div>
+                  )}
+                  {/* Rest of your message rendering */}
+                  {message.sender === "bot" ? (
+                    <>
+                      {message.feedback === 'like' ? (
+                        <div
+                          className={`student-like-button ${theme}`}
+                          title="Liked"
+                        >
+                          <BiSolidLike />
+                        </div>
+                      ) : message.feedback === 'dislike' ? (
+                        <div
+                          className={`student-dislike-button ${theme}`}
+                          title="Disliked"
+                        >
+                          <BiSolidDislike />
+                        </div>
                       ) : (
-                        <div className="student-bot-response">
-                          {formatMessageText(message.text, message.sender)}
-                          <div className="student-response-actions">
+                        <div className="message-buttons-bot">
+                          <div
+                            className={`student-like-button ${theme}`}
+                            onClick={() => handleLikeDislike(message.messageId, 'like')}
+                            title="Like"
+                          >
+                            <BiLike />
+                          </div>
+                          <div
+                            className={`student-dislike-button ${theme}`}
+                            onClick={() => handleLikeDislike(message.messageId, 'dislike')}
+                            title="Dislike"
+                          >
+                            <BiDislike />
                           </div>
                         </div>
                       )}
+                    </>
+                    ):(
+                    <div className="message-buttons">
+                      {editingMessageId === null && editedPrompt === "" ? (<div
+                      className={`student-edit-prompt ${theme}`}
+                      onClick={() => handleStartEdit(message.messageId, message.text)}
+                      disabled={isDisabled}
+                      title="Edit prompt"
+                      >
+                        <FaEdit />
+                      </div>):(null)}
                     </div>
-                    <div className="message-actions">
-                      <span className={`student-timestamp ${message.sender}`}>{message.timestamp}</span>
-                      {message.sender === "bot" ? (
-                      <div className="buttons">
-                        {message.feedback === 'like' ? (
-                          <div
-                            className={`student-like-button ${theme}`}
-                            title="Liked"
-                          >
-                            <BiSolidLike />
-                          </div>
-                        ) : message.feedback === 'dislike' ? (
-                          <div
-                            className={`student-dislike-button ${theme}`}
-                            title="Disliked"
-                          >
-                            <BiSolidDislike />
-                          </div>
-                        ) : (
-                          <>
-                            <div
-                              className={`student-like-button ${theme}`}
-                              onClick={() => handleLikeDislike(message.messageId, 'like')}
-                              title="Like"
-                            >
-                              <BiLike />
-                            </div>
-                            <div
-                              className={`student-dislike-button ${theme}`}
-                              onClick={() => handleLikeDislike(message.messageId, 'dislike')}
-                              title="Dislike"
-                            >
-                              <BiDislike />
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      ): (null)}
-                    </div>
-                  </div>
+                    )}
                 </div>
-              ))}
+              </div>
+            ))}
               {isTyping && (
                 <p className="student-typing-indicator">Typing...</p>
               )}
@@ -864,9 +1033,7 @@ const StudentPage = () => {
                   onClick={handleSend}
                   className={`student-submit-query ${theme}`}
                   disabled={isDisabled}
-                >
-                  Ask
-                </button>
+                >Ask</button>
               </div>
             </div>
           </div>
@@ -896,7 +1063,9 @@ const StudentPage = () => {
                   onInput={handleKeyDown}
                   onKeyDown={handleKeyDown}
                 />
-                <button className={`student-submit-query ${theme}`} onClick={handleSend}>Ask</button>
+                <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', alignSelf: 'end'}}>
+                  <button className={`student-submit-query ${theme}`} onClick={handleSend}>Ask</button>
+                </div>
               </div>
             </div>
           </div>
