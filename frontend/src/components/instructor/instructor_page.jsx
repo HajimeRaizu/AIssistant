@@ -2101,8 +2101,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             <p className="admin-user-name">{userName}</p>
           </div>
         </div>
-        {activeTab === 'dashboard' ? 
-        (
+        {activeTab === 'dashboard' ? (
           <div className="instructor-dashboard-tab">
             <h1><MdOutlineDashboard />Dashboard</h1>
             <div className="instructor-statistics">
