@@ -148,7 +148,7 @@ const StudentPage = () => {
   
     const newMessages = [
       ...messages,
-      { text: input, sender: "user", timestamp: new Date().toLocaleString(), messageId: messageId },
+      { text: input, sender: "user", timestamp: new Date().toLocaleString('en-US'), messageId: messageId },
     ];
     setMessages(newMessages);
   
@@ -177,7 +177,7 @@ const StudentPage = () => {
   
         const updatedMessages = [
           ...newMessages,
-          { text: botText, sender: "bot", timestamp: new Date().toLocaleString(), messageId: messageId },
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString('en-US'), messageId: messageId },
         ];
         setMessages(updatedMessages);
       }
@@ -189,7 +189,7 @@ const StudentPage = () => {
         chatId: currentChatId,
         messages: [
           ...newMessages,
-          { text: botText, sender: "bot", timestamp: new Date().toLocaleString(), messageId: messageId },
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString('en-US'), messageId: messageId },
         ],
         chatName: chatNameToStore,
         userId,
@@ -198,7 +198,7 @@ const StudentPage = () => {
       console.error("Failed to generate response:", error);
       const updatedMessages = [
         ...newMessages,
-        { text: "Failed to generate response. Please try again.", sender: "bot", timestamp: new Date().toLocaleString(), messageId: messageId },
+        { text: "Failed to generate response. Please try again.", sender: "bot", timestamp: new Date().toLocaleString('en-US'), messageId: messageId },
       ];
       setMessages(updatedMessages);
     } finally {
@@ -482,7 +482,7 @@ const StudentPage = () => {
       setMessages([]);
   
       const newMessages = [
-        { text: input, sender: "user", timestamp: new Date().toLocaleString(), messageId: messageId },
+        { text: input, sender: "user", timestamp: new Date().toLocaleString('en-US'), messageId: messageId },
       ];
       setMessages(newMessages);
       setInput("");
@@ -510,7 +510,7 @@ const StudentPage = () => {
   
         const updatedMessages = [
           ...newMessages,
-          { text: botText, sender: "bot", timestamp: new Date().toLocaleString(), messageId: messageId },
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString('en-US'), messageId: messageId },
         ];
         setMessages(updatedMessages);
       }
@@ -519,7 +519,7 @@ const StudentPage = () => {
         chatId: newChatId,
         messages: [
           ...newMessages,
-          { text: botText, sender: "bot", timestamp: new Date().toLocaleString(), messageId: messageId },
+          { text: botText, sender: "bot", timestamp: new Date().toLocaleString('en-US'), messageId: messageId },
         ],
         chatName: newChat.chatName,
         userId,
