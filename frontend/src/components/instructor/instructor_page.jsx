@@ -2101,8 +2101,10 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             <p className="admin-user-name">{userName}</p>
           </div>
         </div>
-        {activeTab === 'dashboard' ? (
+        {activeTab === 'dashboard' ? 
+        (
           <div className="instructor-dashboard-tab">
+            <h1><MdOutlineDashboard />Dashboard</h1>
             <div className="instructor-statistics">
               <div className="instructor-statistics-box queries">
                 <h3><MdOutlineQuestionAnswer className='instructor-statistics-box-icon' />Total Queries</h3>
@@ -2118,12 +2120,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                 <ResponsiveContainer className='instructor-line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
                   <LineChart className='instructor-line'
                     data={getGraphData().length > 0 ? getGraphData() : getDefaultGraphData()}
-                    data={getGraphData().length > 0 ? getGraphData() : getDefaultGraphData()}
                     margin={{
-                        top: 10,
-                        right: 30,
-                        left: 0,
-                        bottom: 0,
                         top: 10,
                         right: 30,
                         left: 0,
@@ -2133,34 +2130,16 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" padding={{ left: 10, right: 10 }} />
                   <YAxis
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" padding={{ left: 10, right: 10 }} />
-                  <YAxis
                       tickFormatter={(value) => (value === 0 ? "" : Math.floor(value))}
                       domain={[0, 20]}  // Fixed domain from 0 to 10 (adjust max as needed)
-                      domain={[0, 20]}  // Fixed domain from 0 to 10 (adjust max as needed)
                       allowDecimals={false}
-                  >
                   >
                       <Label
                           value="Number of Queries"
                           angle={-90}
                           position="insideLeft"
                           style={{ textAnchor: "middle" }}
-                          value="Number of Queries"
-                          angle={-90}
-                          position="insideLeft"
-                          style={{ textAnchor: "middle" }}
                       />
-                  </YAxis>
-                  <Tooltip />
-                  <Line 
-                      type="monotone" 
-                      dataKey="queries" 
-                      stroke="rgb(101, 134, 145)" 
-                      strokeWidth={3} 
-                      activeDot={{ r: 8 }} 
-                  />
                   </YAxis>
                   <Tooltip />
                   <Line 
