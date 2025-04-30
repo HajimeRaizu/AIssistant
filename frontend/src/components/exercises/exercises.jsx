@@ -35,7 +35,7 @@ const ExercisesPage = () => {
   const [isReading, setIsReading] = useState(false);
   const [viewingAttachment, setViewingAttachment] = useState(null);
   const [attachmentType, setAttachmentType] = useState('');
-  const [addNewSubject, setAddNewSubject] = useState(true);
+  const [addNewSubject, setAddNewSubject] = useState(false);
   const [isAdding, setAddingNewSubject] = useState(false);
   const navigate = useNavigate();
 
