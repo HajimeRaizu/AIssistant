@@ -1528,6 +1528,12 @@ span{
     border-top-color: #1885eb;
 }
 
+
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+code *{
+    background: none !important;
+    background-color: none !important;
 }

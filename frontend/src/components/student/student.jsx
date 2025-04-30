@@ -136,6 +136,8 @@ const StudentPage = () => {
   }, [messages]);
 
   const handleSend = async () => {
+    setIsDisabled(true);
+    setIsTyping(true);
     const messageId = Date.now().toString();
     if (input.trim() === "") return;
     const textarea = document.querySelector(".student-chat-input textarea");
@@ -155,8 +157,6 @@ const StudentPage = () => {
     setMessages(newMessages);
   
     setInput("");
-    setIsDisabled(true);
-    setIsTyping(true);
   
     try {
       const response = await fetch(`${base_url}/api/ai`, {
@@ -215,6 +215,7 @@ const StudentPage = () => {
   };
   
   const handleCancelEditMessage = () => {
+    setIsEditing(false)
     setEditingMessageId(null);
     setEditedPrompt("");
   };
@@ -275,6 +276,7 @@ const StudentPage = () => {
       setEditedPrompt("");
       setIsTyping(false);
       setIsDisabled(false);
+      setIsEditing(false)
       
       // Focus back on the main input field
       setTimeout(() => {
@@ -946,7 +948,7 @@ const StudentPage = () => {
                           className={`student-save-edit ${theme}`}
                           disabled={isDisabled}
                         >
-                          {(isTyping) ? <div className={`student-spinner ${theme}`}></div> :'Ask'}
+                          {(isTyping && isEditing) ? <div className={`student-spinner ${theme}`}></div> : 'Ask'}
                         </button>
                         <button
                           onClick={handleCancelEditMessage}
@@ -1069,7 +1071,7 @@ const StudentPage = () => {
                 />
                 <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', alignSelf: 'end'}}>
                   <button className={`student-submit-query ${theme}`} onClick={handleSend}>
-                    {(isTyping) ? <div className={`student-spinner ${theme}`}></div> :'Ask'}
+                    {isTyping ? <div className={`student-spinner ${theme}`}></div> :'Ask'}
                   </button>
                 </div>
               </div>
