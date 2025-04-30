@@ -1074,10 +1074,6 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                     >
                       <MdDelete />
                     </button>
-                    <button className="download-learning-material" onClick={(e) => {
-                      e.stopPropagation();
-                      handleDownloadLearningMaterials(subject);
-                    }} title='Download'><FaFileDownload /></button>
                   </>
                 )}
               </div>
