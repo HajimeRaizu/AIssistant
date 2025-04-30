@@ -1512,3 +1512,22 @@
 span{
     word-break: break-word;
 }
+
+.student-spinner{
+    width: 20px;
+    height: 20px;
+    border: 3px solid gray; 
+    border-radius: 50%;
+    border-top-color: #0e355a;
+    animation: spin 1s ease-in-out infinite;
+    margin: 0 auto;
+}
+
+.student-spinner{
+    border: 3px solid lightgray;
+    border-top-color: #1885eb;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

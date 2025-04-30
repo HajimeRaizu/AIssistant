@@ -10,6 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { LuSave } from "react-icons/lu";
 import { BiLike, BiDislike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
+import { AiOutlineLoading } from "react-icons/ai";
 import { FaPaperclip } from "react-icons/fa6";
 import Prism from 'prismjs';
 import 'prismjs/themes/prism.css'; // Default light theme
@@ -41,6 +42,7 @@ const StudentPage = () => {
   const [isCreatingNewChat, setIsCreatingNewChat] = useState(false);
   const [userRole, setUserRole] = useState(localStorage.getItem("userRole") || "");
   const [editingChatId, setEditingChatId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [newChatName, setNewChatName] = useState("");
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [editedPrompt, setEditedPrompt] = useState("");
@@ -944,7 +946,7 @@ const StudentPage = () => {
                           className={`student-save-edit ${theme}`}
                           disabled={isDisabled}
                         >
-                          Ask
+                          {(isTyping) ? <div className={`student-spinner ${theme}`}></div> :'Ask'}
                         </button>
                         <button
                           onClick={handleCancelEditMessage}
@@ -1003,7 +1005,7 @@ const StudentPage = () => {
                     <div className="message-buttons">
                       {editingMessageId === null && editedPrompt === "" ? (<div
                       className={`student-edit-prompt ${theme}`}
-                      onClick={() => handleStartEdit(message.messageId, message.text)}
+                      onClick={() => {handleStartEdit(message.messageId, message.text); setIsEditing(true)}}
                       disabled={isDisabled}
                       title="Edit prompt"
                       >
@@ -1033,7 +1035,9 @@ const StudentPage = () => {
                   onClick={handleSend}
                   className={`student-submit-query ${theme}`}
                   disabled={isDisabled}
-                >Ask</button>
+                >
+                  {(isTyping && !isEditing) ? <div className={`student-spinner ${theme}`}></div> : 'Ask'}
+                </button>
               </div>
             </div>
           </div>
@@ -1064,7 +1068,9 @@ const StudentPage = () => {
                   onKeyDown={handleKeyDown}
                 />
                 <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', alignSelf: 'end'}}>
-                  <button className={`student-submit-query ${theme}`} onClick={handleSend}>Ask</button>
+                  <button className={`student-submit-query ${theme}`} onClick={handleSend}>
+                    {(isTyping) ? <div className={`student-spinner ${theme}`}></div> :'Ask'}
+                  </button>
                 </div>
               </div>
             </div>
