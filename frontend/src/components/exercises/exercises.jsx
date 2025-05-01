@@ -82,7 +82,6 @@ const ExercisesPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(currentCSS)
     window.speechSynthesis.cancel();
     const fetchUserRole = async () => {
       if (userEmail) {
@@ -772,38 +771,47 @@ const stopSpeech = () => {
               </div>
             )}
 
-            {/* Rest of the existing code... */}
-            <h3>Exercises</h3>
-            <div className={`exercise-container ${theme}`}>
-              {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].questions
-                .split("\n")
-                .filter((line) => line.trim() !== "")
-                .map((line, index) => {
-                  const isNumberedQuestion = /^\d+\./.test(line);
+            {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].questions
+              .split("\n")
+              .filter((line) => line.trim() !== "").length > 0 && (
+              <>
+                <h3>Exercises</h3>
+                <div className={`exercise-container ${theme}`}>
+                  {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].questions
+                    .split("\n")
+                    .filter((line) => line.trim() !== "")
+                    .map((line, index) => {
+                      const isNumberedQuestion = /^\d+\./.test(line);
 
-                  return (
-                    <React.Fragment key={index}>
-                      <div className={`exercise-text ${theme}`}>{line}</div>
-                      {isNumberedQuestion && (
-                        <input
-                          type="text"
-                          value={userAnswers[index] || ""}
-                          onChange={(e) => handleAnswerChange(index, e.target.value)}
-                          className={`exercise-input ${theme}`}
-                          placeholder="Your answer"
-                        />
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-            </div>
+                      return (
+                        <React.Fragment key={index}>
+                          <div className={`exercise-text ${theme}`}>{line}</div>
+                          {isNumberedQuestion && (
+                            <input
+                              type="text"
+                              value={userAnswers[index] || ""}
+                              onChange={(e) => handleAnswerChange(index, e.target.value)}
+                              className={`exercise-input ${theme}`}
+                              placeholder="Your answer"
+                            />
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                </div>
+              </>
+            )}
             <div className="button-container">
               <button className={`back-button ${theme}`} onClick={() => setSelectedSubtopic(null)}>
                 Back to Subtopics
               </button>
-              <button className={`check-answers-button ${theme}`} onClick={checkAnswers}>
-                Check Answers
-              </button>
+              {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].questions
+                .split("\n")
+                .filter((line) => line.trim() !== "").length > 0 && (
+                <button className={`check-answers-button ${theme}`} onClick={checkAnswers}>
+                  Check Answers
+                </button>
+              )}
             </div>
           </div>
         )}

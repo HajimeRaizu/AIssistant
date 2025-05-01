@@ -1184,3 +1184,13 @@ pre.ql-syntax{
   .reuse-buttons button{
     background: none;
   }
+
+  .instructor-question-generation-loading {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    text-align: center;
+    font-style: italic;
+    color: #666;
+  }

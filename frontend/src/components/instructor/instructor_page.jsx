@@ -63,6 +63,7 @@ const InstructorPage = () => {
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [viewingAttachment, setViewingAttachment] = useState(null);
   const [attachmentType, setAttachmentType] = useState('');
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
 
   const [showCreateSubjectModal, setShowCreateSubjectModal] = useState(false);
   const [showCreateLessonModal, setShowCreateLessonModal] = useState(false);
@@ -1514,9 +1515,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                 })}
                 </div>
                 <h3>Exercises</h3>
-                <div className="instructor-content-display" dangerouslySetInnerHTML={{ __html: subtopic.questions }} />
+                <div className="instructor-content-display" style={{whiteSpace: 'pre-wrap'}} dangerouslySetInnerHTML={{ __html: subtopic.questions }} />
                 <h3>Answers</h3>
-                <div className="instructor-content-display" dangerouslySetInnerHTML={{ __html: subtopic.answers }} />
+                <div className="instructor-content-display" style={{whiteSpace: 'pre-wrap'}} dangerouslySetInnerHTML={{ __html: subtopic.answers }} />
               </>
             )}
           </div>
@@ -1777,14 +1778,44 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
     try {
       const instructorEmail = localStorage.getItem("userEmail");
       
+      // Generate questions if content exists but questions are empty
+      let questionsToSave = newSubtopic.questions;
+      let answersToSave = newSubtopic.answers;
+      
+      if (newSubtopic.content && !newSubtopic.questions.trim()) {
+        setIsGeneratingQuestions(true);
+        try {
+          // Call the API to generate questions
+          const response = await axios.post(`${base_url}/api/generateQuestions`, {
+            content: newSubtopic.content
+          });
+          
+          if (response.data.questions && response.data.answers) {
+            questionsToSave = response.data.questions;
+            answersToSave = response.data.answers;
+          } else {
+            console.warn("API returned empty questions/answers");
+            questionsToSave = "Failed to generate questions automatically\nPlease add your own questions";
+            answersToSave = "Please add answers manually";
+          }
+        } catch (error) {
+          console.error("API Error:", error.response?.data || error.message);
+          questionsToSave = "Error generating questions\nPlease add your own questions";
+          answersToSave = "Please add answers manually";
+        } finally {
+          setIsGeneratingQuestions(false);
+        }
+      }
+  
       // First create the subtopic without attachments
       const createResponse = await axios.put(
         `${base_url}/api/addSubtopic/${selectedSubject}/${selectedLesson}`,
         {
           subtopicTitle: newSubtopic.subtopicTitle,
           content: newSubtopic.content,
-          questions: newSubtopic.questions,
-          answers: newSubtopic.answers
+          questions: questionsToSave,
+          answers: answersToSave,
+          attachments: [] // Initialize empty attachments array
         },
         {
           params: { instructorEmail },
@@ -1793,38 +1824,48 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
   
       const subtopicIndex = createResponse.data.subtopicIndex;
   
-      // Now upload each attachment
+      // Now upload each attachment if there are any
       const uploadedAttachments = [];
-      for (const attachment of attachments) {
-        const formData = new FormData();
-        const file = await fetch(attachment.url)
-          .then(r => r.blob())
-          .then(blob => new File([blob], attachment.name, { type: attachment.type }));
+      if (attachments.length > 0) {
+        for (const attachment of attachments) {
+          try {
+            const formData = new FormData();
+            const file = await fetch(attachment.url)
+              .then(r => r.blob())
+              .then(blob => new File([blob], attachment.name, { type: attachment.type }));
   
-        formData.append("file", file);
-        formData.append("subjectCode", selectedSubject);
-        formData.append("lessonIndex", selectedLesson);
-        formData.append("subtopicIndex", subtopicIndex);
-        formData.append(
-          "lessonName", 
-          learningMaterials[selectedSubject].lessons[selectedLesson].lessonName.replace(/\s+/g, '_')
-        );
-        formData.append(
-          "subtopicName", 
-          newSubtopic.subtopicTitle.replace(/\s+/g, '_')
-        );
+            formData.append("file", file);
+            formData.append("subjectCode", selectedSubject);
+            formData.append("lessonIndex", selectedLesson);
+            formData.append("subtopicIndex", subtopicIndex);
+            formData.append(
+              "lessonName", 
+              learningMaterials[selectedSubject].lessons[selectedLesson].lessonName.replace(/\s+/g, '_')
+            );
+            formData.append(
+              "subtopicName", 
+              newSubtopic.subtopicTitle.replace(/\s+/g, '_')
+            );
   
-        const uploadResponse = await axios.post(
-          `${base_url}/api/uploadAttachment`, 
-          formData, 
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+            const uploadResponse = await axios.post(
+              `${base_url}/api/uploadAttachment`, 
+              formData, 
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            uploadedAttachments.push(uploadResponse.data.attachment);
+          } catch (uploadError) {
+            console.error("Failed to upload attachment:", uploadError);
+            Swal.fire({
+              title: "Warning",
+              text: `Failed to upload attachment: ${attachment.name}`,
+              icon: "warning",
+            });
           }
-        );
-  
-        uploadedAttachments.push(uploadResponse.data.attachment);
+        }
       }
   
       // Update learning materials in state
@@ -1839,6 +1880,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         icon: "success",
       });
       
+      // Reset form
       setShowCreateSubtopicModal(false);
       setNewSubtopic({
         subtopicTitle: "",
@@ -1854,7 +1896,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
       console.error("Failed to create subtopic:", error);
       Swal.fire({
         title: "Failed",
-        text: "Failed to create subtopic",
+        text: error.response?.data?.error || "Failed to create subtopic",
         icon: "error",
       });
     }
@@ -2025,6 +2067,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             }}>Cancel</button>
           </div>
         </div>
+        {isGeneratingQuestions && (
+          <div className="instructor-question-generation-loading">
+            Generating sample questions...
+          </div>
+        )}
       </div>
     );
   };
@@ -2086,7 +2133,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         <h1 style={{display: 'flex', alignItems: 'center'}}><LuBookMarked />
           {!selectedSubject && "Subjects"}
           {selectedSubject && selectedLesson === null && "Lessons"}
-          {selectedSubject && selectedLesson !== null && selectedSubtopic === null && "Subtopics"}
+          {selectedSubject && selectedLesson !== null && selectedSubtopic === null && learningMaterials[selectedSubject]?.lessons[selectedLesson].lessonName}
           {selectedSubject && selectedLesson !== null && selectedSubtopic !== null && learningMaterials[selectedSubject]?.lessons[selectedLesson]?.subtopics[selectedSubtopic]?.subtopicTitle}
         </h1>
         :

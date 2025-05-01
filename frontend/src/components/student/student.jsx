@@ -802,7 +802,6 @@ const StudentPage = () => {
       // Find the corresponding user prompt that generated this response
       const userPrompt = messages.find(msg => msg.messageId === messageId && msg.sender === "user");
       if (!userPrompt || userPrompt.sender !== "user") {
-        console.log(userPrompt);
         console.error("User prompt not found");
         return;
       }
@@ -817,7 +816,6 @@ const StudentPage = () => {
       });
   
       if (response.data.success) {
-        console.log("Response liked/disliked successfully");
   
         // Update the messages state to reflect the feedback immediately
         setMessages(prevMessages =>

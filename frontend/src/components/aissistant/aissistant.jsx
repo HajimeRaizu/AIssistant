@@ -54,7 +54,7 @@ const AIssistant = () => {
               <p className='single-text'>Master coding with AI-powered guidance and real-time feedback.</p>
               <p className='single-text'>Learn, practice, and improve—whether you're a beginner or an advanced developer.</p>
               <span className="combined-text">Master coding with AI-powered guidance and real-time feedback. Learn, practice, and improve—whether you're a beginner or an advanced developer.</span>
-              <button onClick={() => handleBoxClick()} className='aissistant-user-type'>Login</button>
+              <button onClick={() => handleBoxClick()} className='aissistant-user-type'>Get Started</button>
             </div>
           </div>
         </div>
