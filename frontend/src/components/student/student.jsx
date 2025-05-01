@@ -6,7 +6,6 @@ import axios from "axios";
 import { LuBookMarked } from "react-icons/lu";
 import { MdOutlineDelete, MdLightMode, MdDarkMode, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import logo from '../assets/AIssistant.png';
-import { FaEdit } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { LuSave } from "react-icons/lu";
 import { BiLike, BiDislike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
@@ -18,6 +17,8 @@ import 'prismjs/themes/prism.css'; // Default light theme
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-java';
+import { MdOutlineEdit } from "react-icons/md";
+import { IoCopyOutline } from "react-icons/io5";
 
 const StudentPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -50,6 +51,7 @@ const StudentPage = () => {
   const textareaRef = useRef(null);
   const editTextareaRef = useRef(null);
   const chatBodyRef = useRef(null);
+  const [copiedMessageId, setCopiedMessageId] = useState(null);
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
   const userId = localStorage.getItem("userId");
@@ -730,7 +732,7 @@ const StudentPage = () => {
                       disabled={isDisabled}
                       title="Edit"
                     >
-                      <FaEdit />
+                      <MdOutlineEdit />
                     </button>
                     <button
                       className={`student-delete-chat ${theme}`}
@@ -1003,14 +1005,31 @@ const StudentPage = () => {
                     </>
                     ):(
                     <div className="message-buttons">
-                      {editingMessageId === null && editedPrompt === "" ? (<div
-                      className={`student-edit-prompt ${theme}`}
-                      onClick={() => {handleStartEdit(message.messageId, message.text); setIsEditing(true)}}
-                      disabled={isDisabled}
-                      title="Edit prompt"
-                      >
-                        <FaEdit />
-                      </div>):(null)}
+                      {editingMessageId === null && editedPrompt === "" ? (<>
+                        <div
+                          className={`student-edit-prompt ${theme}`}
+                          onClick={() => {
+                            navigator.clipboard.writeText(message.text);
+                            setCopiedMessageId(message.messageId);
+                            setTimeout(() => setCopiedMessageId(null), 1000);
+                          }}
+                          title="Copy to clipboard"
+                        >
+                          {copiedMessageId === message.messageId ? (
+                            <span style={{ fontSize: '12px', display: 'flex', alignItems: 'center'}}>Copied!</span>
+                          ) : (
+                            <IoCopyOutline />
+                          )}
+                        </div>
+                        <div
+                          className={`student-edit-prompt ${theme}`}
+                          onClick={() => {handleStartEdit(message.messageId, message.text); setIsEditing(true)}}
+                          disabled={isDisabled}
+                          title="Edit prompt"
+                        >
+                          <MdOutlineEdit />
+                        </div>
+                      </>) : (null)}
                     </div>
                     )}
                 </div>
