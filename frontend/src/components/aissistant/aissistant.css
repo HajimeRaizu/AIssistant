@@ -1,16 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
 
+body::-webkit-scrollbar{
+    display: none;
+}
+
 .aissistant-container{
     font-family: "Host Grotesk", sans-serif;
     display: flex;
     flex-direction: column;
-    height: 99dvh;
+    height: 100%;
     width: 100%;
-    overflow: auto;
     background: url("../assets/pic8.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    border: 1px solid red;
 }
 
 .aissistant{
@@ -91,10 +95,16 @@
     background: rgba(243, 243, 243, 0.4);
 }
 
+.about-us{
+    height: 1000px;
+    width: 100%;
+    background: rebeccapurple;
+}
+
 @media (max-aspect-ratio: 1/1), (max-width: 960px){
     .aissistant-container{
         height: 100dvh;
-        width: 100dvw;
+        width: 100%;
         background-size: cover;
     }
 
