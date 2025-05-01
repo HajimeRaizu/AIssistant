@@ -1506,6 +1506,99 @@ app.put("/api/addSubtopic/:subjectCode/:lessonIndex", async (req, res) => {
   }
 });
 
+// Add this endpoint to generate questions based on content
+// In your server.js
+app.post("/api/generateQuestions", async (req, res) => {
+  const { content } = req.body;
+
+  if (!content) {
+    return res.status(400).json({ error: "Content is required" });
+  }
+
+  try {
+    const prompt = `Based on the following educational content, generate exactly 5 identification or true or false questions that would help students test their understanding of the material. The answers should be one word only that should also be found in the material. if questions cant be made from the eductational content, leave it blank
+
+Format your response EXACTLY like this example:
+
+### Questions
+1. What is the capital of France?
+2. Is Paris located on the Seine River? (True/False)
+3. What is the main language spoken in France?
+4. Does France use the Euro as currency? (True/False)
+5. What is France's national anthem called?
+
+### Answers
+1. Paris
+2. True
+3. French
+4. True
+5. Marseillaise
+
+Content to base questions on:
+${content}`;
+
+    const response = await deepseek.chat.completions.create({
+      model: "deepseek-chat",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      max_tokens: 1024,
+    });
+
+    const generatedText = response.choices[0].message.content;
+
+    // More robust parsing
+    const questions = [];
+    const answers = [];
+    
+    // Split into lines and process
+    const lines = generatedText.split('\n');
+    let currentSection = null;
+    
+    for (const line of lines) {
+      if (line.startsWith('### Questions')) {
+        currentSection = 'questions';
+        continue;
+      } else if (line.startsWith('### Answers')) {
+        currentSection = 'answers';
+        continue;
+      }
+      
+      // Process numbered lines (1., 2., etc.)
+      const numberedLine = line.match(/^\d+\.\s*(.+)/);
+      if (numberedLine) {
+        if (currentSection === 'questions') {
+          questions.push(numberedLine[1].trim());
+        } else if (currentSection === 'answers') {
+          answers.push(numberedLine[1].trim());
+        }
+      }
+    }
+
+    // Format for response
+    const formattedQuestions = questions.join('\n');
+    const formattedAnswers = answers.join('\n');
+
+    if (questions.length === 0 || answers.length === 0) {
+      throw new Error("Failed to extract questions and answers");
+    }
+
+    res.status(200).json({ 
+      questions: formattedQuestions,
+      answers: formattedAnswers 
+    });
+  } catch (error) {
+    console.error("Error generating questions:", error);
+    res.status(500).json({ 
+      error: "Failed to generate questions",
+      details: error.message 
+    });
+  }
+});
+
 app.put("/api/updateSubtopic/:subjectCode/:lessonIndex/:subtopicIndex", async (req, res) => {
   const { subjectCode, lessonIndex, subtopicIndex } = req.params;
   const { subtopicTitle, content, questions, answers } = req.body;
