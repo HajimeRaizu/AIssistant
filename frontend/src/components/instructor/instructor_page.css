@@ -1194,3 +1194,14 @@ pre.ql-syntax{
     font-style: italic;
     color: #666;
   }
+
+  .instructor-question-generation-loading-background {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+  }

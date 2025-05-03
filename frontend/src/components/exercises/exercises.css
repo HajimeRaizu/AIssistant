@@ -735,24 +735,7 @@ button {
     cursor: pointer;
     position: relative;
     height: 150px;
-}
-  
-.subject-box:nth-child(3n + 1) {
-    background: linear-gradient(150deg, #4d7affc2, #c0d0ffc2), url("../assets/pic3.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-}
-  
-.subject-box:nth-child(3n + 2) {
-    background: linear-gradient(150deg, #4d7affc2, #c0d0ffc2), url("../assets/pic3.jpg"); /* Blue */
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-}
-  
-.subject-box:nth-child(3n + 3) {
-    background: linear-gradient(150deg, #4d7affc2, #c0d0ffc2), url("../assets/pic3.jpg"); /* Yellow */
+    background: linear-gradient(150deg, #85a4ff, #d3ddfa38), url("../assets/pic3.jpg"); /* Yellow */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

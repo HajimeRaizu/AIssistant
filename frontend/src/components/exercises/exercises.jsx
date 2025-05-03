@@ -11,6 +11,7 @@ import book from '../assets/book-removebg-preview.png';
 import { FaPaperclip, FaTrash } from "react-icons/fa";
 import { RiDownload2Fill } from "react-icons/ri";
 import ReactQuill from 'react-quill';
+import { FaArrowLeft } from "react-icons/fa";
 import 'react-quill/dist/quill.snow.css';
 
 const ExercisesPage = () => {
@@ -590,9 +591,8 @@ const stopSpeech = () => {
         </div>
         {hasSubjectCode && selectedSubject && selectedLesson === null && (
           <div className="lessons">
-            <h2 className={theme}>Lessons</h2>
             <button className={`back-button ${theme}`} onClick={() => setSelectedSubject(null)}>
-              Back to Subjects
+              
             </button>
             <ul>
               {learningMaterials[selectedSubject].lessons.map((lesson, index) => (
@@ -611,10 +611,12 @@ const stopSpeech = () => {
 
         {hasSubjectCode && selectedLesson !== null && selectedSubtopic === null && (
           <div className="subtopics">
-            <h2 className={theme}>Subtopics for {learningMaterials[selectedSubject].lessons[selectedLesson].lessonName}</h2>
-            <button className={`back-button ${theme}`} onClick={() => setSelectedLesson(null)}>
-              Back to Lessons
-            </button>
+            <h2 className={theme}>
+              <button className={`back-button ${theme}`} style={{padding: '0px 10px 0px 0px', fontSize: '20px'}} onClick={() => setSelectedLesson(null)}>
+                <FaArrowLeft />
+              </button>
+              Subtopics for {learningMaterials[selectedSubject].lessons[selectedLesson].lessonName}
+            </h2>
             <ul>
             {learningMaterials[selectedSubject]?.lessons[selectedLesson]?.subtopics &&
               learningMaterials[selectedSubject].lessons[selectedLesson].subtopics.map((subtopic, index) => (
@@ -949,7 +951,7 @@ const stopSpeech = () => {
                 type="text"
                 value={subjectId}
                 onChange={(e) => setSubjectId(e.target.value)}
-                placeholder="Enter learning material code"
+                placeholder="Enter subject code"
               />
             </div>
               <div className="add-subject-buttons">

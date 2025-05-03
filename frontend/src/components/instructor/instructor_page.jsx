@@ -2068,8 +2068,10 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           </div>
         </div>
         {isGeneratingQuestions && (
-          <div className="instructor-question-generation-loading">
-            Generating sample questions...
+          <div className="instructor-question-generation-loading-background" onClick={(e) => e.stopPropagation()}>
+            <div className="instructor-question-generation-loading">
+              Generating sample questions...
+            </div>
           </div>
         )}
       </div>
@@ -2146,7 +2148,6 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         </div>
         {activeTab === 'dashboard' ? (
           <div className="instructor-dashboard-tab">
-            <h1><MdOutlineDashboard />Dashboard</h1>
             <div className="instructor-statistics">
               <div className="instructor-statistics-box queries">
                 <h3><MdOutlineQuestionAnswer className='instructor-statistics-box-icon' />Total Queries</h3>
