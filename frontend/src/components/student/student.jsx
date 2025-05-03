@@ -681,6 +681,9 @@ const StudentPage = () => {
                   fetchChatHistory(chat.id);
                   setIsCreatingNewChat(false);
                   setSelectedTab("chat");
+                  setEditingMessageId(null);
+                  setEditedPrompt("");
+                  setIsEditing(false)
                 }
               }}
             >
