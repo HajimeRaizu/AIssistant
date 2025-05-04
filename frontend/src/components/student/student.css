@@ -1122,14 +1122,16 @@
 .student-newchat-message textarea.dark {
     background: var(--input-dark);
     color: var(--text-dark);
+    font-size: medium;
 }
 
 .student-newchat-message textarea.light {
     background: var(--input-light);
     color: var(--text-light);
+    font-size: medium;
 }
 
-.student-newchat-message textarea::placeholder.dark {
+.student-newchat-message.dark textarea::placeholder.dark {
     color: var(--input-placeholder-dark);
 }
 

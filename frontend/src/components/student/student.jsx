@@ -1117,14 +1117,14 @@ useEffect(() => {
         <div className={`student-no-chat-selected ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'} ${theme}`}>
           <div className={`student-no-chat-box ${theme}`}>
             <div className={`student-newchat-container ${theme}`}>
-              <img src={logo} alt="AIssistant.png" style={{height: '140px', width: '140px', alignSelf: 'center', marginBottom: '20px'}} />
+              <img src={logo} alt="AIssistant.png" style={{height: '140px', width: '140px', alignSelf: 'center', marginBottom: '10px'}} />
               <div className={`student-newchat-header ${theme}`}>
                 <div className="student-aissistant">
                   <h1>Hello World! I am </h1>
                   <h2 style={{ color: 'rgb(86, 86, 255)', fontSize: '24px', paddingLeft: '7px' }}>AI</h2>
                   <h2 style={{ fontSize: '24px' }}>ssistant.</h2>
                 </div>
-                <p>Your personal academia companion.</p>
+                <p style={{fontSize: 'medium'}}>Your personal academia companion.</p>
               </div>
               <div className={`student-newchat-message ${theme}`}>
               <textarea
