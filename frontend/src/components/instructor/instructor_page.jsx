@@ -1791,17 +1791,27 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           });
           
           if (response.data.questions && response.data.answers) {
+            // Preserve the numbered format from the API response
             questionsToSave = response.data.questions;
             answersToSave = response.data.answers;
+            
+            // If the API returns questions without numbers, add them
+            if (!questionsToSave.match(/^\d+\./m)) {
+              const questionLines = questionsToSave.split('\n').filter(line => line.trim());
+              questionsToSave = questionLines.map((line, index) => `${index + 1}. ${line}`).join('\n');
+              
+              const answerLines = answersToSave.split('\n').filter(line => line.trim());
+              answersToSave = answerLines.map((line, index) => `${index + 1}. ${line}`).join('\n');
+            }
           } else {
             console.warn("API returned empty questions/answers");
-            questionsToSave = "Failed to generate questions automatically\nPlease add your own questions";
-            answersToSave = "Please add answers manually";
+            questionsToSave = "1. Failed to generate questions automatically\n2. Please add your own questions";
+            answersToSave = "1. Please add answers manually";
           }
         } catch (error) {
           console.error("API Error:", error.response?.data || error.message);
-          questionsToSave = "Error generating questions\nPlease add your own questions";
-          answersToSave = "Please add answers manually";
+          questionsToSave = "1. Error generating questions\n2. Please add your own questions";
+          answersToSave = "1. Please add answers manually";
         } finally {
           setIsGeneratingQuestions(false);
         }
@@ -2098,7 +2108,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
     <div className="instructor-container">
       <div className="instructor-sidebar">
         <div className="instructor-aissistant-logo-title">
-          <img src={logo} alt="aissistant logo" />
+          <img src={logo} alt="aissistant logo" style={{filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="instructor-aissistant-title">
             <h1 className="instructor-ai">AI</h1>
             <h1>ssistant</h1>

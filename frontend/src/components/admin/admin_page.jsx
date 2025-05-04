@@ -614,7 +614,7 @@ const handleEditUser = async (user, newRole) => {
     <div className="admin-container">
       <div className="admin-sidebar">
         <div className="aissistant-logo-title">
-          <img src={logo} alt="aissistant logo" />
+          <img src={logo} alt="aissistant logo" style={{filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="aissistant-title">
             <h1 className="ai">AI</h1>
             <h1>ssistant</h1>
