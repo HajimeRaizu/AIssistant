@@ -59,6 +59,53 @@ const StudentPage = () => {
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
 
+  const [placeholderText, setPlaceholderText] = useState("");
+const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+const [isTypingPlaceholder, setIsTypingPlaceholder] = useState(true);
+const [isDeletingPlaceholder, setIsDeletingPlaceholder] = useState(false);
+
+const sampleQuestions = [
+  "How do I reverse a string in Python?",
+  "What's the difference between let and var in JavaScript?",
+  "Explain binary search algorithm with an example"
+];
+
+useEffect(() => {
+  let timeout;
+  const typingSpeed = 100; // milliseconds per character
+  const deletingSpeed = 50; // faster when deleting
+  const pauseBetweenQuestions = 1500; // pause before next question
+
+  if (isTypingPlaceholder) {
+    if (placeholderText.length < sampleQuestions[currentQuestionIndex].length) {
+      timeout = setTimeout(() => {
+        setPlaceholderText(sampleQuestions[currentQuestionIndex].substring(0, placeholderText.length + 1));
+      }, typingSpeed);
+    } else {
+      // Done typing, wait then start deleting
+      timeout = setTimeout(() => {
+        setIsTypingPlaceholder(false);
+        setIsDeletingPlaceholder(true);
+      }, pauseBetweenQuestions);
+    }
+  } else if (isDeletingPlaceholder) {
+    if (placeholderText.length > 0) {
+      timeout = setTimeout(() => {
+        setPlaceholderText(placeholderText.substring(0, placeholderText.length - 1));
+      }, deletingSpeed);
+    } else {
+      // Done deleting, move to next question
+      setIsDeletingPlaceholder(false);
+      setCurrentQuestionIndex((prevIndex) => 
+        (prevIndex + 1) % sampleQuestions.length
+      );
+      setIsTypingPlaceholder(true);
+    }
+  }
+
+  return () => clearTimeout(timeout);
+}, [placeholderText, currentQuestionIndex, isTypingPlaceholder, isDeletingPlaceholder]);
+
   useEffect(() => {
     const fetchUserRole = async () => {
       if (userEmail) {
@@ -1070,6 +1117,7 @@ const StudentPage = () => {
         <div className={`student-no-chat-selected ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'} ${theme}`}>
           <div className={`student-no-chat-box ${theme}`}>
             <div className={`student-newchat-container ${theme}`}>
+              <img src={logo} alt="AIssistant.png" style={{height: '140px', width: '140px', alignSelf: 'center', marginBottom: '20px'}} />
               <div className={`student-newchat-header ${theme}`}>
                 <div className="student-aissistant">
                   <h1>Hello World! I am </h1>
@@ -1079,16 +1127,16 @@ const StudentPage = () => {
                 <p>Your personal academia companion.</p>
               </div>
               <div className={`student-newchat-message ${theme}`}>
-                <textarea
-                  className={`${theme}`}
-                  ref={textareaRef}
-                  type="text"
-                  placeholder="Ask a question"
-                  value={input}
-                  onChange={handleInputChange}
-                  onInput={handleKeyDown}
-                  onKeyDown={handleKeyDown}
-                />
+              <textarea
+                className={`${theme}`}
+                ref={textareaRef}
+                type="text"
+                placeholder={placeholderText || "Ask a question"}
+                value={input}
+                onChange={handleInputChange}
+                onInput={handleKeyDown}
+                onKeyDown={handleKeyDown}
+              />
                 <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', alignSelf: 'end'}}>
                   <button className={`student-submit-query ${theme}`} onClick={handleSend}>
                     {isTyping ? <div className={`student-spinner ${theme}`}></div> :'Ask'}

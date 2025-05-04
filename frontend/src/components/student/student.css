@@ -963,7 +963,7 @@
 .student-no-chat-selected {
     display: flex;
     justify-content: center;
-    align-items: center;
+    padding-top: 15dvh;
     height: 100%;
     width: 77dvw;
     text-align: center;
@@ -1536,4 +1536,19 @@ span{
 code *{
     background: none !important;
     background-color: none !important;
+}
+
+.student-newchat-message textarea::placeholder {
+    transition: opacity 0.3s ease;
+    color: var(--placeholder-color); /* Add this to your theme variables */
+}
+  
+  /* For light theme */
+.student-newchat-message.light textarea::placeholder {
+    color: #888;
+}
+  
+  /* For dark theme */
+.student-newchat-message.dark textarea::placeholder {
+    color: #aaa;
 }
