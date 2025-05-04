@@ -23,7 +23,7 @@ const StudentLanding = () => {
 
       {/* Hero Section */}
       <section className="hero">
-        <div className='landing-aissistant'><h1 className='ai'>AI</h1><h1 className='landing-welcome'>ssistant</h1></div>
+        <div className='landing-aissistant'><h1 className='ai' style={{color: '#085f93'}}>AI</h1><h1 className='landing-welcome'>ssistant</h1></div>
         <p>Your personal academia companion</p>
       </section>
 
@@ -33,14 +33,14 @@ const StudentLanding = () => {
           className="box"
           onClick={() => handleBoxClick('/student')} // Redirect to AI Chat page
         >
-          <h2>AIssistant Chat</h2>
+          <h2 style={{color: '#085f93'}}>AIssistant Chat</h2>
           <p>Engage in conversations with AIssistant.</p>
         </div>
         <div
           className="box"
           onClick={() => handleBoxClick('/exercises')} // Redirect to Exercises page
         >
-          <h2>AIssistant Learn</h2>
+          <h2 style={{color: '#085f93'}}>AIssistant Learn</h2>
           <p>Practice and improve your skills with interactive exercises.</p>
         </div>
       </section>

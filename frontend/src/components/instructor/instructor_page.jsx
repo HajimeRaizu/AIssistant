@@ -2122,8 +2122,8 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         <div className="instructor-aissistant-logo-title">
           <img src={logo} alt="aissistant logo" style={{filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="instructor-aissistant-title">
-            <h1 className="instructor-ai">AI</h1>
-            <h1>ssistant</h1>
+            <h1 className="instructor-ai" style={{color: '#042e47'}}>AI</h1>
+            <h1 style={{color: 'white'}}>ssistant</h1>
           </div>
         </div>
         <button 

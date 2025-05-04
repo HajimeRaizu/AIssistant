@@ -958,7 +958,7 @@ useEffect(() => {
           <div className="student-chat-container">
             <div className={`student-chat-header ${theme}`}>
               <div className="student-aissistant">
-                <h2 style={{ color: 'rgb(86, 86, 255)' }}>AI</h2>
+                <h2 style={{color: '#085f93'}}>AI</h2>
                 <h2>ssistant Chat</h2>
               </div>
               <p className="student-disclaimer">This chat will respond to any programming language.</p>
