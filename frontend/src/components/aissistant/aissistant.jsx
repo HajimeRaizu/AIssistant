@@ -27,7 +27,7 @@ const AIssistant = () => {
   return (
       <div className='aissistant-container'>
         <div className='aissistant-header'>
-          <div className='landing-aissistant'><h1 className='ai'>AI</h1><h1 className='landing-welcome'>ssistant</h1></div>
+          <div className='landing-aissistant'><h1 className='ai' style={{color: '#085f93'}}>AI</h1><h1 className='landing-welcome'>ssistant</h1></div>
         </div>
         <div className="aissistant">
             <div className="aissistant-info">
@@ -42,7 +42,7 @@ const AIssistant = () => {
 
               <span>
                 <h2>Instructor</h2>
-                <p>1. Loging using nemsu workspace account</p>
+                <p>1. Login using nemsu workspace account</p>
                 <p>2. Create learning materials</p>
                 <p>3. View students' frequently asked questions</p>
               </span>
