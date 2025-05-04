@@ -1100,12 +1100,15 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
               {copyButtonText}
             </button>
           </div>
+          <button
+            className="instructor-back-to-subjects-button"
+            onClick={handleBackToSubjects}
+            style={{background: 'none', padding: '0px', margin: '0px 10px 0px 0px'}}>
+            <FaArrowLeft />
+          </button>
           <button className="add-lesson" onClick={() => setShowCreateLessonModal(true)}>
             Add Lesson
           </button>
-          <button className="instructor-back-to-subjects-button" onClick={handleBackToSubjects}>
-              Back to Subjects
-            </button>
           <div>
             {lessons.map((lesson, index) => (
               <div onClick={() => setSelectedLesson(index)} key={`lesson-${index}`} className="instructor-exercise-lesson">
@@ -1186,14 +1189,17 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
   
       return (
         <div>
+          <button
+            className="instructor-back-to-lessons-button"
+            onClick={handleBackToLessons}
+            style={{background: 'none', padding: '0px', margin: '0px 10px 10px 0px'}}>
+            <FaArrowLeft />
+          </button>
           <button className="add-subtopic" onClick={() => setShowCreateSubtopicModal(true)}>
             Add Subtopic
           </button>
           <button className="add-subtopic" onClick={() => setReusing(true)}>
             Reuse material
-          </button>
-          <button className="instructor-back-to-lessons-button" onClick={handleBackToLessons}>
-            Back to Lessons
           </button>
           <div>
             {subtopics.map((subtopic, index) => (
@@ -1286,34 +1292,12 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
     
       return (
         <>
-        <div className="instructor-content-buttons">
-              {editingExercise ? (
-                <div className="instructor-e-buttons">
-                  <button title='Save' className="instructor-save-edit-button" onClick={handleSaveExercise}>
-                    <IoIosSave />
-                  </button>
-                  <button title='Cancel' className="instructor-cancel-edit-button" onClick={() => setEditingExercise(null)}>
-                    <MdCancel />
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className="instructor-edit-subtopic-button"
-                  onClick={() => {
-                    handleEditExercise({
-                      docId: selectedSubject,
-                      content: subtopic.content,
-                      questions: subtopic.questions,
-                      answers: subtopic.answers,
-                    });
-                  }}
-                  title='Edit'
-                >
-                  <FaEdit />
-                </button>
-              )}
-              <button className="instructor-back-to-lessons-button" onClick={handleBackToSubtopics}>Back to Subtopics</button>
-            </div>
+        <button
+          className="instructor-back-to-lessons-button"
+          onClick={handleBackToSubtopics}
+          style={{background: 'none', padding: '0px', margin: '0px 10px 10px 0px'}}>
+          <FaArrowLeft />
+        </button>
           <div className="instructor-exercise-content">
             {editingExercise ? (
               <>
@@ -1520,6 +1504,34 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                 <div className="instructor-content-display" style={{whiteSpace: 'pre-wrap'}} dangerouslySetInnerHTML={{ __html: subtopic.answers }} />
               </>
             )}
+            <div className="instructor-content-buttons">
+                  {editingExercise ? (
+                    <div className="instructor-e-buttons">
+                      <button title='Save' className="instructor-save-edit-button" onClick={handleSaveExercise} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '5px'}}>
+                        Save<IoIosSave />
+                      </button>
+                      <button title='Cancel' className="instructor-cancel-edit-button" onClick={() => setEditingExercise(null)} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '5px'}}>
+                        Cancel<MdCancel />
+                      </button>
+                    </div>
+                  ) : (
+                  <button
+                    className="instructor-edit-subtopic-button"
+                    onClick={() => {
+                      handleEditExercise({
+                        docId: selectedSubject,
+                        content: subtopic.content,
+                        questions: subtopic.questions,
+                        answers: subtopic.answers,
+                      });
+                    }}
+                    title='Edit'
+                    style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '5px'}}
+                >
+                  Edit<FaEdit />
+                </button>
+              )}
+            </div>
           </div>
         </>
       );

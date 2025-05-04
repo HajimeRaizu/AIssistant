@@ -13,6 +13,8 @@ import { RiDownload2Fill } from "react-icons/ri";
 import ReactQuill from 'react-quill';
 import { FaArrowLeft } from "react-icons/fa";
 import 'react-quill/dist/quill.snow.css';
+import logo from '../assets/AIssistant.png';
+import { ImCross } from "react-icons/im";
 
 const ExercisesPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -532,12 +534,15 @@ const stopSpeech = () => {
           <img src={`${userPicture}`} alt={`${userName}.jpg`} />
           <p>{userName}</p>
         </div>
-        <h2>Subjects</h2>
-        <button onClick={() => {setAddNewSubject(true)}} className={`submit-button ${theme}`}>
-          Add Subject
-        </button>
+        <div className="student-aissistant-logo-title">
+          <img src={logo} alt="aissistant logo" style={{height: '60px', width: '60px'}} />
+          <div className="student-aissistant-title">
+            <h1 className="student-ai" style={{color: '#085f93'}}>AI</h1>
+            <h1>ssistant</h1>
+          </div>
+        </div>
         {hasSubjectCode ? (
-          <ul>
+          <ul style={{borderTop: '1px solid gray', borderBottom: '1px solid gray', marginTop: '10px', marginBottom: '10px'}}>
             {Object.keys(learningMaterials).map((subjectCode) => (
               <li
                 key={subjectCode}
@@ -571,6 +576,7 @@ const stopSpeech = () => {
 
       <div className={`exercises-content ${theme} ${isSidebarVisible ? "sidebar-visible" : "sidebar-hidden"}`}>
         <div className="exercises-header-container">
+          {!selectedSubject && <h1 className={`h1 ${theme}`}>Subjects</h1>}
           <div className="exercises-header">
             {hasSubjectCode && selectedSubject && (
               <h1 className={theme}>{learningMaterials[selectedSubject].subjectName}</h1>
@@ -592,7 +598,7 @@ const stopSpeech = () => {
         {hasSubjectCode && selectedSubject && selectedLesson === null && (
           <div className="lessons">
             <button className={`back-button ${theme}`} onClick={() => setSelectedSubject(null)}>
-              
+            <FaArrowLeft />
             </button>
             <ul>
               {learningMaterials[selectedSubject].lessons.map((lesson, index) => (
@@ -615,7 +621,7 @@ const stopSpeech = () => {
               <button className={`back-button ${theme}`} style={{padding: '0px 10px 0px 0px', fontSize: '20px'}} onClick={() => setSelectedLesson(null)}>
                 <FaArrowLeft />
               </button>
-              Subtopics for {learningMaterials[selectedSubject].lessons[selectedLesson].lessonName}
+              {learningMaterials[selectedSubject].lessons[selectedLesson].lessonName}
             </h2>
             <ul>
             {learningMaterials[selectedSubject]?.lessons[selectedLesson]?.subtopics &&
@@ -964,6 +970,15 @@ const stopSpeech = () => {
               </div>
             </div>
           </div>)}
+          {!selectedSubject && (
+            <button
+              onClick={() => {setAddNewSubject(true)}}
+              className={`student-add-new-subject ${theme}`}
+              title="Add subject code"
+            >
+            <ImCross />
+            </button>
+          )}
     </div>
   );
 };

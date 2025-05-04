@@ -651,6 +651,7 @@
 .instructor-content-buttons{
     display: flex;
     align-items: center;
+    justify-content: right;
     padding: 10px;
     width: 100%;
 }
@@ -859,15 +860,15 @@
 }
 
 .instructor-edit-subject-button, .instructor-edit-lesson-button, .instructor-edit-subtopic-button{
-    background: #53b2ff;
+    background: #53b2ff !important; 
 }
 
 .instructor-delete-subject-button, .instructor-delete-lesson-button, .instructor-delete-subtopic-button, .instructor-cancel-edit-button{
-    background: rgb(255, 88, 88);
+    background: rgb(255, 88, 88) !important;
 }
 
 .download-learning-material, .instructor-save-edit-button{
-    background: #46cb4b;
+    background: #46cb4b !important;
 }
 
 .learning-material-command{

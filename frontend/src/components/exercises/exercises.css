@@ -403,12 +403,14 @@ button {
    
 /* Back Button Styling */
 .back-button {
-    padding: 10px 20px;
+    padding: 0px;
     border: none;
     cursor: pointer;
     font-size: 18px;
-    font-weight: bold;
-    margin: 10px 5px;
+    margin: 15px 0px 0px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Dark Theme Specific Styles */
@@ -1059,3 +1061,43 @@ img.book{
     background: rgb(184, 58, 58);
     color: white;
   }
+
+.h1.light{
+    color: black;
+}
+
+.h1.dark{
+    color: white;
+}
+
+.student-aissistant-logo-title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.student-aissistant-title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.student-add-new-subject{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: rotate(45deg);
+    height: 50px;
+    width: 50px;
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    background: #4caf50;
+    border-radius: 25px;
+}
+
+.student-add-new-subject:hover{
+    transform: rotate(45deg);
+}

@@ -34,7 +34,7 @@
         top: 10px;
         left: 70%;
         transition: left 0.3s ease-in-out;
-        z-index: 1000; /* Ensure it's above the sidebar */
+        z-index: 999; /* Ensure it's above the sidebar */
     }
 
     .exercises-sidebar-toggle2.sidebar-hidden {
@@ -147,20 +147,21 @@
         z-index: 999;
         background: rgba(0, 0, 0, 0.8);
         color: white;
-        padding-top: 60px;
-        padding-left: 60px;
         z-index: 1000;
+        justify-content: end;
+        align-items: end;
+        padding: 0px 80px 80px 0px;
     }
     
     .exercise-tutorial-highlight.true{
         display: block;
         position: absolute;
-        height: 80px;
-        width: 80px;
+        height: 50px;
+        width: 50px;
         background: rgba(255, 255, 255, 0.3);
         box-shadow: 0px 0px 40px 20px rgba(255, 255, 255, 0.4);
-        top: -15px;
-        left: -25px;
+        bottom: 27.5px;
+        right: 27.5px;
         z-index: 1002;
         border-radius: 60px;
     }
@@ -254,5 +255,23 @@
     .add-subject-form.dark{
         width: 90%;
         background: rgb(50, 50, 50);
+    }
+
+    .student-add-new-subject{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: rotate(45deg);
+        height: 50px;
+        width: 50px;
+        position: fixed;
+        right: 25px;
+        bottom: 25px;
+        background: #4caf50;
+        border-radius: 25px;
+    }
+
+    .exercises-header-container{
+        padding-left: 25px;
     }
 }
