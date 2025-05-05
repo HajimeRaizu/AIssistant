@@ -535,7 +535,7 @@ const stopSpeech = () => {
           <p>{userName}</p>
         </div>
         <div className="student-aissistant-logo-title">
-          <img src={logo} alt="aissistant logo" style={{height: '60px', width: '60px'}} />
+          <img src={logo} alt="aissistant logo" style={{height: '60px', width: '60px', filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="student-aissistant-title">
             <h1 className="student-ai" style={{color: '#085f93', fontSize: 'x-large'}}>AI</h1>
             <h1 style={{fontSize: 'x-large'}}>ssistant Learn</h1>

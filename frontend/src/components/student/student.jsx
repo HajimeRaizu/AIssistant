@@ -966,7 +966,7 @@ useEffect(() => {
             <div className={`student-chat-body ${theme}`} ref={chatBodyRef}>
             {messages.map((message, index) => (
               <div className={`student-message-pfp ${message.sender}`} key={index}>
-                <img className="sender-image" src={`${message.sender === 'user' ? userPicture : logo}`} alt="sender.jpg" />
+                <img className={`sender-image ${message.sender}`} src={`${message.sender === 'user' ? userPicture : logo}`} alt="sender.jpg" />
                 <div className={`student-message ${message.sender}`}>
                   {message.sender === 'user' && editingMessageId === message.messageId ? (
                     <div className={`student-edit-container ${theme}`}>
@@ -1117,7 +1117,7 @@ useEffect(() => {
         <div className={`student-no-chat-selected ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'} ${theme}`}>
           <div className={`student-no-chat-box ${theme}`}>
             <div className={`student-newchat-container ${theme}`}>
-              <img src={logo} alt="AIssistant.png" style={{height: '140px', width: '140px', alignSelf: 'center', marginBottom: '10px'}} />
+              <img src={logo} alt="AIssistant.png" style={{height: '140px', width: '140px', alignSelf: 'center', marginBottom: '10px', filter: 'drop-shadow(0 0 5px white)'}} />
               <div className={`student-newchat-header ${theme}`}>
                 <div className="student-aissistant">
                   <h1>Hello World! I am </h1>

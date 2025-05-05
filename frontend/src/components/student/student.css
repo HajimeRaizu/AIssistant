@@ -123,7 +123,7 @@
 
 
 .student-new-chat {
-    background: #4c7faf;
+    background: #085f93;
     color: white;
     border: none;
     border-radius: 5px;
@@ -372,14 +372,14 @@
 }
 
 .student-message.user.dark {
-    background:  var(--message-user-dark);
-    color: var(--text-dark);
+    background: #085f93;
+    color: white;
     align-self: flex-start;
 }
 
 .student-message.user.light {
-    background:  var(--message-user-light);
-    color: #1e1e1e;
+    background: #085f93;
+    color: white;
     align-self: flex-start;
 }
 
@@ -1180,6 +1180,10 @@
     height: 40px;
     width: 40px;
     border-radius: 20px;
+}
+
+.sender-image.bot{
+    filter: drop-shadow(0 0 5px white);
 }
 
 
