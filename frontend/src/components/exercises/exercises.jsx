@@ -537,8 +537,8 @@ const stopSpeech = () => {
         <div className="student-aissistant-logo-title">
           <img src={logo} alt="aissistant logo" style={{height: '60px', width: '60px'}} />
           <div className="student-aissistant-title">
-            <h1 className="student-ai" style={{color: '#085f93'}}>AI</h1>
-            <h1>ssistant</h1>
+            <h1 className="student-ai" style={{color: '#085f93', fontSize: 'x-large'}}>AI</h1>
+            <h1 style={{fontSize: 'x-large'}}>ssistant Learn</h1>
           </div>
         </div>
         {hasSubjectCode ? (
@@ -576,7 +576,7 @@ const stopSpeech = () => {
 
       <div className={`exercises-content ${theme} ${isSidebarVisible ? "sidebar-visible" : "sidebar-hidden"}`}>
         <div className="exercises-header-container">
-          {!selectedSubject && <h1 className={`h1 ${theme}`}>Subjects</h1>}
+          {!selectedSubject && <h1 className={`h1 ${theme}`} style={{marginLeft: '15px'}}>Subjects</h1>}
           <div className="exercises-header">
             {hasSubjectCode && selectedSubject && (
               <h1 className={theme}>{learningMaterials[selectedSubject].subjectName}</h1>
