@@ -381,7 +381,7 @@ app.post("/api/ai", async (req, res) => {
     // Query Supabase for similar responses
     const { data: similarResponses, error } = await supabase.rpc("match_responses", {
       query_embedding: promptEmbeddings,
-      match_threshold: 0.7, // Adjust this threshold as needed
+      match_threshold: 0.6, // Adjust this threshold as needed
       match_count: 10, // Fetch more responses to filter best/worst
     });
 
@@ -412,8 +412,8 @@ app.post("/api/ai", async (req, res) => {
     const topBadResponses = sortedNegativeResponses.slice(0, 2);
 
     // Format the responses as a guide for AI
-    const goodGuideResponse = topGoodResponses.map(response => `(GOOD RESPONSE): ${response.response}`).join("\n");
-    const badGuideResponse = topBadResponses.map(response => `(BAD RESPONSE): ${response.response}`).join("\n");
+    const goodGuideResponse = topGoodResponses.map(response => `GOOD RESPONSE BEHAVIOR: ${response.response}`).join("\n");
+    const badGuideResponse = topBadResponses.map(response => `BAD RESPONSE BEHAVIOR: ${response.response}`).join("\n");
 
     // Final guide response string (only include if responses exist)
     const guideResponses = `
