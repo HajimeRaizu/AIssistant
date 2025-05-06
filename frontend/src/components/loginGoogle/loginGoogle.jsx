@@ -20,7 +20,7 @@ const LoginGoogle = () => {
 
   useEffect(() => {
     if (isAuthenticated&&userId&&userName&&userEmail&&userPicture&&userRole === 'student') {
-      navigate("/student");
+      navigate("/student-landing");
     } else if(isAuthenticated&&userId&&userName&&userEmail&&userPicture&&userRole === 'instructor'){
       navigate("/instructor");
     } else if(isAuthenticated&&userId&&userName&&userEmail&&userPicture&&userRole === 'admin'){
