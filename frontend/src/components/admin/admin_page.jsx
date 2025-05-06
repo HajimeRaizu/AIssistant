@@ -308,7 +308,7 @@ const AdminPage = () => {
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isAuthenticated");
-    navigate("/googleLogin"); // Redirect to the login page
+    navigate("/user-type"); // Redirect to the login page
   };
 
   const getGraphData = () => {

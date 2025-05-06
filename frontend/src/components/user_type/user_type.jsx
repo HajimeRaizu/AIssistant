@@ -24,13 +24,6 @@ const UserType = () => {
         </div>
         <section className="user-type-action-boxes">
           <div
-            className="user-type-box-admin"
-            onClick={() => handleBoxClick('/googleLogin')} // Redirect to AI Chat page
-          >
-            <h2 style={{color: '#085f93'}}>Admin</h2>
-            <p>Login as an admin and manage the users of AIssistant</p>
-          </div>
-          <div
             className="user-type-box-instructor"
             onClick={() => handleBoxClick('/googleLogin')} // Redirect to Exercises page
           >

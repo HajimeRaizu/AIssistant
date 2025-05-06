@@ -408,7 +408,7 @@ const stopSpeech = () => {
     localStorage.removeItem("userName");
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userName");
-    navigate("/googleLogin");
+    navigate("/user-type");
   };
 
   const SubjectBox = ({ subject, subjectCode, ownerEmail, ownerName }) => {

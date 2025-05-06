@@ -397,7 +397,7 @@ useEffect(() => {
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isAuthenticated");
-    navigate("/googleLogin");
+    navigate("/user-type");
   };
 
   const formatMessageText = (text, sender) => {
