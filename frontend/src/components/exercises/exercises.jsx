@@ -620,9 +620,9 @@ const stopSpeech = () => {
           <div className="subtopics">
             <h2 className={theme}>
               <button className={`back-button ${theme}`} style={{padding: '0px 10px 0px 0px', fontSize: '20px'}} onClick={() => setSelectedLesson(null)}>
-                <FaArrowLeft />
+                <FaArrowLeft style={{marginRight: '10px'}} />
+                {learningMaterials[selectedSubject].lessons[selectedLesson].lessonName}
               </button>
-              {learningMaterials[selectedSubject].lessons[selectedLesson].lessonName}
             </h2>
             <ul>
             {learningMaterials[selectedSubject]?.lessons[selectedLesson]?.subtopics &&
@@ -642,7 +642,10 @@ const stopSpeech = () => {
 
         {hasSubjectCode && selectedSubtopic !== null && (
           <div className={`subtopic-content ${theme}`}>
-            <h1 className={theme}>
+            <h1 className={theme} style={{display: 'flex', alignItems: 'center'}}>
+              <button className={`back-button ${theme}`} style={{marginTop: '0px', fontSize: 'xx-large', marginRight: '15px'}} onClick={() => setSelectedSubtopic(null)}>
+                <FaArrowLeft />
+              </button>
               {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].subtopicTitle}
               {isReading ? <button className={`read-button ${theme}`} onClick={stopSpeech}><BsVolumeUpFill /></button> : <button className="read-button" onClick={readOutLoud}><BsVolumeUp /></button>}
             </h1>
@@ -811,9 +814,6 @@ const stopSpeech = () => {
               </>
             )}
             <div className="button-container">
-              <button className={`back-button ${theme}`} onClick={() => setSelectedSubtopic(null)}>
-                Back to Subtopics
-              </button>
               {learningMaterials[selectedSubject].lessons[selectedLesson].subtopics[selectedSubtopic].questions
                 .split("\n")
                 .filter((line) => line.trim() !== "").length > 0 && (
