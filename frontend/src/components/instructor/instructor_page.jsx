@@ -1005,7 +1005,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           <button className="add-subject" onClick={handleCreateNewSubject}>
             Add Subject
           </button>
-          {Object.keys(learningMaterials).map((subject) => (
+          {Object.keys(learningMaterials).length === 0 ? (
+          <div className="no-subjects-message">
+            No subjects available. Click "Add Subject" to create one.
+          </div>
+         ) :(Object.keys(learningMaterials).map((subject) => (
             <div
               key={subject}
               className="instructor-exercise-subject"
@@ -1079,7 +1083,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                 )}
               </div>
             </div>
-          ))}
+          )))}
         </div>
       );
     } else if (selectedLesson === null || selectedLesson === undefined) {
