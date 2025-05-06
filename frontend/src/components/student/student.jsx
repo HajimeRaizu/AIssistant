@@ -550,6 +550,8 @@ useEffect(() => {
         },
         body: JSON.stringify({ input, userId, chatId: newChatId }),
       });
+
+      console.log(aiResponse)
   
       const reader = aiResponse.body.getReader();
       let botText = "";

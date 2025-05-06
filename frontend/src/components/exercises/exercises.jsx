@@ -328,6 +328,7 @@ const stopSpeech = () => {
   const handleSubjectCodeSubmit = async () => {
     setAddingNewSubject(true);
     if (!subjectId || !studentId) {
+      setAddingNewSubject(false);
       Swal.fire({
         title: "Error!",
         text: "Please enter a valid subject ID.",
@@ -365,7 +366,7 @@ const stopSpeech = () => {
     } finally {
       setSubjectId("");
       setAddingNewSubject(false);
-      setAddNewSubject(false)
+      setAddNewSubject(false);
     }
   };
 
