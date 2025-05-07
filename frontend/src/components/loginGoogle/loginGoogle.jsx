@@ -8,8 +8,8 @@ import axios from "axios";
 import Swal from 'sweetalert2'
 
 const LoginGoogle = () => {
-  const base_url = `https://aissistant-backend.vercel.app`;
-  //const base_url = `http://localhost:5000`;
+  //const base_url = `https://aissistant-backend.vercel.app`;
+  const base_url = `http://localhost:5000`;
   const navigate = useNavigate();
   const isAuthenticated = localStorage.getItem("isAuthenticated") || null;
   const userId = localStorage.getItem("userId") || null;
