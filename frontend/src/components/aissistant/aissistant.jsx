@@ -21,7 +21,7 @@ const AIssistant = () => {
 
   // Function to handle box clicks
   const handleBoxClick = () => {
-    navigate('/');
+    navigate('/googleLogin');
   };
 
   return (
