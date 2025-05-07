@@ -1317,6 +1317,11 @@ app.post("/api/googleLogin", async (req, res) => {
   try {
     // Check if the email ends with @nemsu.edu.ph
     if (!email.endsWith("@nemsu.edu.ph")) {
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None"
+      });
       return res.status(403).json({ error: "Only @nemsu.edu.ph emails are allowed to login." });
     }
 
@@ -1355,6 +1360,12 @@ app.post("/api/googleLogin", async (req, res) => {
       }
     }
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None"
+    });
+    
     // Return the user data including their role
     res.status(200).json(userData);
   } catch (error) {
