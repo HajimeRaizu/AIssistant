@@ -1360,12 +1360,6 @@ app.post("/api/googleLogin", async (req, res) => {
       }
     }
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None"
-    });
-    
     // Return the user data including their role
     res.status(200).json(userData);
   } catch (error) {
