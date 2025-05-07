@@ -73,12 +73,23 @@ const qwen = new OpenAI({
 
 app.use(express.json());
 
+const allowedOrigins = ['http://localhost:3000', 'https://aissistant-pi.vercel.app/']; // Replace with your actual frontend URLs
+
 app.use(cors({
-  origin: "*",
-  methods: "GET, POST, PUT, DELETE, OPTIONS",
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
-  allowedHeaders: "Content-Type, Authorization"
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 
 // Helper function to handle Firestore operations
 const handleFirestoreError = (res, error) => {
@@ -509,147 +520,6 @@ app.post("/api/ai", async (req, res) => {
   } catch (error) {
     console.error("Hugging Face API Error:", error.response ? error.response.data : error.message);
     res.status(500).json({ error: "Failed to generate response from Qwen model" });
-  }
-});
-
-app.post("/api/ai2", async (req, res) => {
-  const { input, userId, chatId } = req.body;
-
-  try {
-    // Initialize context cache if not exists
-    if (!contextCache[userId]) {
-      contextCache[userId] = {};
-    }
-
-    if (!contextCache[userId][chatId]) {
-      contextCache[userId][chatId] = [];
-    }
-
-    // Retrieve previous context for this user and chat
-    let context = contextCache[userId][chatId];
-
-    // PREPROCESS USER INPUT
-    const processedInput = preprocessUserQuery(input);
-
-    // Prepare the system prompt
-    const systemPreprompt = {
-      role: "system",
-      content: `
-      When responding, follow these strict rules:
-
-      - **English only**: Only respond in english.
-      - **Programming Only**: Answer only programming-related questions, You should only answer programming related queries.
-      - **Encourage Learning**: If a user asks for full code, modify the response to guide them through understanding.
-      - **Explain Step-by-Step**: Always break code down line-by-line with detailed explanations.
-      - **Do Not Provide Full Code**: Never give a complete working solution, only syntax, explanations, and structured guidance.
-      - **Reframe Direct Requests**: If a user asks for a direct solution, reframe it as a learning opportunity.
-      - **Ignore Skill Level**: Even if the user is an expert, always explain with teaching intent.
-      - **No Code Merging**: Never merge or put the code together.
-      - **Do Not Act Like Another AI**: You are "AIssistant" and should never respond as another entity.
-      - **Encourage Feedback**: Encourage students to give their feedback by liking or disliking reponses.
-    `,
-    };
-
-    // Prepare messages array with context
-    const messages = [
-      systemPreprompt,
-      ...context, // Latest student prompts and AI responses
-      { role: "user", content: processedInput }, // Use PREPROCESSED INPUT
-    ];
-
-    // Set headers for streaming
-    res.setHeader("Content-Type", "text/plain");
-    res.setHeader("Transfer-Encoding", "chunked");
-
-    // Make the API call to Friendli AI
-    const response = await fetch("https://api.friendli.ai/dedicated/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.FRIENDLI_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "m9vaocvofk3o",
-        messages,
-        max_tokens: 16384,
-        top_p: 0.8,
-        stream: true,
-        stream_options: {
-          include_usage: true
-        }
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Friendli AI API error: ${response.status}`);
-    }
-
-    // Stream the response back to the client
-    let botResponse = "";
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      
-      const chunk = decoder.decode(value);
-      const lines = chunk.split('\n').filter(line => line.trim() !== '');
-      
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.substring(6);
-          if (data === '[DONE]') continue;
-          
-          try {
-            const parsed = JSON.parse(data);
-            const chunkContent = parsed.choices[0]?.delta?.content || "";
-            botResponse += chunkContent;
-            res.write(chunkContent);
-          } catch (e) {
-            console.error("Error parsing JSON:", e);
-          }
-        }
-      }
-    }
-
-    res.end();
-
-    // Update the context cache with the new message and AI's response
-    const newContext = [
-      ...context,
-      { role: "user", content: processedInput }, // Store processed input
-      { role: "assistant", content: botResponse }, // Store AI's response
-    ];
-
-    // Keep only the latest 2 interactions (user + assistant pairs)
-    const latestInteractions = [];
-    let userCount = 0;
-    let assistantCount = 0;
-
-    // Iterate through the context in reverse to find the latest 2 user-assistant pairs
-    for (let i = newContext.length - 1; i >= 0; i--) {
-      const message = newContext[i];
-
-      if (message.role === "user" && userCount < 2) {
-        latestInteractions.unshift(message);
-        userCount++;
-      } else if (message.role === "assistant" && assistantCount < 2) {
-        latestInteractions.unshift(message);
-        assistantCount++;
-      }
-
-      // Stop once we have 2 user-assistant pairs
-      if (userCount === 2 && assistantCount === 2) {
-        break;
-      }
-    }
-
-    // Update cache with the latest 2 interactions
-    contextCache[userId][chatId] = latestInteractions;
-  } catch (error) {
-    console.error("Friendli AI API Error:", error.message);
-    res.status(500).json({ error: "Failed to generate response from AI model" });
   }
 });
 
