@@ -104,16 +104,16 @@ const ExercisesPage = () => {
           } else if (role === "instructor") {
             navigate("/instructor");
           } else {
-            navigate("/user-type");
+            navigate("/");
           }
         } catch (error) {
           console.error("Failed to fetch user role:", error);
-          navigate("/user-type");
+          navigate("/");
         } finally {
           setIsLoading(false);
         }
       } else {
-        navigate("/user-type");
+        navigate("/");
       }
     };
 
@@ -408,7 +408,7 @@ const stopSpeech = () => {
     localStorage.removeItem("userName");
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userName");
-    navigate("/user-type");
+    navigate("/");
   };
 
   const SubjectBox = ({ subject, subjectCode, ownerEmail, ownerName }) => {

@@ -92,14 +92,14 @@ const AdminPage = () => {
           } else if (role === "instructor") {
             navigate("/instructor");
           } else {
-            navigate("/user-type");
+            navigate("/");
           }
         } catch (error) {
           console.error("Failed to fetch user role:", error);
-          navigate("/user-type");
+          navigate("/");
         }
       } else {
-        navigate("/user-type");
+        navigate("/");
       }
     };
   
@@ -308,7 +308,7 @@ const AdminPage = () => {
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isAuthenticated");
-    navigate("/user-type"); // Redirect to the login page
+    navigate("/"); // Redirect to the login page
   };
 
   const getGraphData = () => {
@@ -544,6 +544,7 @@ const handleEditUser = async (user, newRole) => {
       name: 'Role',
       cell: row => (
         <select
+          id={row.email}
           value={row.role || 'student'}
           onChange={(e) => handleEditUser(row, e.target.value)}
           disabled={isUpdatingRole}
@@ -570,6 +571,7 @@ const handleEditUser = async (user, newRole) => {
       name: 'Role',
       cell: row => (
         <select
+          id={row.email}
           value={row.role || 'instructor'}
           onChange={(e) => handleEditUser(row, e.target.value)}
           disabled={isUpdatingRole}
@@ -753,7 +755,8 @@ const handleEditUser = async (user, newRole) => {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>Frequently Asked Questions</h2>
                 <div>
-                  <select 
+                  <select
+                    id="selectedWeek"
                     value={selectedWeek} 
                     onChange={(e) => setSelectedWeek(e.target.value)}
                     style={{ marginRight: '10px' }}
@@ -779,7 +782,8 @@ const handleEditUser = async (user, newRole) => {
           <div className="manage-users-tab">
             <h1><FaRegUser />Manage Students</h1>
             <div className="search-bar">
-              <input 
+              <input
+                id="student-search-bar"
                 type="text" 
                 placeholder="Search users by ID, name, or email..." 
                 value={searchTerm}
@@ -793,6 +797,7 @@ const handleEditUser = async (user, newRole) => {
               highlightOnHover
               responsive
               customStyles={customStyles}
+              id="student-table"
             />
           </div>
         ) : activeTab === 'instructors' ? (
@@ -800,6 +805,7 @@ const handleEditUser = async (user, newRole) => {
             <h1><PiStudentBold />Manage Instructors</h1>
             <div className="search-bar">
               <input 
+                id="instructor-search-bar"
                 type="text" 
                 placeholder="Search instructors by email..." 
                 value={instructorSearchTerm}
@@ -814,6 +820,7 @@ const handleEditUser = async (user, newRole) => {
               highlightOnHover
               responsive
               customStyles={customStyles}
+              id="instructor-table"
             />
           </div>
         ) : (
@@ -857,54 +864,6 @@ const handleEditUser = async (user, newRole) => {
             <div className="modal-actions">
               <button onClick={() => handleDeleteInstructor(instructorEmailToDelete)}>Yes</button>
               <button onClick={() => setShowConfirmInstructorModal(false)}>No</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showAddUserModal && (
-        <div className="admin-add-user-modal">
-          <div className="modal-content">
-            <h2>Add New User</h2>
-            <input 
-              type="text" 
-              placeholder="Name" 
-              value={newUserName} 
-              onChange={(e) => setNewUserName(e.target.value)} 
-            />
-            <input 
-              type="email" 
-              placeholder="Email" 
-              value={newUserEmail} 
-              onChange={(e) => setNewUserEmail(e.target.value)} 
-            />
-            <div className="modal-actions">
-              <button onClick={handleAddSingleUser} disabled={isAddingUser}>Add</button>
-              <button onClick={() => setShowAddUserModal(false)}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showAddInstructorModal && (
-        <div className="admin-add-instructor-modal">
-          <div className="modal-content">
-            <h2>Add New Instructor</h2>
-            <input 
-              type="text" 
-              placeholder="Name" 
-              value={newInstructorName} 
-              onChange={(e) => setNewInstructorName(e.target.value)} 
-            />
-            <input 
-              type="email" 
-              placeholder="Email" 
-              value={newInstructorEmail} 
-              onChange={(e) => setNewInstructorEmail(e.target.value)} 
-            />
-            <div className="modal-actions">
-              <button className="save-button" onClick={handleAddSingleInstructor} disabled={isAddingInstructor}>Add</button>
-              <button className="cancel-button" onClick={() => setShowAddInstructorModal(false)}>Cancel</button>
             </div>
           </div>
         </div>

@@ -125,14 +125,14 @@ useEffect(() => {
           } else if (role === "instructor") {
             navigate("/instructor");
           } else {
-            navigate("/user-type");
+            navigate("/");
           }
         } catch (error) {
           console.error("Failed to fetch user role:", error);
-          navigate("/user-type");
+          navigate("/");
         }
       } else {
-        navigate("/user-type");
+        navigate("/");
       }
     };
   
@@ -397,7 +397,7 @@ useEffect(() => {
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isAuthenticated");
-    navigate("/user-type");
+    navigate("/");
   };
 
   const formatMessageText = (text, sender) => {

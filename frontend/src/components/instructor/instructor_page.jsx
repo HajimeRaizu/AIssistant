@@ -121,14 +121,14 @@ const InstructorPage = () => {
           } else if (role === "instructor") {
             return;
           } else {
-            navigate("/user-type");
+            navigate("/");
           }
         } catch (error) {
           console.error("Failed to fetch user role:", error);
-          navigate("/user-type");
+          navigate("/");
         }
       } else {
-        navigate("/user-type");
+        navigate("/");
       }
     };
   
@@ -363,7 +363,7 @@ const InstructorPage = () => {
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userRole");
     sessionStorage.removeItem("isAuthenticated");
-    navigate("/user-type");
+    navigate("/");
   };
 
   const getGraphData = () => {
@@ -1017,6 +1017,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             >
               {editingSubject === subject ? (
                 <input
+                  id={`${learningMaterials[subject].subjectName}`}
                   type="text"
                   className="edit-subject-name"
                   value={learningMaterials[subject].subjectName}
@@ -1118,6 +1119,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
               <div onClick={() => setSelectedLesson(index)} key={`lesson-${index}`} className="instructor-exercise-lesson">
                 {editingLesson === index ? (
                   <input
+                    id={`${lesson.lessonName}`}
                     type="text"
                     value={lesson.lessonName}
                     onChange={(e) => {
@@ -1211,6 +1213,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                 {editingSubtopic === index ? (
                   <div className="input-fields">
                     <input
+                      id={`${subtopic.subtopicName}`}
                       className="subtopic-name"
                       type="text"
                       value={subtopic.subtopicTitle}
@@ -1341,6 +1344,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                     <label className="instructor-upload-button">
                       {uploadingFile ? "Uploading..." : "Add Attachment"}
                       <input
+                        id="upload-attachment"
                         type="file"
                         onChange={handleFileUpload}
                         disabled={uploadingFile}
@@ -1592,6 +1596,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           <div className="instructor-create-material-form">
             <label>Subject Name:</label>
             <input
+              id="new-subject"
               type="text"
               value={newSubject.subjectName}
               onChange={(e) =>
@@ -1674,6 +1679,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           <div className="instructor-create-lesson-form">
             <label>Lesson Name:</label>
             <input
+              id="new-lesson"
               type="text"
               value={newLesson.lessonName}
               onChange={(e) =>
@@ -2006,6 +2012,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           <div className="instructor-create-subtopic-form">
             <label>Subtopic Title:</label>
             <input
+              id="new-subtopic-title"
               type="text"
               value={newSubtopic.subtopicTitle}
               onChange={(e) =>
@@ -2067,6 +2074,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                 <label className="instructor-upload-button">
                   Add Attachments
                   <input
+                    id="upload-new-attachment"
                     type="file"
                     multiple
                     onChange={handleNewFileUpload}
@@ -2241,6 +2249,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                 <h2>Frequently Asked Questions</h2>
                 <div>
                   <select 
+                    id="select-language"
                     value={selectedLanguage} 
                     onChange={(e) => setSelectedLanguage(e.target.value)}
                     style={{ marginRight: '10px' }}
@@ -2250,7 +2259,8 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                       <option key={index} value={language}>{language}</option>
                     ))}
                   </select>
-                  <select 
+                  <select
+                    id="select-week"
                     value={selectedWeek} 
                     onChange={(e) => setSelectedWeek(e.target.value)}
                     style={{ marginRight: '10px' }}

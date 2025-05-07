@@ -1,5 +1,8 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from 'react-router-dom';
 import AdminPage from './components/admin/admin_page';
 import StudentPage from './components/student/student';
 import StudentLanding from './components/student_landing/student_landing';
@@ -10,41 +13,70 @@ import AIssistant from './components/aissistant/aissistant';
 import UserType from './components/user_type/user_type';
 import LoginGoogle from './components/loginGoogle/loginGoogle';
 
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <AIssistant />,
+  },
+  {
+    path: '/student-landing',
+    element: (
+      <ProtectedRoute>
+        <StudentLanding />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin',
+    element: (
+      <ProtectedRoute>
+        <AdminPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/student',
+    element: (
+      <ProtectedRoute>
+        <StudentPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/exercises',
+    element: (
+      <ProtectedRoute>
+        <ExercisesPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/instructor',
+    element: (
+      <ProtectedRoute>
+        <InstructorPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/googleLogin',
+    element: <LoginGoogle />,
+  },
+], {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true,
+  },
+});
+
 function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path='/' element={<AIssistant />} />
-        <Route path='/user-type' element={<UserType />}/>
-        <Route path='/student-landing' element={
-          <ProtectedRoute>
-            <StudentLanding/>
-          </ProtectedRoute>
-          }/>
-        <Route path='/admin' element={
-          <ProtectedRoute>
-            <AdminPage />
-          </ProtectedRoute>
-          } />
-        <Route path='/student' element={
-          <ProtectedRoute>
-            <StudentPage />
-          </ProtectedRoute>
-          } />
-        <Route path='/exercises' element={
-          <ProtectedRoute>
-            <ExercisesPage />
-          </ProtectedRoute>
-          } />
-        <Route path='/instructor' element={
-          <ProtectedRoute>
-            <InstructorPage/>
-          </ProtectedRoute>
-        } />
-        <Route path="/googleLogin" element={<LoginGoogle />} />
-      </Routes>
-    </Router>
-  );
+  return <RouterProvider
+    router={router}
+    future={{
+      v7_startTransition: true,
+      v7_relativeSplatPath: true,
+    }}
+  />;
 }
 
 export default App;
