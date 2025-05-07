@@ -10,7 +10,6 @@ import ExercisesPage from './components/exercises/exercises';
 import InstructorPage from './components/instructor/instructor_page';
 import ProtectedRoute from "./ProtectedRoute";
 import AIssistant from './components/aissistant/aissistant';
-import UserType from './components/user_type/user_type';
 import LoginGoogle from './components/loginGoogle/loginGoogle';
 
 const router = createBrowserRouter([
