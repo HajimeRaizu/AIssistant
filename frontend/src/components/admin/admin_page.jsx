@@ -71,7 +71,7 @@ const AdminPage = () => {
   const [weeklyPrompts, setWeeklyPrompts] = useState({});
   const [selectedWeek, setSelectedWeek] = useState("");
   
-  /*useEffect(() => {
+  useEffect(() => {
     const fetchUserRole = async () => {
       if (userEmail) {
         try {
@@ -165,7 +165,7 @@ const AdminPage = () => {
     };
   
     fetchData();
-  }, []);*/
+  }, []);
 
   const groupPromptsByWeek = (allMessages) => {
     allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
