@@ -67,11 +67,11 @@ const AdminPage = () => {
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
   const [isUpdatingRole, setIsUpdatingRole] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [weeklyPrompts, setWeeklyPrompts] = useState({});
   const [selectedWeek, setSelectedWeek] = useState("");
   
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchUserRole = async () => {
       if (userEmail) {
         try {
@@ -165,7 +165,7 @@ const AdminPage = () => {
     };
   
     fetchData();
-  }, []);
+  }, []);*/
 
   const groupPromptsByWeek = (allMessages) => {
     allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));

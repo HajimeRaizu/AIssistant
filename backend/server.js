@@ -10,6 +10,13 @@ import { fileURLToPath } from "url";
 import multer from "multer";
 import { createClient } from '@supabase/supabase-js';
 import { CohereClient } from "cohere-ai";
+import { OAuth2Client } from 'google-auth-library';
+
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  'postmessage' // Important for code exchange
+);
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -1363,6 +1370,40 @@ app.post("/api/googleLogin", async (req, res) => {
   } catch (error) {
     console.error("Error during Google login:", error);
     res.status(500).json({ error: "Failed to process Google login" });
+  }
+});
+
+app.post("/api/exchange-google-code", async (req, res) => {
+  const { code, redirect_uri } = req.body;
+
+  if (!code) {
+    return res.status(400).json({ error: "Authorization code is required" });
+  }
+
+  try {
+    const redirectUri = redirect_uri || `${process.env.FRONTEND_URL}/googleLogin`;
+
+    const { tokens } = await googleClient.getToken({
+      code,
+      redirect_uri: redirectUri,
+    });
+
+    if (!tokens.id_token) {
+      return res.status(400).json({ error: "No ID token received from Google" });
+    }
+
+    return res.json({ credential: tokens.id_token });
+
+  } catch (error) {
+    console.error("Google Token Exchange Error:", {
+      message: error.message,
+      response: error.response?.data,
+    });
+
+    return res.status(500).json({
+      error: "Failed to exchange Google authorization code",
+      details: error.response?.data || error.message,
+    });
   }
 });
 

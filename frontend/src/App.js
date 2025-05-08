@@ -11,6 +11,8 @@ import InstructorPage from './components/instructor/instructor_page';
 import ProtectedRoute from "./ProtectedRoute";
 import AIssistant from './components/aissistant/aissistant';
 import LoginGoogle from './components/loginGoogle/loginGoogle';
+import GoogleAuthCallback from './components/loginGoogle/googleAuthCallback';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const router = createBrowserRouter([
   {
@@ -61,6 +63,10 @@ const router = createBrowserRouter([
     path: '/googleLogin',
     element: <LoginGoogle />,
   },
+  {
+    path: '/google-auth-callback',
+    element: <GoogleAuthCallback />,
+  },
 ], {
   future: {
     v7_startTransition: true,
@@ -69,13 +75,16 @@ const router = createBrowserRouter([
 });
 
 function App() {
-  return <RouterProvider
+  const CLIENT_ID = "966546103505-am2u7fu5r31t4g0bq3n1ecp4chg7ji8j.apps.googleusercontent.com";
+  return <GoogleOAuthProvider clientId={CLIENT_ID}>
+    <RouterProvider
     router={router}
     future={{
       v7_startTransition: true,
       v7_relativeSplatPath: true,
     }}
   />;
+  </GoogleOAuthProvider>
 }
 
 export default App;
