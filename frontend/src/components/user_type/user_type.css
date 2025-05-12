@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Geist+Mono:wght@100..900&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Oleo+Script:wght@400;700&family=Pacifico&family=Satisfy&display=swap');
+/* General Styles */
+body {
+    font-family: "Host Grotesk", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+.header .user-type-logo{
+    height: 120px;
+}
+.user-type-page {
+    text-align: center;
+    height: 100dvh;
+    width: 100%;
+    background: url("../assets/pic8.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Header Styles */
+.header {
+    padding: 10px;
+    color: white;
+    text-align: left;
+}
+
+.header .user-typepage-logo{
+    height: 120px;
+}
+
+/* user-type-Hero Section Styles */
+.user-type-hero {
+    padding: 30px 20px;
+}
+
+.user-type-hero h1 {
+    font-size: 48px;
+    margin-bottom: 5px;
+}
+
+.user-type-hero p {
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Action Boxes Section Styles */
+.user-type-action-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.user-type-box-admin, .user-type-box-instructor, .user-type-box-student {
+    width: 300px;
+    padding: 30px;
+    background-color: rgba(236, 236, 236, .3);
+    color: rgb(86, 86, 255);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.user-type-box-admin:hover, .user-type-box-instructor:hover, .user-type-box-student:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.user-type-box-admin h2, .user-type-box-instructor h2, .user-type-box-student h2 {
+    font-size: 26px;
+    margin-bottom: 2dvh;
+}
+
+.user-type-box-admin p, .user-type-box-instructor p, .user-type-box-student p {
+    font-size: 16px;
+    color: #555;
+}
+
+.user-type-aissistant{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-type-aissistant .user-type-welcome{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: row;
+}
+
+.user-type-aissistant .ai{
+    color: rgb(86, 86, 255);
+    padding: 0px 0px 0px 10px;
+}
+
+.usertype-landing-aissistant{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    top: 20px;
+    left: 20px;
+}
+
+.usertype-landing-aissistant .usertype-landing-welcome{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: row;
+}
+
+.usertype-landing-aissistant .ai{
+    color: rgb(86, 86, 255);
+    padding: 0px 0px 0px 10px;
+}
+
+.aissistant-2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px 0px 40px 0px;
+}
+
+@media (max-aspect-ratio: 1/1), (max-width: 960px){
+    .usertype-landing-aissistant{
+        font-size: 25px;
+    }
+
+    .aissistant-2{
+        display: none;
+    }
+
+    .user-type-action-boxes{
+        flex-direction: column;
+        align-items: center;
+        padding: 10dvh 0dvw 0dvh 0dvw;
+    }
+
+    .user-type-box-admin, .user-type-box-instructor{
+        display: none;
+    }
+
+    .user-type-box-student{
+        width: 80%;
+        padding: 10px;
+    }
+
+    .user-type-box-student h2 {
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
+    
+    .user-type-box-student p {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .usertype-landing-aissistant{
+        position: inherit;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+}
