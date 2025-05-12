@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import './instructor_page.css';
+import './instructor_page_android.css';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdOutlineDashboard, MdOutlineQuestionAnswer } from "react-icons/md";
@@ -58,7 +59,7 @@ const InstructorPage = () => {
   const [editingSubject, setEditingSubject] = useState(null);
   const [editingLesson, setEditingLesson] = useState(null);
   const [editingSubtopic, setEditingSubtopic] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [attachments, setAttachments] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [viewingAttachment, setViewingAttachment] = useState(null);
@@ -2125,7 +2126,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
   };
 
   if (isLoading) {
-    return <div className="instructor-loading-container">Loading...</div>;
+    return <div className="instructor-loading-container">Loading...</div>
   }
 
   return (
@@ -2194,7 +2195,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             </div>
             <div className="instructor-graph-container">
               <div style={{ display: 'flex', gap: '3%', alignItems: 'center' }}>
-                <ResponsiveContainer className='instructor-line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
+                <ResponsiveContainer className='instructor-line-graph' width="75%" height={200} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
                   <LineChart className='instructor-line'
                     data={getGraphData().length > 0 ? getGraphData() : getDefaultGraphData()}
                     margin={{
@@ -2450,6 +2451,8 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           </div>
         </div>
       )}
+      
+      <div className="admin-sidebar-toggle">try</div>
     </div>
   );
 };

@@ -1,0 +1,21 @@
+@media (max-aspect-ratio: 1/1), (max-width: 960px) {
+    .instructor-sidebar{
+        width: 90%;
+        position: fixed;
+        z-index: 1000;
+        height: 100%;
+        display: none;
+    }
+
+    .instructor-content{
+        border-radius: 0px;
+    }
+}
+
+@media (max-aspect-ratio: 1/1) and (pointer: coarse){
+
+}
+
+@media (max-height: 600px){
+
+}

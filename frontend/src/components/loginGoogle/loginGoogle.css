@@ -18,7 +18,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100dvh;
-    background: url("../assets/pic8.jpg"); /* Background image */
+    background: linear-gradient(90deg, rgba(73, 45, 122, 0.4), rgba(249, 217, 131, 0.4)), url("../assets/pic8.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

@@ -19,6 +19,7 @@ import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-java';
 import { MdOutlineEdit } from "react-icons/md";
 import { IoCopyOutline } from "react-icons/io5";
+import { FiMoreVertical } from "react-icons/fi";
 
 const StudentPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -746,8 +747,45 @@ useEffect(() => {
                 <span>{chat.chatName || `Chat ${chat.id}`}</span>
               )}
               <div className="student-chat-actions">
-                {editingChatId === chat.id ? (
-                  <>
+                <div className={`dropdown ${theme}`}>
+                  <button 
+                    className={`dropdown-toggle ${theme}`} 
+                    onClick={(e) => e.stopPropagation()}
+                    disabled={isDisabled}
+                    title="Actions"
+                  >
+                    {!editingChatId && <FiMoreVertical />}
+                  </button>
+                  {!editingChatId &&<div className={`dropdown-menu ${theme}`}>
+                    <button
+                      className={`dropdown-item ${theme}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditChat(chat.id, chat.chatName);
+                      }}
+                      disabled={isDisabled}
+                      title="Edit"
+                    >
+                      <MdOutlineEdit /> Edit
+                    </button>
+                    <button
+                      className={`dropdown-item ${theme}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!isDisabled) {
+                          handleDeleteChat(chat.id);
+                        }
+                      }}
+                      disabled={isDisabled}
+                      title="Delete"
+                    >
+                      <MdOutlineDelete /> Delete
+                    </button>
+                  </div>}
+                </div>
+                
+                {editingChatId === chat.id && (
+                  <div className="edit-actions">
                     <button
                       className={`student-save-chat ${theme}`}
                       onClick={(e) => {
@@ -770,34 +808,7 @@ useEffect(() => {
                     >
                       <IoMdCloseCircleOutline />
                     </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className={`student-edit-chat ${theme}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditChat(chat.id, chat.chatName);
-                      }}
-                      disabled={isDisabled}
-                      title="Edit"
-                    >
-                      <MdOutlineEdit />
-                    </button>
-                    <button
-                      className={`student-delete-chat ${theme}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (!isDisabled) {
-                          handleDeleteChat(chat.id);
-                        }
-                      }}
-                      disabled={isDisabled}
-                      title="Delete"
-                    >
-                      <MdOutlineDelete className={`student-delete-icon ${theme}`} />
-                    </button>
-                  </>
+                  </div>
                 )}
               </div>
             </div>
@@ -918,9 +929,9 @@ useEffect(() => {
       <div className="student-header-buttons">
         <div className="userName" style={{ paddingLeft: '10px' }}>{userName}</div>
         <img src={userPicture} className='userPicture' alt="" />
-        <button title="Toggle theme" className={`student-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
+        {/*<button title="Toggle theme" className={`student-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
           {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
-        </button>
+        </button>*/}
         <button title="Move to learning materials" className={`student-exercise-button ${theme} ${tutorial2}`} onClick={() => navigate('/exercises')}>
           <LuBookMarked />
         </button>
@@ -946,10 +957,10 @@ useEffect(() => {
         </div>
 
         <button className={`student-sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} onClick={toggleSidebar}>
-          {isSidebarVisible ? <MdChevronLeft /> : <MdChevronRight />}
+          {isSidebarVisible ? <MdChevronLeft style={{color: 'white'}} /> : <MdChevronRight style={{color: 'white'}} />}
         </button>
         <button className={`student-sidebar-toggle2 ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} onClick={toggleSidebar}>
-          {isSidebarVisible ? <MdChevronRight /> : <MdChevronLeft />}
+          {isSidebarVisible ? <MdChevronRight style={{color: 'white'}} /> : <MdChevronLeft style={{color: 'white'}} />}
         </button>
       </div>
 

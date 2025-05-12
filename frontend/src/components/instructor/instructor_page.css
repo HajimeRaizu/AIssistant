@@ -210,6 +210,10 @@
     background: #ccc;
 }
 
+.instructor-line-graph{
+    
+}
+
 /* FAQ Section */
 .instructor-faq-section {
     margin-top: 20px;
@@ -732,12 +736,6 @@
     word-wrap: break-word;
 }
 
-@media (max-aspect-ratio: 1/1){
-    .instructor-container { 
-        display: none;
-    }
-}
-
 .subject-id-container {
     display: flex;
     align-items: center;
@@ -1215,3 +1213,7 @@ pre.ql-syntax{
     border-radius: 5px;
     margin-top: 20px;
   }
+
+.admin-sidebar-toggle{
+    display: none;
+}

@@ -62,12 +62,12 @@
 }
 
 .student-logout-button.dark {
-    background: #b43e3e;
+    background: rgb(250, 83, 90);
     color: var(--text-dark);
 }
 
 .student-logout-button.light {
-    background: #9e4d4d;
+    background: rgb(250, 83, 90);
     color: var(--text-dark);
 }
 
@@ -90,51 +90,51 @@
     gap: 10px;
     overflow-y: auto;
     height: 90%;
-    border-top: 1px solid var(--tab-dark);
-    border-bottom: 1px solid var(--tab-dark);
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+}
+
+.student-chat-list h3{
+    color: rgb(232, 221, 252);
 }
 
 .student-chat-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
-    padding: 10px;
+    padding: 10px 10px 10px 20px;
 }
 
 .student-chat-item.dark {
-    background: var(--tab-dark);
+    background: rgb(216, 198, 250);
     color: var(--text-dark);
 }
 
 .student-chat-item.light {
-    background: var(--tab-light);
+    background: rgb(216, 198, 250);
     color: var(--text-light);
 }
 
 .student-chat-item.active.dark {
-    background: var(--tab-active-dark);
+    background: rgb(252, 215, 144);
 }
 
 .student-chat-item.active.light {
-    background: var(--tab-active-light);
+    background: rgb(252, 215, 144);
 }
 
 
 .student-new-chat {
-    background: #085f93;
-    color: white;
+    background: rgb(252, 215, 144);
+    color: black;
     border: none;
     border-radius: 5px;
     padding: 10px;
     cursor: pointer;
     
     width: 100%;
-}
-
-.student-new-chat:hover {
-    background: #45a049;
 }
 
 .student-sidebar {
@@ -146,11 +146,11 @@
 }
 
 .student-sidebar.dark {
-    background: var(--sidebar-dark);
+    background: linear-gradient(rgb(159, 110, 238), rgb(73, 45, 122));
 }
 
 .student-sidebar.light {
-    background: var(--sidebar-light);
+    background: linear-gradient(rgb(159, 110, 238), rgb(73, 45, 122));
 }
 
 .student-sidebar.hidden {
@@ -163,6 +163,7 @@
 
 .student-sidebar-toggle2{
     display: none;
+    color: white;
 }
 
 .student-sidebar-toggle {
@@ -176,6 +177,7 @@
     font-family: "Host Grotesk", sans-serif;
     transition: transform 0.3s ease;
     z-index: 1000;
+    color: white;
 }
 
 .student-sidebar-toggle.hidden {
@@ -187,39 +189,39 @@
 }
 
 .student-sidebar-toggle.dark {
-    background: var(--sidebar-dark);
+    background: rgb(159, 110, 238);
     color: var(--text-dark);
 }
 
 .student-sidebar-toggle.light {
-    background: var(--sidebar-light);
+    background: rgb(159, 110, 238);
     color: var(--text-light);
 }
 
 .student-sidebar-toggle:hover.dark {
-    background: var(--button-hover-dark);
+    background: rgb(159, 110, 238);
 }
 
 .student-sidebar-toggle:hover.light {
-    background: var(--button-hover-light);
+    background: rgb(159, 110, 238);
 }
 
 .student-sidebar-toggle2.dark {
-    background: var(--sidebar-dark);
+    background: rgb(159, 110, 238);
     color: var(--text-dark);
 }
 
 .student-sidebar-toggle2.light {
-    background: var(--sidebar-light);
+    background: rgb(159, 110, 238);
     color: var(--text-light);
 }
 
 .student-sidebar-toggle2:hover.dark {
-    background: var(--button-hover-dark);
+    background: rgb(159, 110, 238);
 }
 
 .student-sidebar-toggle2:hover.light {
-    background: var(--button-hover-light);
+    background: rgb(159, 110, 238);
 }
 
 .student-content {
@@ -242,13 +244,20 @@
 }
 
 .student-content.dark {
-    background: var(--bg-dark);
+    background: url(../assets/background.png);
+    color: var(--text-light);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
     color: var(--text-dark);
 }
 
 .student-content.light {
-    background: var(--bg-light);
+    background: url(../assets/background.png);
     color: var(--text-light);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 .student-chat-container {
@@ -268,12 +277,12 @@
 }
 
 .student-chat-header.dark {
-    background: var(--bg-dark);
+    background: transparent;
     color: var(--text-dark);
 }
 
 .student-chat-header.light {
-    background: var(--bg-light);
+    background: transparent;
     color: var(--text-light);
 }
 
@@ -300,11 +309,11 @@
 }
 
 .student-chat-body.dark {
-    background: var(--bg-dark);
+    background: transparent;
 }
 
 .student-chat-body.light {
-    background: var(--bg-light);
+    background: transparent;
 }
 
 ::-webkit-scrollbar {
@@ -372,27 +381,27 @@
 }
 
 .student-message.user.dark {
-    background: #085f93;
+    background: rgb(73, 45, 122);
     color: white;
     align-self: flex-start;
 }
 
 .student-message.user.light {
-    background: #085f93;
+    background: rgb(73, 45, 122);
     color: white;
     align-self: flex-start;
 }
 
 .student-message.bot.dark {
-    background:  var(--message-bot-dark);
-    color: var(--text-dark);
+    background: rgb(159, 110, 238);
+    color: white;
     align-self: flex-start;
     align-items: flex-start;
 }
 
 .student-message.bot.light {
-    background:  var(--message-bot-light);
-    color: var(--text-light);
+    background: rgb(159, 110, 238);
+    color: white;
     align-self: flex-start;
     align-items: flex-start;
 }
@@ -475,11 +484,11 @@
 }
 
 .student-chat-input.dark {
-    background: var(--bg-dark);
+    background: transparent;
 }
 
 .student-chat-input.light {
-    background: var(--bg-light);
+    background: transparent;
 }
 
 .student-chat-input textarea {
@@ -868,11 +877,13 @@
 .student-submit-query.dark {
     background:  var(--button-dark);
     color: var(--text-dark);
+    border-radius: 20px;
 }
 
 .student-submit-query.light {
     background:  var(--button-light);
     color: var(--text-light);
+    border-radius: 20px;
 }
 
 .student-submit-query:hover.dark {
@@ -930,21 +941,23 @@
 }
 
 .student-exercise-button.dark {
-    background: var(--button-dark);
-    color: var(--text-dark);
+    background: rgb(73, 45, 122);
+    color: white;
 }
 
 .student-exercise-button.light {
-    background: var(--button-light);
-    color: var(--text-light);
+    background: rgb(73, 45, 122);
+    color: white;
 }
 
 .student-exercise-button:hover.dark {
-    background: var(--button-hover-dark);
+    background: rgb(249, 217, 131);
+    color: black;
 }
 
 .student-exercise-button:hover.light {
-    background: var(--button-hover-light);
+    background: rgb(249, 217, 131);
+    color: black;
 }
 
 .student-bold-text {
@@ -968,11 +981,21 @@
     width: 77dvw;
     text-align: center;
     font-size: 1.2em;
-    transition: transform 0.3s ease;
+    background: url(../assets/background.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
 .student-no-chat-selected.sidebar-hidden {
-    transform: translateX(-11.5dvw);
+    margin-left: -23dvw;
+    width: 100%;
+}
+
+.student-no-chat-selected.sidebar-visible {
+    margin-left: 0px;
+    width: 77dvw;
 }
 
 .student-loading-container {
@@ -991,12 +1014,12 @@
 }
 
 .student-no-chat-box.dark {
-    background: var(--bg-dark);
+    background: transparent;
     color: var(--text-dark);
 }
 
 .student-no-chat-box.light {
-    background: var(--bg-light);
+    background: transparent;
     color: var(--text-light);
 }
 
@@ -1487,7 +1510,7 @@
 
 .student-save-edit, .student-cancel-edit-message {
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: 20px;
   cursor: pointer;
 }
 
@@ -1557,4 +1580,62 @@ code *{
   /* For dark theme */
 .student-newchat-message.dark textarea::placeholder {
     color: #aaa;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 120px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 4px;
+  display: none;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-item {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+/* Dark mode styles if needed */
+.dark .dropdown-menu {
+  background-color: #333;
+  color: white;
+}
+
+.dark .dropdown-item:hover {
+  background-color: #555;
+}
+
+.edit-actions {
+  display: inline-flex;
+  gap: 5px;
 }
