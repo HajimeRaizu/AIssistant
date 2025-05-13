@@ -130,8 +130,8 @@
         width: 35px;
     }
 
-    .userPicture, .userName{
-        display: none;
+    .profile-dropdown-toggle .userPicture, .profile-dropdown-toggle .userName{
+        display: flex;
     }
 
     .student-header-buttons{
@@ -196,6 +196,18 @@
         z-index: 1002;
     }
 
+    .student-exercise-button p{
+        display: none;
+    }
+
+    .student-exercise-button{
+        border-radius: 50%;
+    }
+
+    .student-chat-header .header-title{
+        width: 95%;
+    }
+
     .student-tutorial3.true{
         display: flex;
         position: absolute;
@@ -235,6 +247,25 @@
 
     .student-code-block{
         font-size: smaller;
+    }
+
+    .dropdown-menu {
+        position: fixed;
+        left: 80%;
+        background-color: white;
+        min-width: 120px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1010;
+        border-radius: 4px;
+        display: none;
+    }
+
+    .student-chat-list{
+        height: 80%;
+    }
+
+    .profile-dropdown-toggle{
+        height: fit-content;
     }
 }
 

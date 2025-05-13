@@ -81,7 +81,7 @@
 
 .student-chat-list {
     margin-top: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     margin-right: 20px;
     padding: 10px 0px 10px 0px;
     width: 100%;
@@ -95,7 +95,7 @@
 }
 
 .student-chat-list h3{
-    color: rgb(232, 221, 252);
+    color: white;
 }
 
 .student-chat-item {
@@ -139,10 +139,11 @@
 
 .student-sidebar {
     width: 23dvw;
-    padding: 2dvh 2dvw 2dvh 2dvw;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease;
+    z-index: 2;
 }
 
 .student-sidebar.dark {
@@ -233,6 +234,7 @@
     overflow-y: auto;
     margin-left: 0;
     transition: margin 0.3s ease;
+    z-index: 1;
 }
 
 .student-content.sidebar-hidden {
@@ -244,7 +246,7 @@
 }
 
 .student-content.dark {
-    background: url(../assets/background.png);
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
     color: var(--text-light);
     background-repeat: no-repeat;
     background-size: cover;
@@ -253,7 +255,7 @@
 }
 
 .student-content.light {
-    background: url(../assets/background.png);
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
     color: var(--text-light);
     background-repeat: no-repeat;
     background-size: cover;
@@ -269,11 +271,19 @@
 
 .student-chat-header {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     padding: 10px;
     text-align: center;
     border-bottom: 1px solid var(--tab-dark);
+}
+
+.student-chat-header .header-title{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 80%;
 }
 
 .student-chat-header.dark {
@@ -864,26 +874,22 @@
 }
 
 .student-header-buttons{
-    top: 20px;
-    right: 20px;
-    position: absolute;
     display: flex;
     flex-direction: row;
     align-items: center;
     direction: rtl;
     padding: 0;
+    z-index: 2;
 }
 
 .student-submit-query.dark {
-    background:  var(--button-dark);
-    color: var(--text-dark);
-    border-radius: 20px;
+    background:  linear-gradient(rgb(216, 198, 250), rgb(159, 110, 238));
+    border-radius: 5px;
 }
 
 .student-submit-query.light {
-    background:  var(--button-light);
-    color: var(--text-light);
-    border-radius: 20px;
+    background:  linear-gradient(120deg, rgb(216, 198, 250), rgb(159, 110, 238)) !important;
+    border-radius: 5px;
 }
 
 .student-submit-query:hover.dark {
@@ -929,15 +935,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    top: 20px;
-    right: 20px;
     padding: 12px; /* Increased padding */
-    border-radius: 10dvh;
+    border-radius: 5px;
     border: none;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
     font-size: smaller;
+    gap: 5px;
 }
 
 .student-exercise-button.dark {
@@ -975,13 +979,13 @@
 
 .student-no-chat-selected {
     display: flex;
-    justify-content: center;
-    padding-top: 15dvh;
+    flex-direction: column;
+    align-items: center;
     height: 100%;
     width: 77dvw;
     text-align: center;
     font-size: 1.2em;
-    background: url(../assets/background.png);
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -1046,11 +1050,11 @@
 }
 
 .student-newchat-header.light h1.ai {
-    color: rgb(86, 86, 255);
+    color: rgb(252, 215, 144);
 }
 
 .student-newchat-header.dark h1.ai {
-    color: rgb(138, 138, 255);
+    color: rgb(252, 215, 144);
 }
 
 .student-newchat-header.dark p {
@@ -1138,7 +1142,7 @@
     font-size: 18px;
     overflow-y: auto;
     min-height: 10%;
-    max-height: 400px;
+    max-height: 200px;
     border: none;
 }
 
@@ -1509,20 +1513,17 @@
 }
 
 .student-save-edit, .student-cancel-edit-message {
-  padding: 4px 8px;
-  border-radius: 20px;
-  cursor: pointer;
+    background:  linear-gradient(rgb(216, 198, 250), rgb(159, 110, 238)) !important;
+    padding: 4px 8px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .student-edited-indicator {
   font-size: 0.8em;
-  color: #4e4e4e;
+  color: rgb(216, 198, 250);
   margin-left: 8px;
   font-style: italic;
-}
-
-.student-edited-indicator.dark{
-    color: #cacaca;
 }
 
 .student-edit-prompt {
@@ -1545,16 +1546,11 @@ span{
 .student-spinner{
     width: 20px;
     height: 20px;
-    border: 3px solid gray; 
     border-radius: 50%;
-    border-top-color: #0e355a;
     animation: spin 1s ease-in-out infinite;
     margin: 0 auto;
-}
-
-.student-spinner{
-    border: 3px solid lightgray;
-    border-top-color: #1885eb;
+    border: 3px solid rgb(73, 45, 122);
+    border-top-color: rgb(249, 217, 131);
 }
 
 
@@ -1583,7 +1579,7 @@ code *{
 }
 
 .dropdown {
-  position: relative;
+  position: static;
   display: inline-block;
 }
 
@@ -1595,14 +1591,53 @@ code *{
 }
 
 .dropdown-menu {
-  position: absolute;
-  right: 0;
+  position: fixed;
+  left: 19dvw;
   background-color: white;
   min-width: 120px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 1010;
   border-radius: 4px;
   display: none;
+}
+
+.profile-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-dropdown-toggle {
+  background: none;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  padding: 5px;
+  width: fit-content;
+  position: relative;
+}
+
+.profile-dropdown-toggle:hover{
+    transform: none !important;
+    background: rgb(252, 215, 144);
+}
+
+.profile-dropdown-toggle:hover .userName{
+    color: rgb(73, 45, 122) !important;
+}
+
+.profile-dropdown-menu {
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 2;
+  border-radius: 4px;
+  display: none;
+  bottom: 110%;
+}
+
+.profile-dropdown-menu.show {
+  display: inline-flex;
 }
 
 .dropdown:hover .dropdown-menu {
@@ -1638,4 +1673,50 @@ code *{
 .edit-actions {
   display: inline-flex;
   gap: 5px;
+}
+
+/* Profile dropdown styles */
+.student-profile-dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  cursor: pointer;
+}
+
+.student-profile-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--dropdown-bg);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 8px;
+  padding: 10px;
+  top: 100%;
+  left: 0;
+  width: 100%;
+}
+
+.student-profile-dropdown:hover .student-profile-dropdown-content {
+  display: block;
+}
+
+/* For mobile/touch devices */
+.student-profile-dropdown.active .student-profile-dropdown-content {
+  display: block;
+}
+
+.student-logout-button {
+  width: 100%;
+  padding: 8px 16px;
+  text-align: left;
+  border: none;
+  background: none;
+  color: var(--text-color);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.student-logout-button:hover {
+  background-color: var(--button-hover);
 }

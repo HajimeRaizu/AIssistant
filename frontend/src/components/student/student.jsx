@@ -20,6 +20,7 @@ import 'prismjs/components/prism-java';
 import { MdOutlineEdit } from "react-icons/md";
 import { IoCopyOutline } from "react-icons/io5";
 import { FiMoreVertical } from "react-icons/fi";
+import { IoLogOutOutline } from "react-icons/io5";
 
 const StudentPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -53,6 +54,7 @@ const StudentPage = () => {
   const editTextareaRef = useRef(null);
   const chatBodyRef = useRef(null);
   const [copiedMessageId, setCopiedMessageId] = useState(null);
+  const [showLogoutDropdown, setShowLogoutDropdown] = useState(false);
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
   const userId = localStorage.getItem("userId");
@@ -70,6 +72,28 @@ const sampleQuestions = [
   "What's the difference between let and var in JavaScript?",
   "Explain binary search algorithm with an example"
 ];
+
+useEffect(() => {
+  const handleClickOutside = (e) => {
+    // Close profile dropdown if clicking outside
+    if (!e.target.closest('.profile-dropdown-menu') && !e.target.closest('.profile-dropdown-toggle')) {
+      setShowLogoutDropdown(false);
+    }
+    
+    // Close chat actions dropdown if clicking outside (if you have this elsewhere)
+    if (!e.target.closest('.dropdown-menu') && !e.target.closest('.dropdown-toggle')) {
+      const dropdowns = document.querySelectorAll('.dropdown-menu');
+      dropdowns.forEach(dropdown => {
+        dropdown.classList.remove('show');
+      });
+    }
+  };
+
+  document.addEventListener('click', handleClickOutside);
+  return () => {
+    document.removeEventListener('click', handleClickOutside);
+  };
+}, []);
 
 useEffect(() => {
   let timeout;
@@ -756,7 +780,7 @@ useEffect(() => {
                   >
                     {!editingChatId && <FiMoreVertical />}
                   </button>
-                  {!editingChatId &&<div className={`dropdown-menu ${theme}`}>
+                  {!editingChatId && <div className={`dropdown-menu ${theme}`}>
                     <button
                       className={`dropdown-item ${theme}`}
                       onClick={(e) => {
@@ -926,22 +950,8 @@ useEffect(() => {
           <p>dark mode</p>
         </span>
       </div>
-      <div className="student-header-buttons">
-        <div className="userName" style={{ paddingLeft: '10px' }}>{userName}</div>
-        <img src={userPicture} className='userPicture' alt="" />
-        {/*<button title="Toggle theme" className={`student-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
-          {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
-        </button>*/}
-        <button title="Move to learning materials" className={`student-exercise-button ${theme} ${tutorial2}`} onClick={() => navigate('/exercises')}>
-          <LuBookMarked />
-        </button>
-      </div>
       <div className={`student-overlay ${isSidebarVisible ? 'visible' : 'hidden'}`} onClick={toggleSidebar} />
       <div className={`student-sidebar ${theme} ${isSidebarVisible ? 'visible' : 'hidden'}`}>
-        <div className="student-profile">
-          <img src={`${userPicture}`} alt={`${userName}.jpg`} />
-          <p>{userName}</p>
-        </div>  
         <button
           className="student-new-chat"
           onClick={handleNewChatClick}
@@ -952,8 +962,39 @@ useEffect(() => {
         <div className="student-chat-list">
           {renderGroupedChats(groupedChats)}
         </div>
+
         <div className="student-logout-section">
-          <button className={`student-logout-button ${theme}`} onClick={handleLogout}>Logout</button>
+          <div className={`profile-dropdown ${theme}`} style={{width: '100%'}}>
+            <button 
+              className={`profile-dropdown-toggle ${theme}`} 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLogoutDropdown(!showLogoutDropdown);
+              }}
+              disabled={isDisabled}
+              title="Actions"
+              style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', width: '100%', gap: '20px', padding: '10px'}}
+            >
+              <img src={userPicture} className='userPicture' alt="" />
+              <div className="userName" style={{ paddingLeft: '10px', color: 'rgb(216, 198, 250)'}}>{userName}</div>
+            </button>
+            <div 
+              className={`profile-dropdown-menu ${theme} ${showLogoutDropdown ? 'show' : ''}`} 
+            >
+              <button
+                className={`dropdown-item ${theme}`}
+                style={{display: 'flex', justifyContent: 'center'}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLogoutDropdown(false);
+                  handleLogout();
+                }}
+                title="Logout"
+              >
+                <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
+              </button>
+            </div>
+          </div>
         </div>
 
         <button className={`student-sidebar-toggle ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`} onClick={toggleSidebar}>
@@ -968,11 +1009,19 @@ useEffect(() => {
         <div className={`student-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
           <div className="student-chat-container">
             <div className={`student-chat-header ${theme}`}>
-              <div className="student-aissistant">
-                <h2 style={{color: '#085f93'}}>AI</h2>
+              <div className="header-title"><div className="student-aissistant">
+                <h2 style={{color: 'rgb(159, 110, 238)'}}>AI</h2>
                 <h2>ssistant Chat</h2>
               </div>
-              <p className="student-disclaimer">This chat will respond to any programming language.</p>
+              <p className="student-disclaimer">This chat will respond to any programming language.</p></div>
+              <div className="student-header-buttons">
+                {/*<button title="Toggle theme" className={`student-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
+                  {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
+                </button>*/}
+                <button title="Move to learning materials" className={`student-exercise-button ${theme} ${tutorial2}`} onClick={() => navigate('/exercises')}>
+                  <p>AIssistant Learn</p><LuBookMarked />
+                </button>
+              </div>
             </div>
             <div className={`student-chat-body ${theme}`} ref={chatBodyRef}>
             {messages.map((message, index) => (
@@ -982,6 +1031,7 @@ useEffect(() => {
                   {message.sender === 'user' && editingMessageId === message.messageId ? (
                     <div className={`student-edit-container ${theme}`}>
                       <textarea
+                        id="editPromptTextarea"
                         ref={editTextareaRef}
                         value={editedPrompt}
                         onChange={(e) => {
@@ -1102,6 +1152,7 @@ useEffect(() => {
             </div>
             <div className={`student-chat-input ${theme}`}>
               <textarea
+                id="studentInputTextarea"
                 ref={textareaRef}
                 value={input}
                 onChange={handleInputChange}
@@ -1126,6 +1177,16 @@ useEffect(() => {
 
       {!currentChatId && (
         <div className={`student-no-chat-selected ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'} ${theme}`}>
+          <div className={`student-chat-header ${theme}`} style={{width: '100%', borderBottom: 'none', justifyContent: 'end'}}>
+            <div className="student-header-buttons">
+              {/*<button title="Toggle theme" className={`student-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
+                {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
+              </button>*/}
+              <button title="Move to learning materials" className={`student-exercise-button ${theme} ${tutorial2}`} onClick={() => navigate('/exercises')}>
+                <p>AIssistant Learn</p><LuBookMarked />
+              </button>
+            </div>
+          </div>
           <div className={`student-no-chat-box ${theme}`}>
             <div className={`student-newchat-container ${theme}`}>
               <img src={logo} alt="AIssistant.png" style={{height: '140px', width: '140px', alignSelf: 'center', marginBottom: '10px', filter: 'drop-shadow(0 0 5px white)'}} />
@@ -1139,6 +1200,7 @@ useEffect(() => {
               </div>
               <div className={`student-newchat-message ${theme}`}>
               <textarea
+                id="newChatTextarea"
                 className={`${theme}`}
                 ref={textareaRef}
                 type="text"
