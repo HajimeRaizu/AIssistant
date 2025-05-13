@@ -70,6 +70,8 @@ const InstructorPage = () => {
   const [showCreateLessonModal, setShowCreateLessonModal] = useState(false);
   const [showCreateSubtopicModal, setShowCreateSubtopicModal] = useState(false);
   const programmingLanguages = ["Python", "JavaScript", "Java", "C++", "C#", "HTML", "CSS"];
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const quillRef = useRef(null);
 
   const [newSubject, setNewSubject] = useState({
     subjectName: "",
@@ -102,6 +104,19 @@ const InstructorPage = () => {
   const [reusingLesson, setReusingLesson] = useState(null);
   const [reusingSubtopic, setReusingSubtopic] = useState("");
   const [reusingSubtopicIndex, setReusingSubtopicIndex] = useState(-1);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isSidebarVisible && !event.target.closest('.instructor-sidebar') && !event.target.closest('.instructor-sidebar-toggle')) {
+        setIsSidebarVisible(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isSidebarVisible]);
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -1310,6 +1325,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             {editingExercise ? (
               <>
                 <ReactQuill
+                  ref={(el) => {
+                    if (el) {
+                      quillRef.current = el.getEditor();
+                    }
+                  }}
                   theme="snow"
                   value={editingExercise.content}
                   onChange={(content) => setEditingExercise({...editingExercise, content})}
@@ -2022,6 +2042,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             />
             <label>Content:</label>
             <ReactQuill
+              ref={(el) => {
+                if (el) {
+                  quillRef.current = el.getEditor();
+                }
+              }}
               theme="snow"
               value={newSubtopic.content}
               onChange={(content) => setNewSubtopic({...newSubtopic, content})}
@@ -2131,7 +2156,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
 
   return (
     <div className="instructor-container">
-      <div className="instructor-sidebar">
+      <div className={`instructor-sidebar ${isSidebarVisible ? 'visible' : ''}`}>
         <div className="instructor-aissistant-logo-title">
           <img src={logo} alt="aissistant logo" style={{filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="instructor-aissistant-title">
@@ -2246,9 +2271,9 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
               </div>
             </div>
             <div className="instructor-faq-section">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="faq-header">
                 <h2>Frequently Asked Questions</h2>
-                <div>
+                <div className="faq-header-dropdown">
                   <select 
                     id="select-language"
                     value={selectedLanguage} 
@@ -2429,20 +2454,44 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             </div>
             <div className="reuse-body">
               {!reusingSubject && <>{Object.keys(learningMaterials).map((subject) => (
-                <div className="reuse-subject-items" onClick={() => {setReusingSubject(learningMaterials[subject].subjectCode)}}>
+                <div 
+                  key={subject} 
+                  className="reuse-subject-items" 
+                  onClick={() => {setReusingSubject(learningMaterials[subject].subjectCode)}}
+                >
                   {learningMaterials[subject].subjectName}
                 </div>
               ))}</>}
               {reusingSubject && !reusingLesson && <>{Object.keys(learningMaterials[reusingSubject].lessons).map((lesson) => (
-                <div className="reuse-subject-items" onClick={() => {setReusingLesson(lesson)}}>
+                <div 
+                  key={lesson} 
+                  className="reuse-subject-items" 
+                  onClick={() => {setReusingLesson(lesson)}}
+                >
                   {learningMaterials[reusingSubject].lessons[lesson].lessonName}
                 </div>
               ))}</>}
-              {reusingSubject && reusingLesson && <>{Object.keys(learningMaterials[reusingSubject].lessons[reusingLesson].subtopics).map((subtopic, subtopicIndex) => (
-                <div className={`reuse-subject-items ${reusingSubtopic.subtopicTitle === learningMaterials[reusingSubject].lessons[reusingLesson].subtopics[subtopic].subtopicTitle && reusingSubtopicIndex === subtopicIndex ? 'selected' : ''}`} onClick={() => {setReusingSubtopic(learningMaterials[reusingSubject].lessons[reusingLesson].subtopics[subtopic]); setReusingSubtopicIndex(subtopicIndex)}}>
-                  {learningMaterials[reusingSubject].lessons[reusingLesson].subtopics[subtopic].subtopicTitle}
-                </div>
-              ))}</>}
+              {reusingSubject && reusingLesson && (
+                <>
+                  {learningMaterials[reusingSubject]?.lessons[reusingLesson]?.subtopics?.map((subtopic, subtopicIndex) => (
+                    subtopic && (  // Add this null check
+                      <div 
+                        key={`${subtopic.subtopicTitle}-${subtopicIndex}`}
+                        className={`reuse-subject-items ${
+                          reusingSubtopic?.subtopicTitle === subtopic.subtopicTitle && 
+                          reusingSubtopicIndex === subtopicIndex ? 'selected' : ''
+                        }`} 
+                        onClick={() => {
+                          setReusingSubtopic(subtopic); 
+                          setReusingSubtopicIndex(subtopicIndex);
+                        }}
+                      >
+                        {subtopic.subtopicTitle}
+                      </div>
+                    )
+                  ))}
+                </>
+              )}
             </div>
             <div className="reuse-buttons" style={{display: 'flex', direction: 'rtl', alignItems: 'center'}}>
               {reusingSubject && reusingLesson && reusingSubtopic === "" && <button disabled>Reuse</button>}
@@ -2452,7 +2501,12 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         </div>
       )}
       
-      <div className="admin-sidebar-toggle">try</div>
+      <button 
+        className="instructor-sidebar-toggle" 
+        onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+      >
+        {isSidebarVisible ? '☰' : '☰'}
+      </button>
     </div>
   );
 };

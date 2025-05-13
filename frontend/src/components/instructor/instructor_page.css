@@ -210,10 +210,6 @@
     background: #ccc;
 }
 
-.instructor-line-graph{
-    
-}
-
 /* FAQ Section */
 .instructor-faq-section {
     margin-top: 20px;
@@ -1216,4 +1212,10 @@ pre.ql-syntax{
 
 .admin-sidebar-toggle{
     display: none;
+}
+
+.faq-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

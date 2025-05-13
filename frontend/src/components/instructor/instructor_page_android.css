@@ -1,21 +1,85 @@
 @media (max-aspect-ratio: 1/1), (max-width: 960px) {
-    .instructor-sidebar{
-        width: 90%;
+    .instructor-sidebar {
+        width: 80%;
         position: fixed;
         z-index: 1000;
         height: 100%;
-        display: none;
+        left: -100%;
+        transition: left 0.3s ease;
     }
-
-    .instructor-content{
+    
+    .instructor-sidebar.visible {
+        left: 0;
+        display: block;
+    }
+    
+    .instructor-content {
+        margin-left: 0;
+        width: 100%;
         border-radius: 0px;
     }
+    
+    .instructor-sidebar-toggle {
+        display: block;
+        position: fixed;
+        left: 0px;
+        top: 10px;
+        z-index: 1001;
+        background: #4e73df;
+        color: white;
+        border: none;
+        padding: 10px;
+        font-size: 20px;
+        border-radius: 0px 5px 5px 0px;
+    }
+
+    .instructor-statistics {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .recharts-responsive-container.instructor-line-graph{
+        width: 100% !important;
+    }
+
+    .faq-header{
+        align-items: start;
+        justify-content: start;
+        flex-direction: column;
+    }
+
+    .faq-header-dropdown{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .generate-faq-button{
+        width: 93%;
+    }
+
+    .instructor-manage-learning-materials-tab{
+        padding: 0px;
+    }
+
+    .instructor-exercises-container{
+        padding: 0px;
+    }
+
+    .instructor-modal-content1{
+        width: 90%;
+    }
+
+    .instructor-modal-content{
+        width: 90%;
+    }
+
+    .reuse-form{
+        width: 90%;
+    }
 }
 
-@media (max-aspect-ratio: 1/1) and (pointer: coarse){
-
-}
-
-@media (max-height: 600px){
-
+@media (min-aspect-ratio: 1/1) and (min-width: 961px) {
+    .instructor-sidebar-toggle {
+        display: none;
+    }
 }
