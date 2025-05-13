@@ -1193,7 +1193,7 @@ useEffect(() => {
               <div className={`student-newchat-header ${theme}`}>
                 <div className="student-aissistant">
                   <h1>Hello World! I am </h1>
-                  <h2 style={{ color: 'rgb(86, 86, 255)', fontSize: '24px', paddingLeft: '7px' }}>AI</h2>
+                  <h2 style={{ color: 'rgb(159, 110, 238)', fontSize: '24px', paddingLeft: '7px' }}>AI</h2>
                   <h2 style={{ fontSize: '24px' }}>ssistant.</h2>
                 </div>
                 <p style={{fontSize: 'medium'}}>Your personal academia companion.</p>

@@ -26,11 +26,11 @@
 }
 
 .exercises-sidebar.dark {
-    background: linear-gradient(rgb(159, 110, 238), rgb(73, 45, 122));
+    background: linear-gradient(60deg, rgb(159, 110, 238), rgb(73, 45, 122));
 }
 
 .exercises-sidebar.light {
-    background: linear-gradient(rgb(159, 110, 238), rgb(73, 45, 122));
+    background: linear-gradient(60deg, rgb(159, 110, 238), rgb(73, 45, 122));
 }
 
 .exercises-sidebar.hidden {
@@ -100,7 +100,7 @@
 .exercises-content {
     flex: 1;
     padding: 30px; /* Increased padding */
-    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
+    background: white;
     color: var(--text-dark);
     overflow: auto;
     transition: margin-left 0.3s ease-in-out;
@@ -111,7 +111,7 @@
 }
 
 .exercises-content.light {
-    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
+    background: white;
     color: var(--text-light); /* Font color in light mode */
 }
 
@@ -546,24 +546,27 @@ button {
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
     font-size: large;
+    gap: 5px;
 }
 
 .exercises-chat-button.dark {
-    background: var(--button-dark);
-    color: var(--text-dark);
+    background: rgb(73, 45, 122);
+    color: white;
 }
 
 .exercises-chat-button.light {
-    background: var(--button-light);
-    color: var(--text-light);
+    background: rgb(73, 45, 122);
+    color: white;
 }
 
 .exercises-chat-button:hover.dark {
-    background: var(--button-hover-dark);
+    background: rgb(249, 217, 131);
+    color: black;
 }
 
 .exercises-chat-button:hover.light {
-    background: var(--button-hover-light);
+    background: rgb(249, 217, 131);
+    color: black;
 }
 
 .exercises-logout-button {
@@ -672,21 +675,23 @@ button {
 }
 
 .exercises-sidebar-toggle2.dark {
-    background: var(--sidebar-dark);
+    background: rgb(159, 110, 238);
     color: var(--text-dark);
 }
 
 .exercises-sidebar-toggle2.light {
-    background: var(--sidebar-light);
-    color: var(--text-light);
+    background: rgb(159, 110, 238);
+    color: var(--text-dark);
 }
 
 .exercises-sidebar-toggle2:hover.dark {
-    background: var(--button-hover-dark);
+    background: rgb(159, 110, 238);
+    color: var(--text-dark);
 }
 
 .exercises-sidebar-toggle2:hover.light {
-    background: var(--button-hover-light);
+    background: rgb(159, 110, 238);
+    color: var(--text-dark);
 }
 
 .userPicture{

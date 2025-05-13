@@ -75,6 +75,10 @@
         right: 70px; /* Adjust the position to avoid overlapping with the theme toggle button */
     }
 
+    .exercises-chat-button p{
+        display: none;
+    }
+
     .exercises-header{
         margin-left: 30px;
     }

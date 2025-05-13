@@ -147,11 +147,11 @@
 }
 
 .student-sidebar.dark {
-    background: linear-gradient(rgb(159, 110, 238), rgb(73, 45, 122));
+    background: linear-gradient(60deg, rgb(216, 198, 250), rgb(159, 110, 238), rgb(73, 45, 122));
 }
 
 .student-sidebar.light {
-    background: linear-gradient(rgb(159, 110, 238), rgb(73, 45, 122));
+    background: linear-gradient(60deg, rgb(159, 110, 238), rgb(159, 110, 238), rgb(73, 45, 122));
 }
 
 .student-sidebar.hidden {
@@ -190,39 +190,39 @@
 }
 
 .student-sidebar-toggle.dark {
-    background: rgb(159, 110, 238);
+    background: rgb(73, 45, 122);
     color: var(--text-dark);
 }
 
 .student-sidebar-toggle.light {
-    background: rgb(159, 110, 238);
+    background: rgb(73, 45, 122);
     color: var(--text-light);
 }
 
 .student-sidebar-toggle:hover.dark {
-    background: rgb(159, 110, 238);
+    background: rgb(73, 45, 122);
 }
 
 .student-sidebar-toggle:hover.light {
-    background: rgb(159, 110, 238);
+    background: rgb(73, 45, 122);
 }
 
 .student-sidebar-toggle2.dark {
-    background: rgb(159, 110, 238);
+    background: rgb(73, 45, 122);
     color: var(--text-dark);
 }
 
 .student-sidebar-toggle2.light {
-    background: rgb(159, 110, 238);
+    background: rgb(73, 45, 122);
     color: var(--text-light);
 }
 
 .student-sidebar-toggle2:hover.dark {
-    background: rgb(159, 110, 238);
+    background: rgb(73, 45, 122);
 }
 
 .student-sidebar-toggle2:hover.light {
-    background: rgb(159, 110, 238);
+    background: rgb(73, 45, 122);
 }
 
 .student-content {
@@ -273,7 +273,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: end;
     padding: 10px;
     text-align: center;
     border-bottom: 1px solid var(--tab-dark);

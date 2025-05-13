@@ -538,12 +538,12 @@ const stopSpeech = () => {
         <div className="student-aissistant-logo-title">
           <img src={logo} alt="aissistant logo" style={{height: '60px', width: '60px', filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="student-aissistant-title">
-            <h1 className="student-ai" style={{color: '#085f93', fontSize: 'x-large'}}>AI</h1>
-            <h1 style={{fontSize: 'x-large'}}>ssistant Learn</h1>
+            <h1 className="student-ai" style={{color: 'rgb(216, 198, 250)', fontSize: 'x-large'}}>AI</h1>
+            <h1 style={{fontSize: 'x-large', color: 'white'}}>ssistant Learn</h1>
           </div>
         </div>
         {hasSubjectCode ? (
-          <ul style={{borderTop: '1px solid gray', borderBottom: '1px solid gray', marginTop: '10px', marginBottom: '10px'}}>
+          <ul style={{borderTop: '1px solid white', borderBottom: '1px solid white', marginTop: '10px', marginBottom: '10px'}}>
             {Object.keys(learningMaterials).map((subjectCode) => (
               <li
                 key={subjectCode}
@@ -584,15 +584,8 @@ const stopSpeech = () => {
             )}
           </div>
           <div className="exercises-header-buttons">
-            <div className="userName" style={{ paddingLeft: "10px" }}>
-              {userName}
-            </div>
-            <img src={userPicture} className="userPicture" alt="" />
-            <button title="Toggle theme" className={`exercises-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
-              {theme === "dark" ? <MdLightMode /> : <MdDarkMode />}
-            </button>
             <button title="Move to chat" className={`exercises-chat-button ${theme} ${tutorial2}`} onClick={() => navigate("/student")}>
-              <IoIosChatboxes />
+              <p>AIssistant Chat</p> <IoIosChatboxes />
             </button>
           </div>
         </div>
@@ -977,7 +970,7 @@ const stopSpeech = () => {
               className={`student-add-new-subject ${theme}`}
               title="Add subject code"
             >
-            <ImCross />
+            <ImCross style={{color: 'white'}} />
             </button>
           )}
     </div>
