@@ -1621,7 +1621,7 @@ code *{
     background: rgb(252, 215, 144);
 }
 
-.profile-dropdown-toggle .userName{
+.profile-dropdown-toggle:hover .userName{
     color: rgb(73, 45, 122) !important;
 }
 
