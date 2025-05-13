@@ -1658,20 +1658,23 @@ code *{
   display: flex;
   align-items: center;
   gap: 8px;
+  color: black !important;
 }
 
 .dropdown-item:hover {
   background-color: #f5f5f5;
+  color: black !important;
 }
 
 /* Dark mode styles if needed */
 .dark .dropdown-menu {
   background-color: #333;
-  color: white;
+  color: black !important;
 }
 
 .dark .dropdown-item:hover {
   background-color: #555;
+  color: black !important;
 }
 
 .edit-actions {
