@@ -25,7 +25,7 @@
     transition: transform 0.3s ease;
 }
 
-.exercises-sidebar.dark {
+.exercises-sidebar.dark {   
     background: linear-gradient(60deg, rgb(216, 198, 250), rgb(159, 110, 238), rgb(73, 45, 122));
 }
 
@@ -105,7 +105,7 @@
 }
 
 .exercises-sidebar li.light.active {
-    border: 2px solid black;
+    border: 2px solid white;
 }
 
 .exercises-sidebar li.dark.active {
