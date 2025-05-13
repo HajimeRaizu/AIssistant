@@ -1151,7 +1151,7 @@ useEffect(() => {
               )}
             </div>
             <div className={`student-chat-input ${theme}`}>
-              <textarea
+              <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', background: 'white', marginRight: '10px', marginTop: '10px', paddingTop: '10px', borderRadius: '20px 20px 0px 0px'}}><textarea
                 id="studentInputTextarea"
                 ref={textareaRef}
                 value={input}
@@ -1160,7 +1160,7 @@ useEffect(() => {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask a question..."
                 className={theme}
-              />
+              /></div>
               <div className={`student-chat-input-button ${theme}`}>
                 <button
                   onClick={handleSend}

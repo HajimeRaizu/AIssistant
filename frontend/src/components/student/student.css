@@ -489,7 +489,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    justify-content: center;
     border-top: 1px solid var(--tab-dark);
 }
 
@@ -502,9 +502,8 @@
 }
 
 .student-chat-input textarea {
-    padding: 2% 2% 0% 2%;
-    width: 100%;
-    border-radius: 4px 4px 0px 0px;
+    padding: 0px 0px 0px 10px;
+    width: 98%;
     margin-right: 10px;
     font-family: "Host Grotesk", sans-serif;
     font-size: large;
@@ -904,7 +903,7 @@
     padding: 2px 10px 10px 10px;
     border: none;
     width: 100%;
-    border-radius: 0px 0px 4px 4px;
+    border-radius: 0px 0px 20px 20px;
     margin-right: 10px;
     font-family: "Host Grotesk", sans-serif;
     direction: rtl;
