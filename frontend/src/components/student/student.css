@@ -191,12 +191,12 @@
 
 .student-sidebar-toggle.dark {
     background: rgb(73, 45, 122);
-    color: var(--text-dark);
+    color: white;
 }
 
 .student-sidebar-toggle.light {
     background: rgb(73, 45, 122);
-    color: var(--text-light);
+    color: white;
 }
 
 .student-sidebar-toggle:hover.dark {
@@ -781,14 +781,12 @@
 
 .student-modal-content.dark {
     background: var(--sidebar-light);
-    background:  var(--bg-light);
     color: var(--text-light);
 }
 
 .student-modal-content.light {
-    background: var(--sidebar-dark);
-    background:  var(--bg-dark);
-    color: var(--text-dark);
+    background: white;
+    color: black;
 }
 
 .student-modal-content p {
@@ -882,21 +880,13 @@
 }
 
 .student-submit-query.dark {
-    background:  linear-gradient(rgb(216, 198, 250), rgb(159, 110, 238));
+    background:  linear-gradient(120deg, rgb(216, 198, 250), rgb(159, 110, 238)) !important;
     border-radius: 5px;
 }
 
 .student-submit-query.light {
     background:  linear-gradient(120deg, rgb(216, 198, 250), rgb(159, 110, 238)) !important;
     border-radius: 5px;
-}
-
-.student-submit-query:hover.dark {
-    background: var(--button-hover-dark);
-}
-
-.student-submit-query:hover.light {
-    background: var(--button-hover-light);
 }
 
 .student-chat-input-button {
@@ -1287,37 +1277,6 @@
     color: var(--code-text-dark);
 }
 
-.student-chat-name-modal .student-chat-name-modal-content.light input::placeholder {
-    color: var(--input-placeholder-light);
-}
-
-.student-chat-name-modal .student-chat-name-modal-actions {
-    display: flex;
-    justify-content: space-between;
-}
-
-.student-chat-name-modal .student-chat-name-modal-actions.dark button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: "Host Grotesk", sans-serif;
-    
-    background: #4CAF50;
-    color: var(--text-dark);
-}
-
-.student-chat-name-modal .student-chat-name-modal-actions.light button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: "Host Grotesk", sans-serif;
-    
-    background: #4CAF50;
-    color: var(--text-light);
-}
-
 .student-chat-name-modal-actions button {
     padding: 10px 20px;
     margin: 0 10px;
@@ -1330,30 +1289,16 @@
 
 .student-chat-name-modal-actions.dark button {
     background: #353535;
-    background:  var(--bg-dark);
     color: var(--text-dark);
 }
 
 .student-chat-name-modal-actions.light button {
-    background: #c2c2c2;
-    background:  var(--bg-light);
-    color: var(--text-light);
+    background:  linear-gradient(120deg, rgb(216, 198, 250), rgb(159, 110, 238)) !important;
+    border-radius: 5px;
 }
 
-.student-chat-name-modal-actions.dark button:first-child:hover {
-    background: #60ad65;
-}
-
-.student-chat-name-modal-actions.light button:first-child:hover {
-    background: #4baf51;
-}
-
-.student-chat-name-modal-actions.dark button:last-child:hover {
-    background: #b43e3e;
-}
-
-.student-chat-name-modal-actions.light button:last-child:hover {
-    background: #df4040;
+.student-chat-name-modal-actions button:hover{
+    background:  linear-gradient(120deg, rgb(252, 215, 144), rgb(252, 215, 144)) !important;
 }
 
 .student-chat-name-input {

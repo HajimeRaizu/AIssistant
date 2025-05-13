@@ -25,7 +25,7 @@ const ExercisesPage = () => {
   const [tutorial3, setTutorial3] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState(null);
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const [theme, setTheme] = useState("light");
   const [learningMaterials, setLearningMaterials] = useState({});
   const [userAnswers, setUserAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -536,7 +536,7 @@ const stopSpeech = () => {
           <p>{userName}</p>
         </div>
         <div className="student-aissistant-logo-title">
-          <img src={logo} alt="aissistant logo" style={{height: '60px', width: '60px', filter: 'drop-shadow(0 0 5px white)'}} />
+          <img src={logo} alt="aissistant logo" style={{height: '120px', width: '120px', filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="student-aissistant-title">
             <h1 className="student-ai" style={{color: 'rgb(216, 198, 250)', fontSize: 'x-large'}}>AI</h1>
             <h1 style={{fontSize: 'x-large', color: 'white'}}>ssistant Learn</h1>

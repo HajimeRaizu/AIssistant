@@ -26,11 +26,11 @@
 }
 
 .exercises-sidebar.dark {
-    background: linear-gradient(60deg, rgb(159, 110, 238), rgb(73, 45, 122));
+    background: linear-gradient(60deg, rgb(216, 198, 250), rgb(159, 110, 238), rgb(73, 45, 122));
 }
 
 .exercises-sidebar.light {
-    background: linear-gradient(60deg, rgb(159, 110, 238), rgb(73, 45, 122));
+    background: linear-gradient(60deg, rgb(216, 198, 250), rgb(159, 110, 238), rgb(73, 45, 122));
 }
 
 .exercises-sidebar.hidden {
@@ -60,29 +60,18 @@
     border-radius: 5px;
 }
 
-.exercises-sidebar li:nth-child(3n + 1) {
-    background: linear-gradient(150deg, rgb(216, 198, 250), rgb(249, 217, 131)), url("../assets/pic3.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-}
-  
-.exercises-sidebar li:nth-child(3n + 2) {
-    background: linear-gradient(150deg, rgb(216, 198, 250), rgb(249, 217, 131)), url("../assets/pic3.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-}
-  
-.exercises-sidebar li:nth-child(3n + 3) {
-    background: linear-gradient(150deg, rgb(216, 198, 250), rgb(249, 217, 131)), url("../assets/pic3.png");
+.exercises-sidebar li{
+    background: linear-gradient(150deg, rgb(159, 110, 238, 0.6), rgb(249, 217, 131, 0.6)), url("../assets/pic3.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
 
 .exercises-sidebar li.active {
-    background: linear-gradient(150deg, rgb(255, 227, 175), rgb(249, 217, 131)), url("../assets/pic3.png");
+    background: linear-gradient(150deg, rgb(255, 227, 175, 0.6), rgb(249, 217, 131, 0.6)), url("../assets/pic3.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 .exercises-sidebar li.light.active {
@@ -637,9 +626,11 @@ button {
 
 .exercises-sidebar-toggle2{
     display: none;
+    color: white;
 }
 
 .exercises-sidebar-toggle {
+    color: white;
     position: absolute;
     top: 0px;
     left: 23dvw;
@@ -658,40 +649,34 @@ button {
 
 .exercises-sidebar-toggle.dark {
     background: rgb(159, 110, 238);
-    color: var(--text-dark);
 }
 
 .exercises-sidebar-toggle.light {
-    background: rgb(159, 110, 238);
-    color: var(--text-light);
+    background: rgb(73, 45, 122);
 }
 
 .exercises-sidebar-toggle:hover.dark {
-    background: rgb(159, 110, 238);
+    background: rgb(73, 45, 122);
 }
 
 .exercises-sidebar-toggle:hover.light {
-    background: rgb(159, 110, 238);
+    background: rgb(73, 45, 122);
 }
 
 .exercises-sidebar-toggle2.dark {
-    background: rgb(159, 110, 238);
-    color: var(--text-dark);
+    background: rgb(73, 45, 122);
 }
 
 .exercises-sidebar-toggle2.light {
-    background: rgb(159, 110, 238);
-    color: var(--text-dark);
+    background: rgb(73, 45, 122);
 }
 
 .exercises-sidebar-toggle2:hover.dark {
-    background: rgb(159, 110, 238);
-    color: var(--text-dark);
+    background: rgb(73, 45, 122);
 }
 
 .exercises-sidebar-toggle2:hover.light {
-    background: rgb(159, 110, 238);
-    color: var(--text-dark);
+    background: rgb(73, 45, 122);
 }
 
 .userPicture{
@@ -742,7 +727,7 @@ button {
     cursor: pointer;
     position: relative;
     height: 150px;
-    background: linear-gradient(150deg, rgb(159, 110, 238, 0.6), rgb(249, 217, 131, 0.6)), url("../assets/pic3.png"); /* Yellow */
+    background: linear-gradient(150deg, rgb(159, 110, 238, 0.6), rgb(249, 217, 131, 0.6)), url("../assets/pic3.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -1079,7 +1064,7 @@ img.book{
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .student-aissistant-title{
