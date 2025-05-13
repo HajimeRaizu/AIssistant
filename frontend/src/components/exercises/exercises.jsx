@@ -15,6 +15,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import 'react-quill/dist/quill.snow.css';
 import logo from '../assets/AIssistant.png';
 import { ImCross } from "react-icons/im";
+import { IoLogOutOutline } from "react-icons/io5";
 
 const ExercisesPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -41,6 +42,7 @@ const ExercisesPage = () => {
   const [addNewSubject, setAddNewSubject] = useState(false);
   const [isAdding, setAddingNewSubject] = useState(false);
   const navigate = useNavigate();
+  const [showLogoutDropdown, setShowLogoutDropdown] = useState(false);
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
   const userName = localStorage.getItem("userName");
@@ -49,6 +51,19 @@ const ExercisesPage = () => {
 
   const [currentCSS, setCurrentCSS] = useState("");
   const [androidCSS, setAndroidCSS] = useState("");
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showLogoutDropdown && !event.target.closest(".profile-dropdown")) {
+        setShowLogoutDropdown(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [showLogoutDropdown]);
 
   useEffect(() => {
     // 1. Place your text file in the public folder
@@ -550,16 +565,45 @@ const stopSpeech = () => {
                 className={`${theme} ${selectedSubject === subjectCode ? "active" : ""}`}
                 onClick={() => handleSubjectClick(subjectCode)}
               >
-                {learningMaterials[subjectCode].subjectName}
+                <span style={{color: 'white'}}>{learningMaterials[subjectCode].subjectName}</span>
               </li>
             ))}
           </ul>
         ) : (
           <p style={{ paddingTop: "10px" }}>No subject IDs added yet. Please add a subject ID to view learning materials.</p>
         )}
-        <button className={`exercises-logout-button ${theme}`} onClick={handleLogout}>
-          Logout
-        </button>
+        <div className="student-logout-section">
+          <div className={`profile-dropdown ${theme}`} style={{width: '100%'}}>
+            <button 
+              className={`profile-dropdown-toggle ${theme}`} 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLogoutDropdown(!showLogoutDropdown);
+              }}
+              title="Actions"
+              style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', width: '100%', gap: '20px', padding: '10px'}}
+            >
+              <img src={userPicture} className='userPicture' alt="" />
+              <div className="userName" style={{ paddingLeft: '10px', color: 'rgb(216, 198, 250)'}}>{userName}</div>
+            </button>
+            <div 
+              className={`profile-dropdown-menu ${theme} ${showLogoutDropdown ? 'show' : ''}`} 
+            >
+              <button
+                className={`dropdown-item ${theme}`}
+                style={{display: 'flex', justifyContent: 'center'}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLogoutDropdown(false);
+                  handleLogout();
+                }}
+                title="Logout"
+              >
+                <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <button
@@ -578,11 +622,11 @@ const stopSpeech = () => {
       <div className={`exercises-content ${theme} ${isSidebarVisible ? "sidebar-visible" : "sidebar-hidden"}`}>
         <div className="exercises-header-container">
           {!selectedSubject && <h1 className={`h1 ${theme}`} style={{marginLeft: '15px'}}>Subjects</h1>}
-          <div className="exercises-header">
-            {hasSubjectCode && selectedSubject && (
+          {hasSubjectCode && selectedSubject && (
+            <div className="exercises-header">
               <h1 className={theme}>{learningMaterials[selectedSubject].subjectName}</h1>
-            )}
-          </div>
+            </div>
+          )}
           <div className="exercises-header-buttons">
             <button title="Move to chat" className={`exercises-chat-button ${theme} ${tutorial2}`} onClick={() => navigate("/student")}>
               <p>AIssistant Chat</p> <IoIosChatboxes />
@@ -600,7 +644,7 @@ const stopSpeech = () => {
                   key={index}
                   className={`${theme}`}
                   onClick={() => handleLessonClick(index)}
-                  style={{background: 'linear-gradient(190deg, #4d7affc2, #c0d0ffc2)'}}
+                  style={{background: 'linear-gradient(150deg, rgb(159, 110, 238), rgb(249, 217, 131))', color: 'white'}}
                 >
                   {lesson.lessonName}
                 </li>
@@ -624,7 +668,7 @@ const stopSpeech = () => {
                   key={index}
                   className={`${theme}`}
                   onClick={() => handleSubtopicClick(index)}
-                  style={{background: 'linear-gradient(190deg, #4d7affc2, #c0d0ffc2)'}}
+                  style={{background: 'linear-gradient(150deg, rgb(159, 110, 238), rgb(249, 217, 131))', color: 'white'}}
                 >
                   {`${subtopic.subtopicTitle}`}
                 </li>
