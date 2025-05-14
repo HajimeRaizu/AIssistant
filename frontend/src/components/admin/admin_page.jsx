@@ -73,6 +73,7 @@ const AdminPage = () => {
   const [weeklyPrompts, setWeeklyPrompts] = useState({});
   const [selectedWeek, setSelectedWeek] = useState("");
   const [showLogoutDropdown, setShowLogoutDropdown] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -108,6 +109,19 @@ const AdminPage = () => {
   
     fetchUserRole();
   }, [userId, userEmail, navigate]);
+
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (isSidebarVisible && !event.target.closest('.admin-sidebar') && !event.target.closest('.admin-sidebar-toggle')) {
+      setIsSidebarVisible(false);
+    }
+  };
+
+  document.addEventListener('click', handleClickOutside);
+  return () => {
+    document.removeEventListener('click', handleClickOutside);
+  };
+}, [isSidebarVisible]);
 
   useEffect(() => {
     const fetchTotalQueries = async () => {
@@ -617,7 +631,7 @@ const handleEditUser = async (user, newRole) => {
   
   return (
     <div className="admin-container">
-      <div className="admin-sidebar">
+      <div className={`admin-sidebar ${isSidebarVisible ? 'visible' : 'hidden'}`}>
         <div className="aissistant-logo-title">
           <img src={logo} alt="aissistant logo" style={{filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="aissistant-title">
@@ -680,41 +694,12 @@ const handleEditUser = async (user, newRole) => {
         </div>
       </div>
       <div className="admin-content">
-        <div className="admin-header">
-          <div className="student-logout-section2" style={{marginLeft: 'auto'}}>
-            <div className="profile-dropdown" style={{width: '100%'}}>
-              <button 
-                className="profile-dropdown-toggle" 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowLogoutDropdown(!showLogoutDropdown);
-                }}
-                title="Actions"
-                style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', width: '100%', gap: '20px', padding: '10px'}}
-              >
-                <img src={userPicture} className='userPicture' alt="" />
-                <div className="instructorName" style={{ paddingLeft: '10px', color: 'rgb(73, 45, 122)'}}>{userName}</div>
-              </button>
-              <div 
-                className={`profile-dropdown-menu ${showLogoutDropdown ? 'show' : ''}`}
-                style={{gap: '10px', padding: '10px', height: 'fit-content', top: '120%', background: 'linear-gradient(60deg, rgb(216, 198, 250), rgb(159, 110, 238), rgb(73, 45, 122))', flexDirection: 'column'}}
-              >
-                <button
-                  className="dropdown-item"
-                  style={{display: 'flex', justifyContent: 'center', background: 'transparent !important'}}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowLogoutDropdown(false);
-                    handleLogout();
-                  }}
-                  title="Logout"
-                >
-                  <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <button
+          className=".admin-sidebar-toggle"
+          onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+        >
+          ☰
+        </button>
         {activeTab === 'dashboard' ? (
           <div className="dashboard-tab">
             <h1><MdOutlineDashboard />Dashboard</h1>

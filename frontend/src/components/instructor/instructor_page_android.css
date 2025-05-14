@@ -99,7 +99,9 @@
     }
 
     .student-logout-section.instructor{
-        margin-top: 100%;
+        position: fixed;
+        bottom: 15px;
+        width: 70%;
     }
 }
 

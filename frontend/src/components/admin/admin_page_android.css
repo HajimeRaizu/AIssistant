@@ -1,6 +1,16 @@
 @media (max-aspect-ratio: 1/1), (max-width: 960px) {
-    .admin-sidebar{
-        display: none;
+    .admin-sidebar {
+        width: 80%;
+        position: fixed;
+        z-index: 1000;
+        height: 100%;
+        left: -100%;
+        transition: left 0.3s ease;
+    }
+    
+    .admin-sidebar.visible {
+        left: 0;
+        display: block;
     }
 
     .admin-header{
@@ -39,7 +49,4 @@
         flex-direction: column;
         align-items: start;
     }
-}
-
-@media (min-aspect-ratio: 1/1) and (min-width: 961px) {
 }
