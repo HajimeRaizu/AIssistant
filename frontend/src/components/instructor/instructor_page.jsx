@@ -37,6 +37,12 @@ import {
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+const originalConsoleWarn = console.warn;
+console.warn = function(message) {
+  if (message.includes('DOMNodeInserted')) return;
+  originalConsoleWarn.apply(console, arguments);
+};
+
 const InstructorPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
   //const base_url = `http://localhost:5000`;

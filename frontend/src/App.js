@@ -14,17 +14,10 @@ import LoginGoogle from './components/loginGoogle/loginGoogle';
 import GoogleAuthCallback from './components/loginGoogle/googleAuthCallback';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-// Suppress DOMNodeInserted mutation warning (for deprecated API used by Quill)
-const originalWarn = console.warn;
-console.warn = function (...args) {
-  const msg = args[0];
-  if (
-    typeof msg === 'string' &&
-    msg.includes("Listener added for a 'DOMNodeInserted' mutation event")
-  ) {
-    return; // Suppress this specific warning
-  }
-  originalWarn.apply(console, args);
+const originalConsoleWarn = console.warn;
+console.warn = function(message) {
+  if (message.includes('DOMNodeInserted')) return;
+  originalConsoleWarn.apply(console, arguments);
 };
 
 const router = createBrowserRouter([
