@@ -9,13 +9,13 @@
     background: #4e73df;
 }
 
-.admin-header{
-    width: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    direction: rtl;
+.admin-header {
+  display: none;
+  justify-content: flex-end;
+  background: transparent;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .admin-pf-border{
@@ -38,7 +38,7 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    background: #4e73df;
+    background: linear-gradient(60deg, rgb(216, 198, 250), rgb(159, 110, 238), rgb(73, 45, 122));
 }
 
 .admin-tab {
@@ -77,10 +77,9 @@
 /* Content Area */
 .admin-content {
     flex: 1;
-    padding: 20px;
+    padding: 10px 20px;
     overflow-y: auto;
     background: rgb(240, 240, 240);
-    border-radius: 40px 0 0 40px;
 }
 
 /* Dashboard Tab */
@@ -105,13 +104,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   border-bottom: 2px solid rgba(255, 255, 255, 0.507);
   margin-bottom: 2dvh;
 }
 
 .aissistant-logo-title img{
-    height: 8dvh;
-    width: 8dvh;
+    height: 120px;
+    width: 120px;
 }
 
 .aissistant-title{
@@ -258,6 +258,12 @@
     margin-top: 20px;
 }
 
+.faq-controls{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .faq-box{
   min-height: 280px;
   max-height: fit-content;
@@ -292,6 +298,8 @@
     align-items: center;
     gap: 10px;
     color: black;
+    position: relative;
+    z-index: 1;
 }
 
 .search-bar {
@@ -674,11 +682,16 @@ input {
   transform: scale(1.05);
 }
 
-.line-graph{
-  padding: 10px;
-  box-shadow: 0px 0px 5px 1px gray;
-  transition: transform 0.3s ease-in-out;
-  border-radius: 25px;
+.recharts-responsive-container.line-graph{
+    padding: 10px;
+    box-shadow: 0px 0px 5px 1px gray;
+    transition: transform 0.3s ease-in-out;
+    border-radius: 25px;
+    height: 300px !important;
+    width: 75% !important;
+    display: flex;
+    align-items: center;
+    padding: 20px 20px 20px 20px;
 }
 
 .line-graph:hover{
@@ -692,12 +705,6 @@ select {
     font-size: 14px;
 }
 
-@media (max-aspect-ratio: 1/1){
-    .admin-container {
-        display: none;
-    }
-}
-
 .admin-loading-container {
     display: flex;
     justify-content: center;
@@ -706,3 +713,9 @@ select {
     font-size: 1.5rem;
     color: #333;
   }
+
+.graphs{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}

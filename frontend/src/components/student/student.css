@@ -1457,7 +1457,7 @@
 }
 
 .student-save-edit, .student-cancel-edit-message {
-    background:  linear-gradient(rgb(216, 198, 250), rgb(159, 110, 238)) !important;
+    background:  linear-gradient(120deg, rgb(216, 198, 250), rgb(159, 110, 238)) !important;
     padding: 4px 8px;
     border-radius: 5px;
     cursor: pointer;

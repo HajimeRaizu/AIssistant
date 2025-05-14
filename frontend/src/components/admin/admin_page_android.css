@@ -1,0 +1,45 @@
+@media (max-aspect-ratio: 1/1), (max-width: 960px) {
+    .admin-sidebar{
+        display: none;
+    }
+
+    .admin-header{
+        display: flex;
+    }
+
+    .admin-content{
+        padding: 10px 20px 10px 20px;
+    }
+
+    .dashboard-tab{
+        padding: 0px;
+    }
+
+    .statistics{
+        grid-template-columns: repeat(2, 1fr);
+        padding-bottom: 20px;
+    }
+
+    .graphs{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .recharts-responsive-container.line-graph{
+        width: 100% !important;
+        height: 250px !important;
+    }
+
+    .recharts-responsive-container.pie-graph{
+        display: none !important;
+    }
+
+    .faq-controls{
+        flex-direction: column;
+        align-items: start;
+    }
+}
+
+@media (min-aspect-ratio: 1/1) and (min-width: 961px) {
+}

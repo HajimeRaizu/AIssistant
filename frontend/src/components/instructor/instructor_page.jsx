@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 import { FaPaperclip, FaTrash } from "react-icons/fa";
 import { RiDownload2Fill } from "react-icons/ri";
 import { FaArrowLeft } from "react-icons/fa";
+import { IoLogOutOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import {
   LineChart,
@@ -104,6 +105,7 @@ const InstructorPage = () => {
   const [reusingLesson, setReusingLesson] = useState(null);
   const [reusingSubtopic, setReusingSubtopic] = useState("");
   const [reusingSubtopicIndex, setReusingSubtopicIndex] = useState(-1);
+  const [showLogoutDropdown, setShowLogoutDropdown] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -117,6 +119,19 @@ const InstructorPage = () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, [isSidebarVisible]);
+
+  useEffect(() => {
+  const handleClickOutsideDropdown = (event) => {
+    if (showLogoutDropdown && !event.target.closest('.profile-dropdown')) {
+      setShowLogoutDropdown(false);
+    }
+  };
+
+  document.addEventListener('click', handleClickOutsideDropdown);
+  return () => {
+    document.removeEventListener('click', handleClickOutsideDropdown);
+  };
+}, [showLogoutDropdown]);
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -2160,7 +2175,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         <div className="instructor-aissistant-logo-title">
           <img src={logo} alt="aissistant logo" style={{filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="instructor-aissistant-title">
-            <h1 className="instructor-ai" style={{color: '#042e47'}}>AI</h1>
+            <h1 className="instructor-ai" style={{color: 'rgb(216, 198, 250)'}}>AI</h1>
             <h1 style={{color: 'white'}}>ssistant</h1>
           </div>
         </div>
@@ -2168,8 +2183,10 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           className={`instructor-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => setActiveTab('dashboard')}
         >
-          <MdOutlineDashboard />
-          Dashboard
+          <span>
+            <MdOutlineDashboard />
+            Dashboard
+          </span>
         </button>
         <button 
           className={`instructor-tab ${activeTab === 'learning-materials' ? 'active' : ''}`}
@@ -2178,16 +2195,43 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             handleBackToSubjects();
           }}
         >
-          <LuBookMarked />
-          Learning Materials
+          <span>
+            <LuBookMarked />
+            Learning Materials
+          </span>
         </button>
-        <button 
-          className="instructor-logout-button"
-          onClick={handleLogout}
-        >
-          <BiLogOut />
-          Logout
-        </button>
+        <div className="student-logout-section" style={{marginTop: 'auto'}}>
+          <div className="profile-dropdown" style={{width: '100%'}}>
+            <button 
+              className="profile-dropdown-toggle" 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLogoutDropdown(!showLogoutDropdown);
+              }}
+              title="Actions"
+              style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', width: '100%', gap: '20px', padding: '10px'}}
+            >
+              <img src={userPicture} className='userPicture' alt="" />
+              <div className="userName" style={{ paddingLeft: '10px', color: 'rgb(216, 198, 250)'}}>{userName}</div>
+            </button>
+            <div 
+              className={`profile-dropdown-menu ${showLogoutDropdown ? 'show' : ''}`} 
+            >
+              <button
+                className="dropdown-item"
+                style={{display: 'flex', justifyContent: 'center'}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLogoutDropdown(false);
+                  handleLogout();
+                }}
+                title="Logout"
+              >
+                <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       <div className="instructor-content">
         <div className="instructor-header">
@@ -2201,10 +2245,63 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         :
         <h1 style={{display: 'flex', alignItems: 'center'}}><MdOutlineDashboard />Dashboard</h1>
         }
-          <div className="admin-pf-border">
-            <img src={userPicture} className="admin-pfp" alt="" />
-            <p className="admin-user-name">{userName}</p>
+        <div className="student-logout-section2" style={{marginTop: 'auto'}}>
+          <div className="profile-dropdown" style={{width: '100%'}}>
+            <button 
+              className="profile-dropdown-toggle" 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLogoutDropdown(!showLogoutDropdown);
+              }}
+              title="Actions"
+              style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', width: '100%', gap: '20px', padding: '10px'}}
+            >
+              <img src={userPicture} className='userPicture' alt="" />
+              <div className="instructorName" style={{ paddingLeft: '10px', color: 'rgb(73, 45, 122)'}}>{userName}</div>
+            </button>
+            <div 
+              className={`profile-dropdown-menu ${showLogoutDropdown ? 'show' : ''}`}
+              style={{gap: '10px', padding: '10px', height: 'fit-content', top: '120%', background: 'linear-gradient(60deg, rgb(216, 198, 250), rgb(159, 110, 238), rgb(73, 45, 122))', flexDirection: 'column'}}
+            >
+              <button
+                className="dropdown-item"
+                style={{display: 'flex', justifyContent: 'center', background: 'transparent !important'}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLogoutDropdown(false);
+                  handleLogout();
+                }}
+                title="Logout"
+              >
+                <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
+              </button>
+              <button
+                className="dropdown-item"
+                style={{display: 'flex', justifyContent: 'center', background: 'transparent !important'}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLogoutDropdown(false);
+                  handleLogout();
+                }}
+                title="Logout"
+              >
+                <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
+              </button>
+              <button
+                className="dropdown-item"
+                style={{display: 'flex', justifyContent: 'center', background: 'transparent !important'}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLogoutDropdown(false);
+                  handleLogout();
+                }}
+                title="Logout"
+              >
+                <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
+              </button>
+            </div>
           </div>
+        </div>
         </div>
         {activeTab === 'dashboard' ? (
           <div className="instructor-dashboard-tab">
@@ -2220,7 +2317,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             </div>
             <div className="instructor-graph-container">
               <div style={{ display: 'flex', gap: '3%', alignItems: 'center' }}>
-                <ResponsiveContainer className='instructor-line-graph' width="75%" height={200} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
+                <ResponsiveContainer className='instructor-line-graph'>
                   <LineChart className='instructor-line'
                     data={getGraphData().length > 0 ? getGraphData() : getDefaultGraphData()}
                     margin={{
@@ -2500,13 +2597,6 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           </div>
         </div>
       )}
-      
-      <button 
-        className="instructor-sidebar-toggle" 
-        onClick={() => setIsSidebarVisible(!isSidebarVisible)}
-      >
-        {isSidebarVisible ? '☰' : '☰'}
-      </button>
     </div>
   );
 };

@@ -39,6 +39,7 @@
 
     .recharts-responsive-container.instructor-line-graph{
         width: 100% !important;
+        height: 250px !important;
     }
 
     .faq-header{
@@ -75,6 +76,10 @@
 
     .reuse-form{
         width: 90%;
+    }
+
+    .student-logout-section2{
+        display: block;
     }
 }
 

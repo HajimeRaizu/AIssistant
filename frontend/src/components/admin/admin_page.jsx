@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './admin_page.css';
+import './admin_page_android.css';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -11,6 +12,7 @@ import logo from '../assets/AIssistant.png';
 import { BiLogOut } from "react-icons/bi";
 import DataTable from 'react-data-table-component';
 import Swal from 'sweetalert2';
+import { IoLogOutOutline } from "react-icons/io5";
 import {
   LineChart,
   Label,
@@ -70,6 +72,7 @@ const AdminPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [weeklyPrompts, setWeeklyPrompts] = useState({});
   const [selectedWeek, setSelectedWeek] = useState("");
+  const [showLogoutDropdown, setShowLogoutDropdown] = useState(false);
   
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -618,7 +621,7 @@ const handleEditUser = async (user, newRole) => {
         <div className="aissistant-logo-title">
           <img src={logo} alt="aissistant logo" style={{filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="aissistant-title">
-            <h1 className="ai" style={{color: '#042e47'}}>AI</h1>
+            <h1 className="ai" style={{color: 'rgb(216, 198, 250)'}}>AI</h1>
             <h1 style={{color: 'white'}}>ssistant</h1>
           </div>
         </div>
@@ -643,19 +646,73 @@ const handleEditUser = async (user, newRole) => {
           <PiStudentBold />
           Instructors
         </button>
-        <button 
-          className="admin-logout-button"
-          onClick={handleLogout}
-        >
-          <BiLogOut />
-          Logout
-        </button>
+        <div className="student-logout-section" style={{marginTop: 'auto'}}>
+          <div className="profile-dropdown" style={{width: '100%'}}>
+            <button 
+              className="profile-dropdown-toggle" 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLogoutDropdown(!showLogoutDropdown);
+              }}
+              title="Actions"
+              style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', width: '100%', gap: '20px', padding: '10px'}}
+            >
+              <img src={userPicture} className='userPicture' alt="" />
+              <div className="userName" style={{ paddingLeft: '10px', color: 'rgb(216, 198, 250)'}}>{userName}</div>
+            </button>
+            <div 
+              className={`profile-dropdown-menu ${showLogoutDropdown ? 'show' : ''}`} 
+            >
+              <button
+                className="dropdown-item"
+                style={{display: 'flex', justifyContent: 'center'}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLogoutDropdown(false);
+                  handleLogout();
+                }}
+                title="Logout"
+              >
+                <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       <div className="admin-content">
         <div className="admin-header">
-          <div className="admin-pf-border">
-            <img src={userPicture} className="admin-pfp" alt="" />
-            <p className="admin-user-name">{userName}</p>
+          <div className="student-logout-section2" style={{marginLeft: 'auto'}}>
+            <div className="profile-dropdown" style={{width: '100%'}}>
+              <button 
+                className="profile-dropdown-toggle" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLogoutDropdown(!showLogoutDropdown);
+                }}
+                title="Actions"
+                style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', width: '100%', gap: '20px', padding: '10px'}}
+              >
+                <img src={userPicture} className='userPicture' alt="" />
+                <div className="instructorName" style={{ paddingLeft: '10px', color: 'rgb(73, 45, 122)'}}>{userName}</div>
+              </button>
+              <div 
+                className={`profile-dropdown-menu ${showLogoutDropdown ? 'show' : ''}`}
+                style={{gap: '10px', padding: '10px', height: 'fit-content', top: '120%', background: 'linear-gradient(60deg, rgb(216, 198, 250), rgb(159, 110, 238), rgb(73, 45, 122))', flexDirection: 'column'}}
+              >
+                <button
+                  className="dropdown-item"
+                  style={{display: 'flex', justifyContent: 'center', background: 'transparent !important'}}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowLogoutDropdown(false);
+                    handleLogout();
+                  }}
+                  title="Logout"
+                >
+                  <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         {activeTab === 'dashboard' ? (
@@ -680,8 +737,8 @@ const handleEditUser = async (user, newRole) => {
               </div>
             </div>
             <div className="graph-container">
-              <div style={{ display: 'flex', gap: '3%', alignItems: 'center' }}>
-                <ResponsiveContainer className='line-graph' width="75%" height={300} style={{display: 'flex', alignItems: 'center', padding: '20px 0px 20px 0px'}}>
+              <div className="graphs">
+                <ResponsiveContainer className='line-graph'>
                   <LineChart 
                     className='line'
                     data={getGraphData().length > 0 ? getGraphData() : getDefaultGraphData()}
@@ -752,9 +809,9 @@ const handleEditUser = async (user, newRole) => {
               </div>
             </div>
             <div className="faq-section">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="faq-controls">
                 <h2>Frequently Asked Questions</h2>
-                <div>
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                   <select
                     id="selectedWeek"
                     value={selectedWeek} 

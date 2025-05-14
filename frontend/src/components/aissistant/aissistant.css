@@ -62,6 +62,7 @@ body::-webkit-scrollbar{
     color: white;
     width: fit-content;
     margin-top: 25px;
+    padding: 10px 20px !important;
 }
 
 .aissistant-header{

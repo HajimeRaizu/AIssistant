@@ -22,28 +22,68 @@
 
 /* Sidebar */
 .instructor-sidebar {
+    position: relative; /* Add this to make it a positioning context */
     width: 20dvw;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    background: #4e73df;
+    background: linear-gradient(60deg, rgb(216, 198, 250), rgb(159, 110, 238), rgb(73, 45, 122));
+    height: 100dvh;
 }
 
 .instructor-tab {
-    font-family: "Host Grotesk", sans-serif;
-    display: flex;
-    justify-content: baseline;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: none;
+    margin: 5px 0;
     cursor: pointer;
-    border-radius: 5px;
-    background: rgb(241, 241, 241);
-    color: #4e73df;
-    font-size: medium;
+    padding: 12px;
+    border-radius: 10px;
+    position: relative;
+    color: white;
+    overflow: hidden;
+    background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+    font-family: sans-serif;
+    transition: filter 0.3s ease;
+}
+
+/* Top-right blob */
+.instructor-tab::before {
+    content: "";
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, #fde68a, #facc15);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+/* Bottom-left blob */
+.instructor-tab::after {
+    content: "";
+    position: absolute;
+    bottom: -40px;
+    left: -40px;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+/* Ensure text stays above blobs */
+.instructor-tab * {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Active state */
+.instructor-tab.active {
+    filter: brightness(80%);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+    border: 2px solid white;
 }
 
 .instructor-logout-button {
@@ -67,8 +107,7 @@
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background: rgb(240, 240, 240);
-    border-radius: 40px 0 0 40px;
+    background: white;
 }
 
 /* Dashboard Tab */
@@ -91,6 +130,7 @@
 .instructor-aissistant-logo-title {
   padding: 10% 0 10% 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   border-bottom: 2px solid rgba(255, 255, 255, 0.507);
@@ -98,8 +138,8 @@
 }
 
 .instructor-aissistant-logo-title img {
-    height: 8dvh;
-    width: 8dvh;
+    height: 120px;
+    width: 120px;
 }
 
 .instructor-aissistant-title {
@@ -1216,6 +1256,18 @@ pre.ql-syntax{
 
 .faq-header{
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+}
+
+.student-logout-section2{
+    display: none;
+}
+
+.recharts-responsive-container.instructor-line-graph{
+    height: 300px !important;
+    width: 75% !important;
+    display: flex;
+    align-items: center;
+    padding: 20px 20px 20px 20px;
 }
