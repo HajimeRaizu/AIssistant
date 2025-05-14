@@ -1142,9 +1142,11 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             style={{background: 'none', padding: '0px', margin: '0px 10px 0px 0px'}}>
             <FaArrowLeft />
           </button>
+          <div>
           <button className="add-lesson" onClick={() => setShowCreateLessonModal(true)}>
             Add Lesson
           </button>
+          </div>
           <div>
             {lessons.map((lesson, index) => (
               <div onClick={() => setSelectedLesson(index)} key={`lesson-${index}`} className="instructor-exercise-lesson">
@@ -1232,12 +1234,14 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             style={{background: 'none', padding: '0px', margin: '0px 10px 10px 0px'}}>
             <FaArrowLeft />
           </button>
+          <div>
           <button className="add-subtopic" onClick={() => setShowCreateSubtopicModal(true)}>
             Add Subtopic
           </button>
           <button className="add-subtopic" onClick={() => setReusing(true)}>
             Reuse material
           </button>
+          </div>
           <div>
             {subtopics.map((subtopic, index) => (
               <div onClick={() => setSelectedSubtopic(index)} key={`subtopic-${index}`} className="instructor-exercise-subtopic">
@@ -2200,7 +2204,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
             Learning Materials
           </span>
         </button>
-        <div className="student-logout-section" style={{marginTop: 'auto'}}>
+        <div className="student-logout-section instructor">
           <div className="profile-dropdown" style={{width: '100%'}}>
             <button 
               className="profile-dropdown-toggle" 
@@ -2235,73 +2239,22 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
       </div>
       <div className="instructor-content">
         <div className="instructor-header">
-        {activeTab === 'learning-materials' ?
-        <h1 style={{display: 'flex', alignItems: 'center'}}><LuBookMarked />
-          {!selectedSubject && "Subjects"}
-          {selectedSubject && selectedLesson === null && "Lessons"}
-          {selectedSubject && selectedLesson !== null && selectedSubtopic === null && learningMaterials[selectedSubject]?.lessons[selectedLesson].lessonName}
-          {selectedSubject && selectedLesson !== null && selectedSubtopic !== null && learningMaterials[selectedSubject]?.lessons[selectedLesson]?.subtopics[selectedSubtopic]?.subtopicTitle}
-        </h1>
-        :
-        <h1 style={{display: 'flex', alignItems: 'center'}}><MdOutlineDashboard />Dashboard</h1>
-        }
-        <div className="student-logout-section2" style={{marginTop: 'auto'}}>
-          <div className="profile-dropdown" style={{width: '100%'}}>
-            <button 
-              className="profile-dropdown-toggle" 
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowLogoutDropdown(!showLogoutDropdown);
-              }}
-              title="Actions"
-              style={{display: 'flex', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', width: '100%', gap: '20px', padding: '10px'}}
-            >
-              <img src={userPicture} className='userPicture' alt="" />
-              <div className="instructorName" style={{ paddingLeft: '10px', color: 'rgb(73, 45, 122)'}}>{userName}</div>
-            </button>
-            <div 
-              className={`profile-dropdown-menu ${showLogoutDropdown ? 'show' : ''}`}
-              style={{gap: '10px', padding: '10px', height: 'fit-content', top: '120%', background: 'linear-gradient(60deg, rgb(216, 198, 250), rgb(159, 110, 238), rgb(73, 45, 122))', flexDirection: 'column'}}
-            >
-              <button
-                className="dropdown-item"
-                style={{display: 'flex', justifyContent: 'center', background: 'transparent !important'}}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowLogoutDropdown(false);
-                  handleLogout();
-                }}
-                title="Logout"
-              >
-                <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
-              </button>
-              <button
-                className="dropdown-item"
-                style={{display: 'flex', justifyContent: 'center', background: 'transparent !important'}}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowLogoutDropdown(false);
-                  handleLogout();
-                }}
-                title="Logout"
-              >
-                <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
-              </button>
-              <button
-                className="dropdown-item"
-                style={{display: 'flex', justifyContent: 'center', background: 'transparent !important'}}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowLogoutDropdown(false);
-                  handleLogout();
-                }}
-                title="Logout"
-              >
-                <IoLogOutOutline style={{height:'20px', width: '20px'}} /> Logout
-              </button>
-            </div>
-          </div>
-        </div>
+          <button 
+            className="instructor-sidebar-toggle"
+            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+          >
+            {isSidebarVisible ? '☰' : '☰'}
+          </button>
+          {activeTab === 'learning-materials' ?
+          <h1 style={{display: 'flex', alignItems: 'center'}}><LuBookMarked />
+            {!selectedSubject && "Subjects"}
+            {selectedSubject && selectedLesson === null && "Lessons"}
+            {selectedSubject && selectedLesson !== null && selectedSubtopic === null && learningMaterials[selectedSubject]?.lessons[selectedLesson].lessonName}
+            {selectedSubject && selectedLesson !== null && selectedSubtopic !== null && learningMaterials[selectedSubject]?.lessons[selectedLesson]?.subtopics[selectedSubtopic]?.subtopicTitle}
+          </h1>
+          :
+          <h1 style={{display: 'flex', alignItems: 'center'}}><MdOutlineDashboard />Dashboard</h1>
+          }
         </div>
         {activeTab === 'dashboard' ? (
           <div className="instructor-dashboard-tab">
@@ -2597,6 +2550,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
           </div>
         </div>
       )}
+      {<div className={`student-overlay ${isSidebarVisible ? 'hidden' : 'visible'}`}></div>}
     </div>
   );
 };

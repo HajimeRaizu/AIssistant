@@ -20,17 +20,12 @@
     }
     
     .instructor-sidebar-toggle {
-        display: block;
-        position: fixed;
-        left: 0px;
-        top: 10px;
-        z-index: 1001;
-        background: #4e73df;
-        color: white;
+        background: none;
+        color: black;
         border: none;
         padding: 10px;
         font-size: 20px;
-        border-radius: 0px 5px 5px 0px;
+        border-radius: 5px;
     }
 
     .instructor-statistics {
@@ -80,6 +75,31 @@
 
     .student-logout-section2{
         display: block;
+    }
+
+    .instructor-dashboard-tab{
+        padding: 0px;
+    }
+
+    .instructor-statistics-box h3{
+        font-size: smaller;
+        gap: 5px;
+    }
+
+    .instructor-tab{
+        width: 100%;
+    }
+
+    .edit-subject-name, .instructor-exercise-lesson input, .input-fields{
+        width: 60%;
+    }
+
+    .input-fields.subtopic-name{
+        width: 100%;
+    }
+
+    .student-logout-section.instructor{
+        margin-top: 100%;
     }
 }
 

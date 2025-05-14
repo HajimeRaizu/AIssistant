@@ -3,7 +3,7 @@
 .instructor-header{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: start;
 }
 
 .instructor-header-title{
@@ -108,6 +108,8 @@
     padding: 20px;
     overflow-y: auto;
     background: white;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Dashboard Tab */
@@ -1262,6 +1264,10 @@ pre.ql-syntax{
 
 .student-logout-section2{
     display: none;
+}
+
+.student-logout-section.instructor{
+    margin-top: auto;
 }
 
 .recharts-responsive-container.instructor-line-graph{
