@@ -82,6 +82,7 @@
     .admin-sidebar-toggle{
         display: block;
         padding: 0px 10px 0px 10px;
+        background: transparent;
     }
 
     .header{

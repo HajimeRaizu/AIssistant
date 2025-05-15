@@ -7,6 +7,10 @@
         left: -100%;
         transition: left 0.3s ease;
     }
+
+    .instructor-statistics{
+        padding: 20px 0px 20px 0px;
+    }
     
     .instructor-sidebar.visible {
         left: 0;

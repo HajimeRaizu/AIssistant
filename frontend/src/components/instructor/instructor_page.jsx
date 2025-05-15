@@ -2309,12 +2309,14 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                 <button 
                   className={graphFilter === 'weekly' ? 'active' : ''} 
                   onClick={() => setGraphFilter('weekly')}
+                  style={{background: 'white'}}
                 >
                   Weekly
                 </button>
                 <button 
                   className={graphFilter === 'monthly' ? 'active' : ''} 
                   onClick={() => setGraphFilter('monthly')}
+                  style={{background: 'white'}}
                 >
                   Monthly
                 </button>
@@ -2350,6 +2352,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                     className="generate-faq-button"
                     onClick={handleGenerateFAQ}
                     disabled={isGeneratingFAQ || !selectedLanguage || !selectedWeek}
+                    style={{background: 'white'}}
                   >
                     {isGeneratingFAQ ? "Generating..." : "Generate FAQ"}
                   </button>

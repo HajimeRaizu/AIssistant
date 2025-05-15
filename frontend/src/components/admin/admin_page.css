@@ -668,7 +668,7 @@ input {
 }
 
 .pie-graph{
-  background: #4e73df;
+  background: rgb(73, 45, 122);
   border-radius: 25px;
   box-shadow: 0px 0px 5px 1px gray;
   transition: transform 0.3s ease-in-out;

@@ -108,7 +108,7 @@
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background: white;
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
     display: flex;
     flex-direction: column;
 }
@@ -119,7 +119,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 0px 0px 0px 20px;
+    padding: 0px 0px 0px 0px;
 }
 
 .instructor-dashboard-tab h1 {
@@ -162,11 +162,11 @@
 
 .instructor-statistics {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     height: 100%;
     width: 100%;
-    padding: 30px 10px 2% 10px;
+    padding: 30px 0px 30px 0px;
 }
 
 .instructor-statistics-box {
@@ -282,7 +282,7 @@
 
 /* Manage Learning Materials Tab */
 .instructor-manage-learning-materials-tab {
-    padding: 20px 0px 0px 20px;
+    padding: 20px 0px 0px 0px;
 }
 
 .instructor-manage-learning-materials-tab h1 {
@@ -632,7 +632,7 @@
 
 .instructor-exercises-container {
     margin-top: 0px;
-    padding: 20px;
+    padding: 20px 0px 20px 0px;
     border-radius: 10px;
     color: var(--text-light);
 }
@@ -668,7 +668,7 @@
 .instructor-exercise-content {
     padding: 20px;
     border-radius: 10px;
-    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
+    background: linear-gradient(150deg, rgb(159, 110, 238), rgb(249, 217, 131));
 }
 
 .instructor-exercise-content h2 {
@@ -1265,7 +1265,7 @@ pre.ql-syntax{
 
 .recharts-responsive-container.instructor-line-graph{
     height: 300px !important;
-    width: 75% !important;
+    width: 100% !important;
     display: flex;
     align-items: center;
     padding: 20px 20px 20px 20px;

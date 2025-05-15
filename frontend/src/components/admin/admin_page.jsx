@@ -531,7 +531,7 @@ const handleEditUser = async (user, newRole) => {
     { name: 'Instructors', value: totalInstructors },
   ];
 
-  const COLORS = ['#F8E9A1', '#6DE88B'];
+  const COLORS = ['rgb(252, 215, 144)', 'rgb(216, 198, 250)'];
 
   const userColumns = [
     {
