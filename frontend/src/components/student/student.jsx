@@ -144,7 +144,8 @@ useEffect(() => {
           localStorage.setItem("userRole", role);
   
           if (role === "student") {
-            return
+            setIsLoading(false);
+            return;
           } else if (role === "admin") {
             navigate("/admin");
           } else if (role === "instructor") {
@@ -183,8 +184,6 @@ useEffect(() => {
         }
       } catch (error) {
         console.error("Failed to fetch chats:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
   

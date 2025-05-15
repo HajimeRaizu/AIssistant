@@ -92,7 +92,8 @@ const AdminPage = () => {
           if (role === "student") {
             navigate("/student");
           } else if (role === "admin") {
-            return
+            setIsLoading(false);
+            return;
           } else if (role === "instructor") {
             navigate("/instructor");
           } else {
@@ -165,7 +166,6 @@ const AdminPage = () => {
       await fetchtotalStudents();
       await fetchInstructors();
       await fetchTotalLearningMaterials();
-      setIsLoading(false); // Set loading to false after fetching data
     };
   
     fetchData();

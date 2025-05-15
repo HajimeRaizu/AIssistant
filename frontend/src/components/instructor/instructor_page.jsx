@@ -150,6 +150,7 @@ const InstructorPage = () => {
           } else if (role === "admin") {
             navigate("/admin");
           } else if (role === "instructor") {
+            setIsLoading(false);
             return;
           } else {
             navigate("/");
@@ -200,7 +201,6 @@ const InstructorPage = () => {
     const fetchData = async () => {
       await fetchTotalQueries();
       await fetchLearningMaterials();
-      setIsLoading(false); // Set loading to false after fetching data
     };
   
     fetchData();

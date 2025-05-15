@@ -111,6 +111,7 @@ const ExercisesPage = () => {
           localStorage.setItem("userRole", role);
 
           if (role === "student") {
+            setIsLoading(false);
             return;
           } else if (role === "admin") {
             navigate("/admin");
@@ -122,8 +123,6 @@ const ExercisesPage = () => {
         } catch (error) {
           console.error("Failed to fetch user role:", error);
           navigate("/");
-        } finally {
-          setIsLoading(false);
         }
       } else {
         navigate("/");
@@ -159,8 +158,6 @@ const ExercisesPage = () => {
       }
     } catch (error) {
       console.error("Failed to fetch learning materials:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
   
