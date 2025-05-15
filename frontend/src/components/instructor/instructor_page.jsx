@@ -2298,7 +2298,7 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
                   <Line 
                       type="monotone" 
                       dataKey="queries" 
-                      stroke="rgb(101, 134, 145)" 
+                      stroke="rgb(73, 45, 122)"
                       strokeWidth={3} 
                       activeDot={{ r: 8 }} 
                   />
