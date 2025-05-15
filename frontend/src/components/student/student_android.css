@@ -238,6 +238,14 @@
     .student-theme-toggle.true{
         z-index: 1002;
     }
+
+    .student-no-chat-box{
+        width: 90%;
+    }
+
+    .student-aissistant{
+        flex-direction: column;
+    }
 }
 
 @media (max-aspect-ratio: 1/1) and (pointer: coarse){

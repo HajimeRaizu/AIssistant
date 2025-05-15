@@ -441,35 +441,45 @@ const stopSpeech = () => {
     }, [showOptions]);
   
     return (
-      <div className={`subject-box ${theme}`} onClick={() => handleSubjectClick(subjectCode)}>
+      <div
+        className={`subject-box ${theme}`}
+        onClick={() => handleSubjectClick(subjectCode)}
+      >
         <div className="subject-box-header">
           <h3>{subject.subjectName}</h3>
           <div
             className="subject-box-options"
             onClick={(e) => {
-              e.stopPropagation(); // Stop propagation here
+              e.stopPropagation();
               setShowOptions(showOptions === subjectCode ? null : subjectCode);
             }}
             title="Options"
           >
             <MdMoreVert />
           </div>
-          {showOptions === subjectCode && (
-            <div className="subject-box-options-menu">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Stop propagation here
-                  handleRemoveAccess(studentId, subject.subjectCode);
-                }}
-              >
-                Remove
-              </button>
-            </div>
-          )}
         </div>
+
+        {/* Dropdown outside clickable header */}
+        {showOptions === subjectCode && (
+          <div
+            className="subject-box-options-menu"
+            onClick={(e) => e.stopPropagation()} // prevent dropdown click from bubbling up
+          >
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRemoveAccess(studentId, subject.subjectCode);
+              }}
+            >
+              Remove
+            </button>
+          </div>
+        )}
+
         <p>{ownerEmail}</p>
         <p>{ownerName}</p>
       </div>
+
     );
   };
 
@@ -544,10 +554,6 @@ const stopSpeech = () => {
       </div>
       <div className={`exercises-overlay ${isSidebarVisible ? "visible" : "hidden"}`} onClick={toggleSidebar} />
       <div className={`exercises-sidebar ${theme} ${isSidebarVisible ? "visible" : "hidden"}`}>
-        <div className="student-profile">
-          <img src={`${userPicture}`} alt={`${userName}.jpg`} />
-          <p>{userName}</p>
-        </div>
         <div className="student-aissistant-logo-title">
           <img src={logo} alt="aissistant logo" style={{height: '120px', width: '120px', filter: 'drop-shadow(0 0 5px white)'}} />
           <div className="student-aissistant-title">
@@ -568,7 +574,7 @@ const stopSpeech = () => {
             ))}
           </ul>
         ) : (
-          <p style={{ paddingTop: "10px" }}>No subject IDs added yet. Please add a subject ID to view learning materials.</p>
+          <ul style={{ paddingTop: "10px" }}>No subject IDs added yet. Please add a subject ID to view learning materials.</ul>
         )}
         <div className="student-logout-section">
           <div className={`profile-dropdown ${theme}`} style={{width: '100%'}}>

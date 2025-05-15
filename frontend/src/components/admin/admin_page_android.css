@@ -1,16 +1,26 @@
 @media (max-aspect-ratio: 1/1), (max-width: 960px) {
     .admin-sidebar {
-        width: 80%;
-        position: fixed;
-        z-index: 1000;
-        height: 100%;
-        left: -100%;
-        transition: left 0.3s ease;
+    width: 80%;
+    position: fixed;
+    z-index: 1000;
+    height: 100%;
+    left: -100%;
+    transition: left 0.3s ease;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+}
+
+    .admin-tab{
+        width: 95%;
+        align-self: center !important;
     }
     
     .admin-sidebar.visible {
         left: 0;
         display: block;
+        padding: 0px;
+        margin: 0px;
     }
 
     .admin-header{
@@ -18,16 +28,26 @@
     }
 
     .admin-content{
-        padding: 10px 20px 10px 20px;
+        padding: 0px;
     }
 
     .dashboard-tab{
-        padding: 0px;
+        padding: 10px 20px 10px 20px;
     }
 
     .statistics{
         grid-template-columns: repeat(2, 1fr);
-        padding-bottom: 20px;
+        padding: 0px 0px 20px 0px;
+    }
+
+    .statistics *{
+        font-size: small;
+    }
+
+    .statistics h3{
+        display: flex;
+        flex-direction: column;
+        align-items: start !important;
     }
 
     .graphs{
@@ -48,5 +68,51 @@
     .faq-controls{
         flex-direction: column;
         align-items: start;
+    }
+
+    .overlay.visible{
+        position: fixed;
+        background: rgb(0, 0, 0, 0.6);
+        display: block;
+        z-index: 1;
+        height: 100%;
+        width: 100%;
+    }
+
+    .admin-sidebar-toggle{
+        display: block;
+        padding: 0px 10px 0px 10px;
+    }
+
+    .header{
+        padding: 0px 0px 20px 0px !important;
+    }
+
+    .header h1{
+        font-size: x-large;
+        margin: 0px !important;
+        padding: 0px !important;
+    }
+
+    .header h1 svg{
+        display: none;
+    }
+
+    .manage-users-tab{
+        padding: 10px 20px 10px 20px !important;
+    }
+
+    .manage-instructors-tab{
+        padding: 10px 20px 10px 20px !important;
+    }
+
+    .manage-instructors-tab input, .manage-users-tab input{
+        width: 90%;
+    }
+
+    .student-logout-section{
+        position: fixed;
+        bottom: 20px;
+        width: 75%;
     }
 }

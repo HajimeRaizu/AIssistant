@@ -111,19 +111,6 @@ const AdminPage = () => {
   }, [userId, userEmail, navigate]);
 
   useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (isSidebarVisible && !event.target.closest('.admin-sidebar') && !event.target.closest('.admin-sidebar-toggle')) {
-      setIsSidebarVisible(false);
-    }
-  };
-
-  document.addEventListener('click', handleClickOutside);
-  return () => {
-    document.removeEventListener('click', handleClickOutside);
-  };
-}, [isSidebarVisible]);
-
-  useEffect(() => {
     const fetchTotalQueries = async () => {
       try {
         const response = await axios.get(`${base_url}/api/getChats`);
@@ -694,15 +681,18 @@ const handleEditUser = async (user, newRole) => {
         </div>
       </div>
       <div className="admin-content">
-        <button
-          className=".admin-sidebar-toggle"
-          onClick={() => setIsSidebarVisible(!isSidebarVisible)}
-        >
-          ☰
-        </button>
         {activeTab === 'dashboard' ? (
           <div className="dashboard-tab">
+            <div className="header">
+            <button
+              className="admin-sidebar-toggle"
+              onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+              style={{fontSize: 'large'}}
+            >
+              ☰
+            </button>
             <h1><MdOutlineDashboard />Dashboard</h1>
+            </div>
             <div className="statistics">
               <div className="statistics-box queries">
                 <h3><MdOutlineQuestionAnswer className='statistics-box-icon' />Total Queries</h3>
@@ -752,7 +742,7 @@ const handleEditUser = async (user, newRole) => {
                     <Line 
                       type="monotone" 
                       dataKey="queries" 
-                      stroke="rgb(101, 134, 145)" 
+                      stroke="rgb(73, 45, 122)" 
                       strokeWidth={3} 
                       activeDot={{ r: 8 }} 
                     />
@@ -782,12 +772,14 @@ const handleEditUser = async (user, newRole) => {
                 <button 
                   className={graphFilter === 'weekly' ? 'active' : ''} 
                   onClick={() => setGraphFilter('weekly')}
+                  style={{background: 'white'}}
                 >
                   Weekly
                 </button>
                 <button 
                   className={graphFilter === 'monthly' ? 'active' : ''} 
                   onClick={() => setGraphFilter('monthly')}
+                  style={{background: 'white'}}
                 >
                   Monthly
                 </button>
@@ -812,6 +804,7 @@ const handleEditUser = async (user, newRole) => {
                     className="generate-faq-button"
                     onClick={handleGenerateFAQ}
                     disabled={isGeneratingFAQ || !selectedWeek}
+                    style={{background: 'white'}}
                   >
                     {isGeneratingFAQ ? "Generating..." : "Generate FAQ"}
                   </button>
@@ -822,7 +815,15 @@ const handleEditUser = async (user, newRole) => {
           </div>
         ) : activeTab === 'students' ? (
           <div className="manage-users-tab">
+            <div className="header">
+            <button
+              className="admin-sidebar-toggle"
+              onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+            >
+              ☰
+            </button>
             <h1><FaRegUser />Manage Students</h1>
+            </div>
             <div className="search-bar">
               <input
                 id="student-search-bar"
@@ -844,7 +845,15 @@ const handleEditUser = async (user, newRole) => {
           </div>
         ) : activeTab === 'instructors' ? (
           <div className="manage-instructors-tab">
-            <h1><PiStudentBold />Manage Instructors</h1>
+            <div className="header">
+              <button
+                className="admin-sidebar-toggle"
+                onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+              >
+                ☰
+              </button>
+              <h1><PiStudentBold />Manage Instructors</h1>
+            </div>
             <div className="search-bar">
               <input 
                 id="instructor-search-bar"
@@ -910,6 +919,8 @@ const handleEditUser = async (user, newRole) => {
           </div>
         </div>
       )}
+
+      {isSidebarVisible && <div className={`overlay ${isSidebarVisible? "visible" : "hidden"}`} onClick={() => setIsSidebarVisible(!isSidebarVisible)} />}
     </div>
   );
 };

@@ -433,7 +433,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     text-align: center;
-    background: white;
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
     width: 80dvw;
     height: 90dvh;
     display: flex;
@@ -447,7 +447,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     text-align: center;
-    background: white;
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -645,9 +645,8 @@
     margin: 10px 0;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-    background: var(--tab-light);
-    color: var(--text-light);
+    background: linear-gradient(150deg, rgb(159, 110, 238), rgb(249, 217, 131));
+    color: white;
 }
 
 .instructor-exercise-subtopic, .instructor-exercise-lesson {
@@ -658,22 +657,18 @@
     margin: 10px 0;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-    background: var(--tab-light);
-    color: var(--text-light);
+    background: linear-gradient(150deg, rgb(159, 110, 238), rgb(249, 217, 131));
+    color: white;
 }
 
 .instructor-exercise-subject:hover, .instructor-exercise-subtopic:hover, .instructor-exercise-lesson:hover {
-    background: var(--tab-active-light);
     transform: scale(1.02);
 }
 
 .instructor-exercise-content {
     padding: 20px;
     border-radius: 10px;
-    transition: background 0.3s ease, color 0.3s ease;
-    background: rgb(184, 184, 184);
-    color: var(--text-light);
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
 }
 
 .instructor-exercise-content h2 {
@@ -1165,7 +1160,7 @@ pre.ql-syntax{
     display: flex;
     height: 80%;
     width: 60%;
-    background: white;
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -1199,18 +1194,19 @@ pre.ql-syntax{
 
   .reuse-subject-items{
     padding: 10px;
-    border: 1px solid lightgray;
+    border: 1px solid white;
     border-radius: 5px;
-    margin-bottom: 1px;
+    margin-bottom: 10px;
     cursor: pointer;
+    background: rgb(159, 110, 238);
   }
 
   .reuse-subject-items:hover{
-    background: lightgray;
+    background: rgb(252, 215, 144);
   }
 
   .reuse-subject-items.selected {
-    background: lightgray;
+    background: rgb(252, 215, 144);
   }
 
   .reuse-buttons{
@@ -1252,10 +1248,6 @@ pre.ql-syntax{
     border-radius: 5px;
     margin-top: 20px;
   }
-
-.admin-sidebar-toggle{
-    display: none;
-}
 
 .faq-header{
     display: flex;

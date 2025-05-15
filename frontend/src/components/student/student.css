@@ -780,13 +780,11 @@
 }
 
 .student-modal-content.dark {
-    background: var(--sidebar-light);
-    color: var(--text-light);
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
 }
 
 .student-modal-content.light {
-    background: white;
-    color: black;
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
 }
 
 .student-modal-content p {
@@ -1284,21 +1282,6 @@
     border-radius: 5px;
     cursor: pointer;
     font-family: "Host Grotesk", sans-serif;
-    
-}
-
-.student-chat-name-modal-actions.dark button {
-    background: #353535;
-    color: var(--text-dark);
-}
-
-.student-chat-name-modal-actions.light button {
-    background:  linear-gradient(120deg, rgb(216, 198, 250), rgb(159, 110, 238)) !important;
-    border-radius: 5px;
-}
-
-.student-chat-name-modal-actions button:hover{
-    background:  linear-gradient(120deg, rgb(252, 215, 144), rgb(252, 215, 144)) !important;
 }
 
 .student-chat-name-input {

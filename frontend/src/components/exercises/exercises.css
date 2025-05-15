@@ -818,7 +818,6 @@ button {
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 5px;
-    z-index: 1;
 }
   
 .subject-box-options-menu button {
@@ -1093,12 +1092,12 @@ img.book{
     height: fit-content;
     width: 400px;
     padding: 30px;
-    background: white;
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
     border-radius: 10px;
   }
 
   .add-subject-form.dark{
-    background: rgb(40, 40, 40);
+    background: linear-gradient(rgb(216, 198, 250), rgb(252, 215, 144));
   }
 
   .add-subject-buttons{

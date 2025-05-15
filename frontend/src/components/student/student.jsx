@@ -1009,10 +1009,11 @@ useEffect(() => {
         <div className={`student-content ${theme} ${isSidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
           <div className="student-chat-container">
             <div className={`student-chat-header ${theme}`}>
-              <div className="header-title"><div className="student-aissistant">
-                <h2 style={{color: 'rgb(159, 110, 238)'}}>AI</h2>
-                <h2>ssistant Chat</h2>
-              </div>
+              <div className="header-title">
+                <div className="student-aissistant" style={{flexDirection: 'row'}}>
+                  <h2 style={{color: 'rgb(159, 110, 238)'}}>AI</h2>
+                  <h2>ssistant Chat</h2>
+                </div>
               <p className="student-disclaimer">This chat will respond to any programming language.</p></div>
               <div className="student-header-buttons">
                 {/*<button title="Toggle theme" className={`student-theme-toggle ${theme} ${tutorial3}`} onClick={toggleTheme}>
@@ -1193,8 +1194,10 @@ useEffect(() => {
               <div className={`student-newchat-header ${theme}`}>
                 <div className="student-aissistant">
                   <h1>Hello World! I am </h1>
+                  <div style={{display:'flex', flexDirection: 'row'}}>
                   <h2 style={{ color: 'rgb(159, 110, 238)', fontSize: '24px', paddingLeft: '7px' }}>AI</h2>
                   <h2 style={{ fontSize: '24px' }}>ssistant.</h2>
+                  </div>
                 </div>
                 <p style={{fontSize: 'medium'}}>Your personal academia companion.</p>
               </div>
@@ -1226,8 +1229,8 @@ useEffect(() => {
           <div className={`student-modal-content ${theme}`}>
             <p>Are you sure you want to delete this chat?</p>
             <div className={`student-chat-name-modal-actions ${theme}`}>
-              <button onClick={confirmDeleteChat}>Yes</button>
-              <button onClick={cancelDeleteChat}>No</button>
+              <button onClick={confirmDeleteChat} style={{background: 'rgb(127, 228, 127)'}}>Yes</button>
+              <button onClick={cancelDeleteChat} style={{background: 'rgb(226, 78, 78)'}}>No</button>
             </div>
           </div>
         </div>

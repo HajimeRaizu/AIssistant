@@ -1,4 +1,4 @@
-@media (max-aspect-ratio: 1/1), (max-width: 960px) {
+    @media (max-aspect-ratio: 1/1), (max-width: 960px) {
     .exercises-sidebar {
         width: 70%; /* Sidebar takes 70% of the screen width on mobile */
         padding: 4%;
@@ -256,9 +256,8 @@
         margin-top: 10px;
     }
     
-    .add-subject-form.dark{
+    .add-subject-form{
         width: 90%;
-        background: rgb(50, 50, 50);
     }
 
     .student-add-new-subject{
