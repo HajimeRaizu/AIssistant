@@ -37,7 +37,6 @@ const AIssistant = () => {
                 <p className='single-text' style={{color: 'white'}}>Master coding with AI-powered guidance and real-time feedback.</p>
                 <p className='single-text' style={{color: 'white'}}>Learn, practice, and improve—whether you're a beginner or an advanced developer.</p>
                 <span className="combined-text" style={{color: 'white'}}>Master coding with AI-powered guidance and real-time feedback. Learn, practice, and improve—whether you're a beginner or an advanced developer.</span>
-                <button onClick={() => handleBoxClick()} className='aissistant-user-type'>Get Started</button>
               </div>
               <div className="info-box">
                 <span>
@@ -56,6 +55,7 @@ const AIssistant = () => {
                   <p>3. View students' frequently asked questions</p>
                 </span>
               </div>
+              <button onClick={() => handleBoxClick()} className='aissistant-user-type'>Get Started</button>
             </div>
           <div className='aissistant-logo'>
             <img src={logo} alt="AIssistant-logo" className='aissistant-icon' />
