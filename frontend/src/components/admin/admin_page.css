@@ -144,6 +144,7 @@
     width: 100%;
     box-shadow: 0px 0px 5px 1px gray;
     color: black;
+    background: white;
 }
 
 .statistics-box.queries{
@@ -688,6 +689,7 @@ input {
     display: flex;
     align-items: center;
     padding: 20px 20px 20px 20px;
+    background: white;
 }
 
 .line-graph:hover{

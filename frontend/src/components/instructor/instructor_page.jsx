@@ -18,6 +18,8 @@ import { RiDownload2Fill } from "react-icons/ri";
 import { FaArrowLeft } from "react-icons/fa";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
+import { ImCross } from "react-icons/im";
+import { LuMaximize } from "react-icons/lu";
 import {
   LineChart,
   Label,
@@ -36,6 +38,7 @@ import {
 } from 'recharts';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { IoCopyOutline } from "react-icons/io5";
 
 const InstructorPage = () => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -46,7 +49,7 @@ const InstructorPage = () => {
   const [queryData, setQueryData] = useState([]);
   const [graphFilter, setGraphFilter] = useState('weekly');
   const [faq, setFaq] = useState("");
-  const [copyButtonText, setCopyButtonText] = useState("Copy");
+  const [copyButtonText, setCopyButtonText] = useState("Copy Invite Code");
   const [learningMaterials, setLearningMaterials] = useState({});
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
@@ -72,6 +75,8 @@ const InstructorPage = () => {
   const [showCreateSubtopicModal, setShowCreateSubtopicModal] = useState(false);
   const programmingLanguages = ["Python", "JavaScript", "Java", "C++", "C#", "HTML", "CSS"];
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [showClassCode, setShowClassCode] = useState (false);
+  const [currentClassCode, setCurrentClassCode] = useState('');
   const quillRef = useRef(null);
 
   const [newSubject, setNewSubject] = useState({
@@ -1124,28 +1129,29 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
   
       return (
         <div>
-          <div className="subject-id-container">
-            <p>Subject Code: {subjectData.subjectCode}</p>
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(subjectData.subjectCode);
-                setCopyButtonText("Copied");
-                setTimeout(() => setCopyButtonText("Copy"), 2000);
-              }}
-            >
-              {copyButtonText}
-            </button>
-          </div>
-          <button
-            className="instructor-back-to-subjects-button"
-            onClick={handleBackToSubjects}
-            style={{background: 'none', padding: '0px', margin: '0px 10px 0px 0px'}}>
-            <FaArrowLeft />
+          <button className="add-lesson" onClick={() => setShowCreateLessonModal(true)}>
+            <ImCross style={{transform: 'rotate(45deg)'}} />
           </button>
           <div>
-          <button className="add-lesson" onClick={() => setShowCreateLessonModal(true)}>
-            Add Lesson
-          </button>
+            <div className="subject-id-container">
+              <button
+                className="instructor-back-to-subjects-button"
+                onClick={handleBackToSubjects}
+                style={{background: 'none', padding: '0px', margin: '0px 10px 0px 0px', color: 'black'}}>
+                <FaArrowLeft />
+              </button>
+              <div style={{border: '1px solid gray', display: 'flex', flexDirection: 'row', background: 'white', padding: '10px', borderRadius: '5px', gap: '10px'}}>
+                <p style={{fontSize: '18px', color: 'rgb(73, 45, 122)'}}>{subjectData.subjectCode}</p>
+                <button 
+                  style={{background: 'none', padding: '0px'}}
+                  onClick={() => {
+                    setCurrentClassCode(subjectData.subjectCode);
+                    setShowClassCode(true);
+                    }}>
+                  <LuMaximize style={{fontSize: '18px', color: 'rgb(73, 45, 122)'}} />
+                </button>
+              </div>
+            </div>
           </div>
           <div>
             {lessons.map((lesson, index) => (
@@ -2554,6 +2560,31 @@ const handleDeleteSubtopic = async (subjectCode, lessonIndex, subtopicIndex) => 
         </div>
       )}
       {<div className={`student-overlay ${isSidebarVisible ? 'hidden' : 'visible'}`}></div>}
+      {showClassCode && (
+        <div className="maximize-class-code">
+          <div className="class-code-box">
+            <div className="classcode-box-header">
+              <p>Class Code</p>
+              <button onClick={() => {setCurrentClassCode(''); setShowClassCode(false);}}><IoMdClose /></button>
+            </div>
+            <div className="classcode-box-code">
+              <h1>{currentClassCode}</h1>
+            </div>
+            <div className="classcode-box-footer">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(currentClassCode);
+                  setCopyButtonText("Copied");
+                  setTimeout(() => setCopyButtonText("Copy"), 2000);
+                }}
+              >
+                <IoCopyOutline />
+                {copyButtonText}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

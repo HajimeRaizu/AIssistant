@@ -10,14 +10,14 @@ body::-webkit-scrollbar{
     flex-direction: column;
     height: 100dvh;
     width: 100%;
-    background: linear-gradient(90deg, rgba(73, 45, 122, 0.4), rgba(249, 217, 131, 0.4)), url("../assets/pic8.jpg");
+    background: linear-gradient(90deg, rgba(73, 45, 122, 0.4), rgba(249, 217, 131, 0.4)), url("../assets/landing_background.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
 
 .aissistant{
-    padding: 0dvh 10dvh 0dvh 10dvh;
+    padding: 0dvh 20px 0dvh 20px;
     height: fit-content;
     display: flex;
     justify-content: space-between;
@@ -38,8 +38,8 @@ body::-webkit-scrollbar{
 }
 
 .aissistant-icon{
-    height: 300px;
-    width: 300px;
+    height: 400px;
+    width: 400px;
 }
 
 .aissistant-text{
@@ -77,7 +77,7 @@ body::-webkit-scrollbar{
 
 .aissistant-info{
     height: fit-content;
-    width: 500px;
+    width: 70%;
     display: flex;
     flex-direction: column;
     gap: 40px;
@@ -86,104 +86,27 @@ body::-webkit-scrollbar{
     padding-left: 20px;
 }
 
-.aissistant-info span{
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    width: 400px;
+.info-box{
     display: flex;
-    flex-direction: column;
-    border-radius: 10px;
-    padding: 30px;
-    background: rgb(216, 198, 250);
+    flex-direction: row;
+    padding: 25px 10px 25px 10px;
+    background: rgba(39, 22, 70, 0.7);
+    justify-content: center;
+    gap: 15px;
+    height: 240px;
+    border-radius: 20px;
 }
 
-.about-us{
-    height: 1000px;
-    width: 100%;
-    background: rebeccapurple;
+.info-box-line{
+    border: 1px solid white;
+    height: 100%;
+    display: flex;
 }
 
-@media (max-aspect-ratio: 1/1), (max-width: 960px){
-    .aissistant-container{
-        height: 100dvh;
-        width: 100%;
-        background-size: cover;
-    }
+.aissistant-info span{
+    color: white;
+}
 
-    .aissistant-text span.combined-text{
-        display: block;
-    }
-
-    .aissistant-text p.single-text{
-        display: none;
-    }
-    
-    .aissistant-header{
-        padding: 3dvh 0dvw 0dvh 0dvw;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: auto;
-    }
-
-    .aissistant{
-        height: auto;
-        flex-direction: column-reverse;
-        direction: ltr;
-        padding: 0dvh 5dvw 0dvh 5dvw;
-    }
-
-    .aissistant-text{
-        padding: 3dvh 0dvw 0dvh 0dvw;
-        gap: 2dvh;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: last baseline;
-        flex-direction: column;
-    }
-
-    .aissistant-text h1{
-        font-size: large;
-        text-align: justify;
-    }
-
-    .aissistant-text p{
-        font-size: small;
-        text-align: justify;
-    }
-
-    .aissistant-logo{
-        height: fit-content;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        width: 100%;
-        overflow: auto;
-    }
-
-    .aissistant-icon{
-        height: 120px;
-        width: 120px;
-    }
-
-    .aissistant-info{
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-        padding-bottom: 40px;
-    }
-
-    .aissistant-info p{
-        font-size: small;
-    }
-
-    .aissistant-info h2{
-        font-size: medium;
-    }
-
-    .aissistant-info span{
-        width: 350px;
-    }
+.aissistant-info h2{
+    color: rgb(252, 215, 144);
 }

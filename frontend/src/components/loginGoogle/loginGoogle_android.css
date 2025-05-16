@@ -1,10 +1,20 @@
-@media (max-aspect-ratio: 1/1) {
-    .welcome{
-        font-size: smaller;
-    }
+.login-container{
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+}
 
-    .centered .companion{
-        font-size: small;
-        font-weight: 400;
-    }
+.login-box{
+    height: fit-content;
+    width: 100%;
+}
+
+.login-logo{
+    height: fit-content;
+    width: 100%;
+}
+
+.login-icon{
+    height: 200px;
+    width: 200px;
 }

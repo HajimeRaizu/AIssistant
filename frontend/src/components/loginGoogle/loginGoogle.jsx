@@ -6,6 +6,7 @@ import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Swal from 'sweetalert2';
+import logo from '../assets/AIssistant.png';
 
 const LoginButton = ({ onSuccess, onError }) => {
   const base_url = `https://aissistant-backend.vercel.app`;
@@ -247,18 +248,22 @@ const LoginGoogle = () => {
 
   return (
     <GoogleOAuthProvider clientId={CLIENT_ID}>
-      <div className="centered">
-        <div className="welcome">
-          <h1>Welcome to</h1>
-          <div className='landing-aissistant'><h1 className='ai'>AI</h1><h1 className='landing-welcome'>ssistant</h1></div>
+      <div className="login-container">
+        <div className="login-box">
+          <div className="welcome">
+            <div style={{display: 'flex', flexDirection: 'row'}}><h1 style={{marginRight:'11px'}}>Welcome to</h1><h1 style={{color: 'rgb(216, 198, 250)'}}>AI</h1><h1 style={{color: 'white'}}>ssistant</h1></div>
+          </div>
+
+          <h4 className="companion" style={{color: 'white', marginBottom: '10px'}}>Login with NEMSU email</h4>
+
+          <LoginButton 
+            onSuccess={handleGoogleLoginSuccess} 
+            onError={handleGoogleLoginError} 
+          />
         </div>
-
-        <h4 className="companion">Login with NEMSU email</h4>
-
-        <LoginButton 
-          onSuccess={handleGoogleLoginSuccess} 
-          onError={handleGoogleLoginError} 
-        />
+        <div className='login-logo'>
+          <img src={logo} alt="AIssistant Icon" className='login-icon' />
+        </div>
       </div>
     </GoogleOAuthProvider>
   );

@@ -179,10 +179,12 @@
 
 .instructor-statistics-box.queries{
     border-bottom: 2dvh solid #4e73df;
+    background: white;
 }
 
 .instructor-statistics-box.learning-materials{
     border-bottom: 2dvh solid #f6c23e;
+    background: white;
 }
 
 .instructor-statistics-box-icon {
@@ -282,7 +284,7 @@
 
 /* Manage Learning Materials Tab */
 .instructor-manage-learning-materials-tab {
-    padding: 20px 0px 0px 0px;
+    padding: 20px 0px 20px 0px;
 }
 
 .instructor-manage-learning-materials-tab h1 {
@@ -624,6 +626,7 @@
   box-shadow: 0px 0px 5px 1px gray;
   transition: transform 0.3s ease-in-out;
   border-radius: 25px;
+  background: white;
 }
 
 .instructor-line-graph:hover {
@@ -632,7 +635,7 @@
 
 .instructor-exercises-container {
     margin-top: 0px;
-    padding: 20px 0px 20px 0px;
+    padding: 0px 0px 0px 0px;
     border-radius: 10px;
     color: var(--text-light);
 }
@@ -721,7 +724,7 @@
     color: var(--text-light);
 }
 
-.add-subject, .add-lesson, .add-subtopic{
+.add-subject, .add-subtopic{
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -729,6 +732,20 @@
     font-family: "Host Grotesk", sans-serif;
     margin: 10px 10px 10px 0px;
     background: rgb(94, 159, 49);
+    color: white;
+}
+
+.add-lesson{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    background: #4caf50;
+    border-radius: 25px;
     color: white;
 }
 
@@ -775,6 +792,7 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
+    justify-content: space-between;
 }
   
 .subject-id-container button {
@@ -1269,4 +1287,66 @@ pre.ql-syntax{
     display: flex;
     align-items: center;
     padding: 20px 20px 20px 20px;
+}
+
+.maximize-class-code{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: rgb(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    flex-direction: column;
+}
+
+.class-code-box{
+    width: 50%;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.classcode-box-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.classcode-box-header button{
+    background: none;
+    font-size: larger;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.classcode-box-header button:hover{
+    background: rgb(199, 199, 199);
+}
+
+.classcode-box-code{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.classcode-box-code h1{
+    font-size: 125px;
+}
+
+.classcode-box-footer{
+    display: flex;
+    justify-content: end;
+}
+
+.classcode-box-footer button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    gap: 10px;
+    color: rgb(73, 45, 122);
 }
