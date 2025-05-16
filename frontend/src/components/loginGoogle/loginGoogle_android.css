@@ -1,20 +1,22 @@
+@media (max-aspect-ratio: 1/1), (max-width: 960px) {
 .login-container{
-    flex-direction: column-reverse;
-    justify-content: center;
-    align-items: center;
-}
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: center;
+    }
 
-.login-box{
-    height: fit-content;
-    width: 100%;
-}
+    .login-box{
+        height: fit-content;
+        width: 100%;
+    }
 
-.login-logo{
-    height: fit-content;
-    width: 100%;
-}
+    .login-logo{
+        height: fit-content;
+        width: 100%;
+    }
 
-.login-icon{
-    height: 200px;
-    width: 200px;
+    .login-icon{
+        height: 200px;
+        width: 200px;
+    }
 }
