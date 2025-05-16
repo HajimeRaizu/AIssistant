@@ -12,7 +12,7 @@ body {
     text-align: center;
     height: 100dvh;
     width: 100%;
-    background: linear-gradient(90deg, rgba(73, 45, 122, 0.4), rgba(249, 217, 131, 0.4)), url("../assets/pic8.jpg");
+    background: linear-gradient(90deg, rgba(73, 45, 122, 0.4), rgba(249, 217, 131, 0.4)), url("../assets/landing_background.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -40,7 +40,7 @@ body {
 
 .hero p {
     font-size: 20px;
-    color: #555;
+    color: white;
 }
 
 /* Action Boxes Section Styles */
@@ -55,7 +55,7 @@ body {
     width: 300px;
     padding: 30px;
     background-color: rgba(236, 236, 236, .3);
-    color: rgb(86, 86, 255);
+    background: rgba(39, 22, 70, 0.7);
     border-radius: 10px;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -74,7 +74,7 @@ body {
 
 .box p {
     font-size: 16px;
-    color: #555;
+    color: white;
 }
 
 .landing-aissistant{
@@ -117,7 +117,7 @@ body {
     
     .hero p {
         font-size: 20px;
-        color: #555;
+        color: white;
     }
 
     .action-boxes{

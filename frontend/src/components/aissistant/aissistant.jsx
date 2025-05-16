@@ -33,10 +33,10 @@ const AIssistant = () => {
         <div className="aissistant">
             <div className="aissistant-info">
               <div className='aissistant-text'>
-                <h1 style={{color: 'white', fontSize: '60px', lineHeight: '1.1'}}>Enhance Your Programming Skills with AIssistant</h1>
-                <p className='single-text' style={{color: 'white'}}>Master coding with AI-powered guidance and real-time feedback.</p>
-                <p className='single-text' style={{color: 'white'}}>Learn, practice, and improve—whether you're a beginner or an advanced developer.</p>
-                <span className="combined-text" style={{color: 'white'}}>Master coding with AI-powered guidance and real-time feedback. Learn, practice, and improve—whether you're a beginner or an advanced developer.</span>
+                <h1 style={{color: 'white', fontSize: '50px', lineHeight: '1.1'}}>Enhance Your Programming Skills with AIssistant</h1>
+                <p className='single-text' style={{color: 'white', fontStyle: 'italic'}}>Master coding with AI-powered guidance and real-time feedback.</p>
+                <p className='single-text' style={{color: 'white', fontStyle: 'italic'}}>Learn, practice, and improve—whether you're a beginner or an advanced developer.</p>
+                <span className="combined-text" style={{color: 'white', fontStyle: 'italic'}}>Master coding with AI-powered guidance and real-time feedback. Learn, practice, and improve—whether you're a beginner or an advanced developer.</span>
               </div>
               <div className="info-box">
                 <span>
