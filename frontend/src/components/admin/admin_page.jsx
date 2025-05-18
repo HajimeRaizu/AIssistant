@@ -597,7 +597,7 @@ const handleEditUser = async (user, newRole) => {
     },
     headCells: {
       style: {
-        backgroundColor: "#4e73df", // Blue header background
+        backgroundColor: "rgb(73, 45, 122)", // Blue header background
         color: "#fff", // White text
         fontWeight: "bold",
         border: "1px solid #ddd", // Add border around header cells

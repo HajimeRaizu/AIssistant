@@ -1228,8 +1228,8 @@ useEffect(() => {
           <div className={`student-modal-content ${theme}`}>
             <p>Are you sure you want to delete this chat?</p>
             <div className={`student-chat-name-modal-actions ${theme}`}>
-              <button onClick={confirmDeleteChat} style={{background: 'rgb(127, 228, 127)'}}>Yes</button>
-              <button onClick={cancelDeleteChat} style={{background: 'rgb(226, 78, 78)'}}>No</button>
+              <button onClick={confirmDeleteChat} style={{background: 'rgb(73, 45, 122)', color: 'white'}}>Yes</button>
+              <button onClick={cancelDeleteChat} style={{background: 'rgb(73, 45, 122)', color: 'white'}}>No</button>
             </div>
           </div>
         </div>

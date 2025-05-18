@@ -648,7 +648,8 @@ button {
 }
 
 .submit-button.light{
-    background: rgb(127, 228, 127);
+    background: rgb(73, 45, 122);
+    color: white;
 }
 
 .submit-button.dark{
@@ -1108,7 +1109,8 @@ img.book{
   }
 
   .add-subject-cancel-button.light{
-    background: rgb(226, 78, 78);
+    background: rgb(73, 45, 122);
+    color: white;
   }
 
   .add-subject-cancel-button.dark{
@@ -1148,7 +1150,7 @@ img.book{
     position: fixed;
     right: 50px;
     bottom: 50px;
-    background: #4caf50;
+    background: rgb(73, 45, 122);
     border-radius: 25px;
 }
 
