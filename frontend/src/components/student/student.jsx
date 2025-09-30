@@ -23,8 +23,8 @@ import { FiMoreVertical } from "react-icons/fi";
 import { IoLogOutOutline } from "react-icons/io5";
 
 const StudentPage = () => {
-  //const base_url = `https://aissistant-backend.vercel.app`;
-  const base_url = `http://localhost:5000`;
+  const base_url = `https://aissistant-backend.vercel.app`;
+  //const base_url = `http://localhost:5000`;
   const [tutorial, setTutorial] = useState(false);
   const [tutorial2, setTutorial2] = useState(false);
   const [tutorial3, setTutorial3] = useState(false);
