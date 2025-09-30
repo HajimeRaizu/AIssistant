@@ -96,6 +96,7 @@ const LoginButton = ({ onSuccess, onError }) => {
     onError: onError,
   });
 
+  
   return (
     <div className="wrapper">
       <button 
