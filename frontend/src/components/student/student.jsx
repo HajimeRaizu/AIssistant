@@ -57,7 +57,7 @@ const StudentPage = () => {
   const [showLogoutDropdown, setShowLogoutDropdown] = useState(false);
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
-  const userId = localStorage.getItem("userId");
+  const userId = "sampleUser";
   const userName = localStorage.getItem("userName");
   const userEmail = localStorage.getItem("userEmail");
   const userPicture = localStorage.getItem("profileImage");
@@ -132,40 +132,6 @@ useEffect(() => {
 }, [placeholderText, currentQuestionIndex, isTypingPlaceholder, isDeletingPlaceholder]);
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      if (userEmail) {
-        try {
-          const response = await axios.get(`${base_url}/api/getUserRole`, {
-            params: { email: userEmail }
-          });
-          const role = response.data.role;
-  
-          setUserRole(role);
-          localStorage.setItem("userRole", role);
-  
-          if (role === "student") {
-            setIsLoading(false);
-            return;
-          } else if (role === "admin") {
-            navigate("/admin");
-          } else if (role === "instructor") {
-            navigate("/instructor");
-          } else {
-            navigate("/");
-          }
-        } catch (error) {
-          console.error("Failed to fetch user role:", error);
-          navigate("/");
-        }
-      } else {
-        navigate("/");
-      }
-    };
-  
-    fetchUserRole();
-  }, [userId, userEmail, navigate]);
-
-  useEffect(() => {
     const fetchChats = async () => {
       try {
         const response = await axios.get(`${base_url}/api/getChats/${userId}`);
@@ -230,6 +196,8 @@ useEffect(() => {
     setMessages(newMessages);
   
     setInput("");
+
+    console.log(input, userId, currentChatId)
   
     try {
       const response = await fetch(`${base_url}/api/ai`, {
@@ -566,6 +534,8 @@ useEffect(() => {
   
       setIsDisabled(true);
       setIsTyping(true);
+
+      console.log(input, userId, newChatId)
   
       const aiResponse = await fetch(`${base_url}/api/ai`, {
         method: "POST",
@@ -918,10 +888,6 @@ useEffect(() => {
       console.error("Error liking/disliking response:", error);
     }
   };
-
-  if (isLoading) {
-    return <div className={`student-loading-container ${theme}`}>Loading...</div>;
-  }
 
   return (
     <div className={`student-container ${theme}`}>

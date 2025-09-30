@@ -44,9 +44,7 @@ const router = createBrowserRouter([
   {
     path: '/student',
     element: (
-      <ProtectedRoute>
         <StudentPage />
-      </ProtectedRoute>
     ),
   },
   {

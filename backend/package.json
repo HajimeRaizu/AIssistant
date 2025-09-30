@@ -10,8 +10,10 @@
         "test": "jest"
     },
     "dependencies": {
+        "@ai-sdk/deepinfra": "^1.0.20",
         "@huggingface/inference": "^3.3.6",
         "@supabase/supabase-js": "^2.49.1",
+        "ai": "^5.0.59",
         "cohere-ai": "^7.16.0",
         "cors": "^2.8.5",
         "dotenv": "^16.4.7",

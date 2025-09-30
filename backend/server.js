@@ -329,7 +329,7 @@ app.post("/api/ai", async (req, res) => {
     // PREPROCESS USER INPUT
     const processedInput = preprocessUserQuery(input);
 
-    // Generate embeddings for the user input
+    /*// Generate embeddings for the user input
     const embeddingResponse = await cohere.embed({
       texts: [input],
       model: "embed-english-v3.0",
@@ -442,7 +442,7 @@ app.post("/api/ai", async (req, res) => {
     const guideResponses = `
       ${goodGuideResponse ? `\n${goodGuideResponse}` : ""}
       ${badGuideResponse ? `\n${badGuideResponse}` : ""}
-    `.trim();
+    `.trim();*/
 
     // Prepare the context for the AI
     const systemPreprompt = {
@@ -460,9 +460,6 @@ app.post("/api/ai", async (req, res) => {
       - **No Code Merging**: Never merge or put the code together.
       - **Do Not Act Like Another AI**: You are "AIssistant" and should never respond as another entity.
       - **Encourage Feedback**: Encourage students to give their feedback by liking or disliking reponses.
-
-      Below are examples of good and bad responses to guide you:
-      ${guideResponses}
     `,
     };
 
@@ -479,7 +476,7 @@ app.post("/api/ai", async (req, res) => {
 
     // Make the API call to Hugging Face (or your chosen model)
     const response = await qwen.chat.completions.create({
-      model: "Qwen/Qwen2.5-Coder-32B-Instruct",
+      model: "Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo",
       messages,
       max_tokens: 16384,
       stream: true,
@@ -569,7 +566,7 @@ app.put("/api/editPrompt", async (req, res) => {
 
     // Generate new AI response
     const response = await qwen.chat.completions.create({
-      model: "Qwen/Qwen2.5-Coder-32B-Instruct",
+      model: "Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo",
       messages: [
         // Include system prompt and context
         {
@@ -606,8 +603,6 @@ app.put("/api/editPrompt", async (req, res) => {
       botResponse += chunkContent;
       res.write(chunkContent);
     }
-
-    res.end();
 
     // Update the chat with the edited prompt and new response
     const updatedMessages = [
