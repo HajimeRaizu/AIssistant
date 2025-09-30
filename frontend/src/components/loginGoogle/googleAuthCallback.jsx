@@ -52,6 +52,17 @@ const GoogleAuthCallback = () => {
         const credential = tokenResponse.data.credential;
         const decodedToken = jwtDecode(credential);
 
+        // Check for NEMSU domain
+        if (!decodedToken.email.endsWith("@nemsu.edu.ph")) {
+          Swal.fire({
+            title: "Invalid email",
+            text: "Only NEMSU workspace accounts are allowed",
+            icon: "error",
+          });
+          navigate("/");
+          return;
+        }
+
         // Register or login the user
         const response = await axios.post(`${base_url}/api/googleLogin`, {
           email: decodedToken.email,

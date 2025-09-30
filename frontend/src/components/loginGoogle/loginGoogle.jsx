@@ -47,6 +47,17 @@ const LoginButton = ({ onSuccess, onError }) => {
           const credential = tokenResponse.data.credential;
           const decodedToken = jwtDecode(credential);
   
+          // Check for NEMSU domain
+          if (!decodedToken.email.endsWith("@nemsu.edu.ph")) {
+            Swal.fire({
+              title: "Invalid email",
+              text: "Only NEMSU workspace accounts are allowed",
+              icon: "error",
+            });
+            navigate("/");
+            return;
+          }
+  
           // Register or login the user
           const response = await axios.post(`${base_url}/api/googleLogin`, {
             email: decodedToken.email,
@@ -92,11 +103,11 @@ const LoginButton = ({ onSuccess, onError }) => {
     ux_mode: "redirect",
     redirect_uri: `${window.location.origin}/googleLogin`,
     scope: "email profile",
+    hosted_domain: "nemsu.edu.ph",
     onSuccess: onSuccess,
     onError: onError,
   });
 
-  
   return (
     <div className="wrapper">
       <button 
@@ -166,7 +177,7 @@ const LoginGoogle = () => {
   const userRole = localStorage.getItem("userRole") || null;
   const userEmail = localStorage.getItem("userEmail") || null;
   const userPicture = localStorage.getItem("profileImage") || null;
-  const CLIENT_ID = "792236607213-gt12gkp3eqkttq68f0gtvfivhfvcjdih.apps.googleusercontent.com";
+  const CLIENT_ID = "966546103505-am2u7fu5r31t4g0bq3n1ecp4chg7ji8j.apps.googleusercontent.com";
 
   useEffect(() => {
     if (isAuthenticated&&userId&&userName&&userEmail&&userPicture&&userRole === 'student') {
@@ -181,7 +192,17 @@ const LoginGoogle = () => {
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     const decodedToken = jwtDecode(credentialResponse.credential);
   
-    try {  
+    try {
+      // Check if the email ends with @nemsu.edu.ph
+      if (!decodedToken.email.endsWith("@nemsu.edu.ph")) {
+        Swal.fire({
+          title: "Invalid email",
+          text: "Only NEMSU workspace accounts are allowed",
+          icon: "error",
+        })
+        return;
+      }
+  
       // Send the user data to the server to check or create the user
       const response = await axios.post(`${base_url}/api/googleLogin`, {
         email: decodedToken.email,

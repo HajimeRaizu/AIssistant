@@ -1325,6 +1325,10 @@ app.post("/api/googleLogin", async (req, res) => {
   const { email, name, profileImage } = req.body;
 
   try {
+    // Check if the email ends with @nemsu.edu.ph
+    if (!email.endsWith("@nemsu.edu.ph")) {
+      return res.status(403).json({ error: "Only @nemsu.edu.ph emails are allowed to login." });
+    }
 
     // Check if the user exists in the database
     const usersSnapshot = await db.collection("users").where("email", "==", email).get();
