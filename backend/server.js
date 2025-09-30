@@ -629,6 +629,8 @@ app.put("/api/editPrompt", async (req, res) => {
       messages: updatedMessages
     });
 
+    res.end();
+
   } catch (error) {
     console.error("Error editing prompt:", error);
     res.status(500).json({ error: "Failed to edit prompt" });

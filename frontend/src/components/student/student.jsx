@@ -23,8 +23,8 @@ import { FiMoreVertical } from "react-icons/fi";
 import { IoLogOutOutline } from "react-icons/io5";
 
 const StudentPage = () => {
-  const base_url = `https://aissistant-backend.vercel.app`;
-  //const base_url = `http://localhost:5000`;
+  //const base_url = `https://aissistant-backend.vercel.app`;
+  const base_url = `http://localhost:5000`;
   const [tutorial, setTutorial] = useState(false);
   const [tutorial2, setTutorial2] = useState(false);
   const [tutorial3, setTutorial3] = useState(false);
@@ -58,14 +58,14 @@ const StudentPage = () => {
 
   const isAuthenticated = localStorage.getItem("isAuthenticated");
   const userId = "sampleUser";
-  const userName = localStorage.getItem("userName");
-  const userEmail = localStorage.getItem("userEmail");
-  const userPicture = localStorage.getItem("profileImage");
+  const userName = "Sample User";
+  const userEmail = "sample@gmail.com";
+  const userPicture = "https://img.freepik.com/free-photo/illustration-rain-futuristic-city_23-2151406585.jpg?t=st=1759109264~exp=1759112864~hmac=691a210640753f6168fc90e403d5a15008e1e963fcafdec092f80a523410a9f5&w=1060";
 
   const [placeholderText, setPlaceholderText] = useState("");
-const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-const [isTypingPlaceholder, setIsTypingPlaceholder] = useState(true);
-const [isDeletingPlaceholder, setIsDeletingPlaceholder] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [isTypingPlaceholder, setIsTypingPlaceholder] = useState(true);
+  const [isDeletingPlaceholder, setIsDeletingPlaceholder] = useState(false);
 
 const sampleQuestions = [
   "How do I reverse a string in Python?",
