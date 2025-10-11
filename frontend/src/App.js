@@ -65,7 +65,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/googleLogin',
-    element: <LoginGoogle />,
+    element: <StudentPage />,
   },
   {
     path: '/google-auth-callback',
